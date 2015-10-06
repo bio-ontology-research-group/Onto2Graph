@@ -1,0 +1,9 @@
+package view;
+
+enum FormatterType {
+    RDFXML_FORMATTER,
+    FLATFILE_FORMATTER,
+    GRAPHML_FORMATTER,
+    GRAPHVIZ_FORMATTER,
+    SVG_FORMATTER
+}

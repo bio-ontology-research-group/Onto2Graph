@@ -1,0 +1,2065 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.semanticweb.org/ontologies/2015/0/educationalcluster.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://www.semanticweb.org/ontologies/2015/0/educationalcluster.owl"
+     versionIRI="http://www.semanticweb.org/ontologies/2015/0/educationalcluster.owl">
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Import>http://alexandergarcia.name/ontos/educational/SchoolsInstitutions.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/EducationalTestingCounseling.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/TeachingTeachingMethods.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/EducationalPersonnelAdministration.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/AcademicLearningAchievement.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/SpecialEducation.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/StudentCharacteristicsAcademicEnvironment.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/Curricula.owl</Import>
+    <Import>http://alexandergarcia.name/ontos/educational/StudentPopulations.owl</Import>
+    <Declaration>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Curricula"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#SchoolsInstitutions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#SpecialEducation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#StudentPopulations"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Ability_Grouping"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Ability_Level"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Achievement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Achievement_Motivation"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Achievement_Prediction"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Aptitude"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Environment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Failure"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Overachievement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Self_Concept"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Specialization"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Academic_Underachievement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Acalculia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Accommodation_(Disabilities)"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Accreditation_(Education_Personnel)"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Achievement_Measures"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Adaptive_Testing"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Adult_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Adult_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Advance_Organizers"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Affective_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#After_School_Programs"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Agnosia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Agraphia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Alexia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Algebra"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Anencephaly"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Aphasia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Apprenticeship"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Apraxia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Aptitude_Measures"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Art_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Articulation_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Artistic_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Aspergers_Syndrome"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Assistive_Technology"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Astronomy"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Ataxia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Athletic_Participation"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Attention_Deficit_Disorder"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Attention_Deficit_Disorder_with_Hyperactivity"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Audiovisual_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Augmentative_Communication"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Autism"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Awards_(Merit)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Behavior_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Behavior_Modification"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Behavior_Problems"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Bilingual_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Blind"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Boarding_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Boards_of_Education"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Braille_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Budgets"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Bullying"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Business_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Business_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Calculus"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Campuses"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Career_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Charter_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Class_Size"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classmates"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classroom_Behavior"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classroom_Behavior_Modification"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classroom_Discipline"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classroom_Environment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classroom_Management"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Classrooms"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cleft_Palate"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Clinical_Methods_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Clinical_Psychology_Graduate_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Clinical_Psychology_Internship"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Coeducation"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cognitive_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Collaborative_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Academic_Achievement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Athletes"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Dropouts"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Entrance_Examination_Board_Scholastic_Aptitude_Test"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Environment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Graduates"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#College_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Colleges"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Communication_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Communication_Skills_Training"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Community_College_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Community_Colleges"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Community_Mental_Health_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Compensatory_Education"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Anxiety"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Assisted_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Assisted_Language_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Assisted_Testing"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Literacy"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Computer_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Constant_Time_Delay"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Consumer_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Continuing_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cooperating_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cooperative_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cooperative_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Counselor_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Counselor_Trainees"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Course_Evaluation"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Criterion_Referenced_Tests"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Crying_Cat_Syndrome"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Cultural_Test_Bias"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Curricular_Field_Experience"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Curriculum"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Curriculum_Based_Assessment"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Curriculum_Development"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Deaf"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Deaf_Blind"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Death_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Declarative_Knowledge"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Delayed_Development"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Delayed_Speech"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dental_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dental_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Developmental_Disabilities"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Directed_Discussion_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Discovery_Teaching_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Discrimination_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Distance_Education"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dormitories"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Down&#39;s_Syndrome"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Driver_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dropouts"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Drug_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dysarthria"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dyskinesia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dyslexia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dysphasia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Dysphonia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Ear_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Early_Intervention"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Echolalia"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Education"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Education_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Administration"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Aspirations"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Attainment_Level"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Audiovisual_Aids"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Background"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Counseling"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Degrees"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Diagnosis"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Field_Trips"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Financial_Assistance"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Incentives"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Laboratories"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Measurement"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Objectives"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Personnel"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Placement"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Program_Accreditation"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Program_Evaluation"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Program_Planning"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Programs"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Psychologists"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Psychology"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Quality"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Reform"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Standards"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Television"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Therapy"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Educational_Toys"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Elementary_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Elementary_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Elementary_School_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Elementary_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Emotional_Disturbances"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#English_as_Second_Language"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Entrance_Examinations"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Environmental_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Equal_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Essay_Testing"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Experiential_Learning"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Extracurricular_Activities"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Family_Life_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Feedback"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Films"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Foreign_Language_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Foreign_Language_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Fraternity_Membership"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Generalization_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Geometry"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Gifted"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Goal_Orientation"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Grade_Level"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Grading_(Educational)"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Graduate_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Graduate_Psychology_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Graduate_Record_Examination"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Graduate_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Graduate_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Group_Discussion"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Group_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Group_Testing"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Health_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Hearing_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#High_School_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#High_School_Graduates"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#High_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#High_School_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#High_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Higher_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Home_Economics"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Home_Schooling"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Homework"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Humanities"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Hyperkinesis"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Incidental_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Individual_Education_Programs"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Individualized_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Information_Science"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Initial_Teaching_Alphabet"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Inservice_Teacher_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Inservice_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Institutional_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Instructional_Media"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Intellectual_Development_Disorder"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Intentional_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Interference_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Intermediate_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#International_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Internship_Programs"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Interpreters"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Junior_College_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Junior_High_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Junior_High_School_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Junior_High_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Kindergarten_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Kindergartens"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Language_Arts_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Language_Delay"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Language_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Language_Laboratories"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Latent_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Law_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Centers_(Educational)"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Disabilities"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Environment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Management_Systems"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Rate"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Schedules"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Strategies"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Learning_Theory"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Lecture_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Lesson_Plans"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Librarians"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Literacy"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Literacy_Programs"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mainstreaming"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mainstreaming_(Educational)"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Management_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mastery_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mathematical_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mathematics"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mathematics_Achievement"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mathematics_Anxiety"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mathematics_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Medical_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Medical_Internship"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Medical_Residency"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Medical_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Memory_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mental_Health_Inservice_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Metacognition"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Microcephaly"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Middle_School_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Middle_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Middle_School_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Middle_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Military_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Military_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Minimum_Competency_Tests"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mnemonic_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Montessori_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Multicultural_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Multiple_Intelligences"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Music_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Musical_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Mutism"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Native_Language"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nondirected_Discussion_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nongraded_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nonsense_Syllable_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nontraditional_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nonverbal_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nonverbal_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Note_Taking"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nursery_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nursery_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nursing_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Nursing_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Observational_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#On_the_Job_Training"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Open_Classroom_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Overlearning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Paired_Associate_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Paraprofessional_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Parent_School_Relationship"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Parent_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Parental_Involvement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Partially_Hearing_Impaired"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Peer_Tutoring"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Perceptual_Disturbances"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Perceptual_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Perceptual_Motor_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Performance_Anxiety"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Personnel_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Pervasive_Developmental_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Phonics"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Phonological_Awareness"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Physical_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Postgraduate_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Postgraduate_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Posttesting"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Potential_Dropouts"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Preschool_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Preschool_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Preschool_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Preservice_Teachers"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Pretend_Play"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Primary_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Private_School_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Probability_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Problem_Based_Learning"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Procedural_Knowledge"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Programmed_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Programmed_Textbooks"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Project_Follow_Through"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Project_Head_Start"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Prompting"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Psychiatric_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Psychoanalytic_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Psychoeducation"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Psychology_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Psychotherapy_Training"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Public_School_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#ROTC_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Achievement"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Comprehension"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Disabilities"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Materials"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Readiness"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Skills"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reading_Speed"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Recall_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Recognition_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reconstruction_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Reentry_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Rehabilitation_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Relearning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Religious_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Remedial_Education"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Remedial_Reading"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Resource_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Retention"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Rett_Syndrome"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Rote_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Same_Sex_Education"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Savants"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Scaffolding"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Adjustment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Administrators"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Attendance"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Based_Intervention"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Club_Membership"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Counseling"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Counselors"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Dropouts"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Enrollment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Environment"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Expulsion"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Facilities"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Graduation"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Integration"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Learning"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Leavers"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Libraries"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Nurses"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Phobia"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Principals"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Psychologists"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Psychology"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Readiness"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Refusal"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Retention"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Superintendents"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Suspension"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Transition"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Truancy"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_Violence"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#School_to_Work_Transition"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Science_Achievement"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Science_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Secondary_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Self_Instructional_Training"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Self_Regulated_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Seminarians"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Seminaries"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Sequential_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Serial_Anticipation_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Serial_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Service_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Sex_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Sight_Vocabulary"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Silent_Reading"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Skill_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Social_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Social_Loafing"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Social_Skills_Training"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Social_Studies_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Social_Work_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Sorority_Membership"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Spatial_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Special_Education"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Special_Education_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Special_Education_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Special_Needs"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Speech_Anxiety"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Speech_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Speech_Therapists"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Speech_Therapy"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Spelling"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Sports"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#State_Dependent_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Activism"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Admission_Criteria"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Attitudes"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Attrition"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Characteristics"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Engagement"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Personnel_Services"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Records"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Teachers"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Student_Teaching"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Study_Abroad"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Study_Habits"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Stuttering"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Tardiness"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Tay_Sachs_Disease"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Aides"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Attitudes"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Characteristics"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Education"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Effectiveness"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Effectiveness_Evaluation"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Expectations"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Personality"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Recruitment"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Student_Interaction"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teacher_Tenure"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teaching"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teaching_Machines"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Teaching_Methods"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Team_Teaching_Method"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Technical_Schools"/>
+        <Class IRI="#SchoolsInstitutions"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Televised_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Test_Anxiety"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Test_Coaching"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Test_Taking"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Testing"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Testing_Methods"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Testwiseness"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Textbooks"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Theories_of_Education"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Therapist_Trainees"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Time_On_Task"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Transfer_(Learning)"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Transfer_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Trial_and_Error_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Truancy"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Tutoring"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Undergraduate_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Upward_Bound"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Verbal_Ability"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Verbal_Learning"/>
+        <Class IRI="#AcademicLearningAchievement"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Videotape_Instruction"/>
+        <Class IRI="#TeachingTeachingMethods"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Virtual_Classrooms"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Vision_Disorders"/>
+        <Class IRI="#SpecialEducation"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Vocational_Counselors"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Vocational_Education"/>
+        <Class IRI="#Curricula"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Vocational_Education_Teachers"/>
+        <Class IRI="#EducationalPersonnelAdministration"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Vocational_School_Students"/>
+        <Class IRI="#StudentPopulations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Woodcock_Johnson_Psychoeducational_Battery"/>
+        <Class IRI="#EducationalTestingCounseling"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Writing_Skills"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Zone_of_Proximal_Development"/>
+        <Class IRI="#StudentCharacteristicsAcademicEnvironment"/>
+    </SubClassOf>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
+
