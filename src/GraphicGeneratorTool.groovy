@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 
 
-public class GraphGeneratorTool {
+public class GraphicGeneratorTool {
     public static final String MANUAL="MAN GRAPHGENERATORTOOL";
     public static final String ELK_REASONER="ELK";
     public static final String HERMIT_REASONER="HERMIT";
@@ -30,14 +30,14 @@ public class GraphGeneratorTool {
     /**
      * Constructor
      */
-    public GraphGeneratorTool(){
+    public GraphicGeneratorTool(){
 
     }
 
-    public static void runGraphGenerator(OWLOntology ontology,String outputPath,OWLReasoner reasoner,
-                                         String formatter,String[] objectProperties){
-        VisualizerCommand command = new VisualizerCommand(reasoner,ontology,formatter,objectProperties,outPath);
-
+    public static void runGraphGenerator(OWLOntology ontology, String outputPath,OWLReasoner reasoner,
+                                         FormatterType formatterType,String[] objectProperties){
+        VisualizerCommand command = new VisualizerCommand(reasoner,ontology,formatterType,outputPath,objectProperties);
+        command.executeCommand();
     }
 
     public static OWLOntology loadOntology(String pathOntology){
@@ -55,14 +55,14 @@ public class GraphGeneratorTool {
         return(ontology);
     }
 
-    public static String getVisualizationFormatter(String typeFormatter){
+    public static FormatterType getVisualizationFormatter(String typeFormatter){
         if((typeFormatter!=null)&&(!typeFormatter.isEmpty())){
             typeFormatter = typeFormatter.trim().toUpperCase();
             switch(typeFormatter){
                 case "RDFXML": return(FormatterType.RDFXML_FORMATTER);
                 case "GRAPHVIZ": return(FormatterType.GRAPHVIZ_FORMATTER);
                 case "FLATFILE": return(FormatterType.FLATFILE_FORMATTER);
-                case "GRAPHML": return(FormatterType.GRAPHVIZ_FORMATTER);
+                case "GRAPHML": return(FormatterType.GRAPHML_FORMATTER);
                 default: return(FormatterType.GRAPHVIZ_FORMATTER);
             }
         }
@@ -119,9 +119,9 @@ public class GraphGeneratorTool {
                         if (reasoner != null) {
 
                             String sFormatter = args[3];
-
+                            FormatterType formatterType;
                             if((sFormatter!=null)&&(!sFormatter.isEmpty())){
-                                sFormatter = getVisualizationFormatter(sFormatter);
+                                formatterType = getVisualizationFormatter(sFormatter);
                             }
 
                             Object objectProperties = args[4];
@@ -139,7 +139,7 @@ public class GraphGeneratorTool {
                                     }
                                 }
                             }
-                            runGraphGenerator(ontology,outputPath,reasoner,sFormatter,properties);
+                            runGraphGenerator(ontology,outputPath,reasoner,formatterType,properties);
 
                         }else{
                             System.out.println("Error: Imposible to build the reasoner.");

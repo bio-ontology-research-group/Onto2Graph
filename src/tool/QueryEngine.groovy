@@ -1,4 +1,8 @@
-package tool;
+package tool
+
+import org.semanticweb.owlapi.model.OWLClass
+import org.semanticweb.owlapi.model.OWLClassExpression
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 /*
  * Copyright 2014 Luke Slater (lus11@aber.ac.uk).
@@ -16,15 +20,6 @@ package tool;
  * limitations under the License.
  */
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.reasoner.Node;
-import org.semanticweb.owlapi.reasoner.NodeSet;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.util.* ;
 
 /**
  * Manchester OWL Syntax query manager for a particular reasoned ontology.
@@ -53,11 +48,11 @@ public class QueryEngine {
      * @return A HashSet of classes relevant to the given class description in
      * mOwl corresponding to the type of request.
      */
-    public Set<OWLClass> getClasses(String mOwl, RequestType requestType, boolean direct, boolean labels) {
+    public Set<OWLClass> getClasses(String mOwl, RequestType requestType, boolean direct,boolean labels) {
         if(mOwl == null || mOwl.trim().length() == 0) {
             return Collections.emptySet();
         }
-        OWLClassExpression cExpression = parser.parse(mOwl, labels);
+        OWLClassExpression cExpression = parser.parse(mOwl,labels);
         Set<OWLClass> classes = new HashSet<>();
 
         if(cExpression == null) {

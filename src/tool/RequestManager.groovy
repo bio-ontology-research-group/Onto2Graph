@@ -1,15 +1,18 @@
 package tool
 
+import com.thoughtworks.xstream.mapper.Mapper
 import org.semanticweb.owlapi.apibinding.OWLManager
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLAnnotation
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom
+import org.semanticweb.owlapi.model.OWLAnnotationProperty
 import org.semanticweb.owlapi.model.OWLClass
 import org.semanticweb.owlapi.model.OWLLiteral
 import org.semanticweb.owlapi.model.OWLObjectProperty
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.BufferingMode
+import org.semanticweb.owlapi.reasoner.OWLReasoner
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher;
@@ -21,6 +24,7 @@ import org.semanticweb.owlapi.search.EntitySearcher;
  */
 public class RequestManager {
     public static RequestManager instance = null;
+    private QueryEngine queryEngine=null;
     /**
      * Private constructor
      */
@@ -97,8 +101,7 @@ public class RequestManager {
      * @param requestType Type of class match to be performed. Valid values are: subclass, superclass, equivalent or all.
      * @return Set of OWL Classes.
      */
-    Set runQuery(String mOwlQuery, String type, String ontUri,int version, boolean direct, boolean labels) {
-        def start = System.currentTimeMillis()
+    Set<HashMap> runQuery(String mOwlQuery,OWLOntology ontology, OWLReasoner reasoner, String type, boolean direct,boolean labels) {
 
         type = type.toLowerCase()
         def requestType
@@ -112,15 +115,27 @@ public class RequestManager {
             default: requestType = RequestType.SUBEQ; break;
         }
 
-        Set classes = new HashSet<>();
-        QueryEngine queryEngine = queryEngines.get(ontUri);
+        Set classes = new HashSet<HashMap>();
+        def manager = ontology.getOWLOntologyManager();
+        def df = manager.getOWLDataFactory();
+        String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
 
-        Set<OWLClass> resultSet = queryEngine.getClasses(mOwlQuery, requestType, direct, labels)
+        if(queryEngine==null){
+            List<OWLAnnotationProperty> aProperties = new ArrayList<>();
+            List<String> langs = new ArrayList<>();
+            Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
+            for (OWLAnnotationProperty annotationProperty : aProperties) {
+                preferredLanguageMap.put(annotationProperty, langs);
+            }
+            def provider = new NewShortFormProvider(aProperties, preferredLanguageMap, manager);
+            queryEngine = new QueryEngine(reasoner,provider);
+        }
+
+        Set<OWLClass> resultSet = queryEngine.getClasses(mOwlQuery, requestType, direct,labels)
         resultSet.remove(df.getOWLNothing())
         resultSet.remove(df.getOWLThing())
-        classes.addAll(classes2info(resultSet, ontology, ontUri))
-
-        return classes;
+        classes.addAll(classes2info(resultSet, ontology, ontUri));
+        return(classes);
     }
 
     Set classes2info(Set<OWLClass> classes, OWLOntology o, String uri) {
@@ -138,30 +153,14 @@ public class RequestManager {
 
             for (OWLAnnotation annotation : EntitySearcher.getAnnotations(c, o)) {
                 if(annotation.isDeprecatedIRIAnnotation()) {
-                    info['deprecated'] = true
+                    info['deprecated'] = true;
+                }
+                if(annotation.getProperty().isLabel()){
+                    OWLLiteral val = (OWLLiteral) annotation.getValue();
+                    info['label'] = val.getLiteral();
                 }
             }
-            if (!info['deprecated']) { // ignore all deprecated classes! TODO: trigger this by query flag
-
-                def scoreDocs = searcher.search(bq, 1).scoreDocs
-                if((scoreDocs!=null)&&(scoreDocs.length>0)) {
-                    def dResult = scoreDocs[0]
-                    def hitDoc = searcher.doc(dResult.doc)
-                    hitDoc.each {
-                        info['label'] = hitDoc.get('first_label')
-                    }
-                    hitDoc.getFields().each { field ->
-                        def fName = field.name()
-                        if (fName!="AberOWL-catch-all") {
-                            info[fName] = new LinkedHashSet()
-                            hitDoc.getValues(fName).each { fVal ->
-                                info[fName].add(fVal)
-                            }
-                        }
-                    }
-                    info['definition'] = hitDoc.get('definition')
-                }
-
+            if (!info['deprecated']) {
                 if (info['label'] != null) {
                     result.add(info);
                 }

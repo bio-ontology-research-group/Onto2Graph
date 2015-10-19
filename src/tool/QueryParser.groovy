@@ -1,5 +1,6 @@
 package tool
 
+
 /*
  * Copyright 2014 Luke Slater (lus11@aber.ac.uk).
  *
@@ -16,7 +17,7 @@ package tool
  * limitations under the License.
  */
 
-import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxClassExpressionParser
+import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxClassExpressionParser;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -48,7 +49,7 @@ public class QueryParser {
      * @param mOwl String containing a class expression in Manchester OWL Syntax.
      * @return An OWLClassExpression generated from mOwl
      */
-    public OWLClassExpression parse(String mOwl, boolean labels) {
+    public OWLClassExpression parse(String mOwl,boolean labels) {
         def result = null
 
         try {
@@ -65,10 +66,9 @@ public class QueryParser {
 
             result = parser.parse(mOwl);
         } catch(Exception e) {
-            e.printStackTrace()
-            result = null
+            e.printStackTrace();
+            result = null;
         }
-
-        return result
+        return(result);
     }
 }
