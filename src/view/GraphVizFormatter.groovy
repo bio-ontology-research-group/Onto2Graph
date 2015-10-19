@@ -25,31 +25,27 @@ public class GraphVizFormatter extends ViewFormat{
         return("}");
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses) {
+    public String formatter(HashMap rootClass,HashMap subClass) {
         String content="";
-        content = "<" + rootClass.get("label") + "> [label=<\""+ rootClass.get("label") +"\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+= "<" +subClass.get("label")+ "> [label=<\"" + subClass.get("label") + "\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
-                content+=" <" + rootClass.get("label") + "> -> <" + subClass.get("label") + ">;\n ";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            String rootLabel = filterLabel(rootClass.get("label"));
+            String classLabel = filterLabel(subClass.get("label"));
+
+            content = "<" + rootLabel + "> [label=<\""+ rootLabel +"\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
+            content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
+            content+=" <" + rootLabel + "> -> <" + classLabel + ">;\n ";
         }
         return(content);
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses, String objectProperty){
+    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
-        content = "<" + rootClass.get("label") + "> [label=<" + rootClass.get("label") + ">, shape=\"circle\" style=\"filled\" color=\"" + color+"\"];\n";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+= "<" + rootClass.get("label") + "> [label=<\"" + subClass.get("label") + "\">, shape=\"circle\" style=\"filled\" color=\""+propertyColor+"\"];\n";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            String rootLabel = filterLabel(rootClass.get("label"));
+            String classLabel = filterLabel(subClass.get("label"));
+
+            content = "<" + rootLabel + "> [label=<\"" + rootLabel + "\">, shape=\"circle\" style=\"filled\" color=\"" + color+"\"];\n";
+            content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+propertyColor+"\"];\n";
         }
         return(content);
     }

@@ -30,41 +30,38 @@ public class GraphMLFormatter extends ViewFormat {
                 "</graphml>");
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses) {
+    public String formatter(HashMap rootClass,HashMap subClass) {
         String content="";
-        content = "<node id=\""+rootClass.get("label")+"\"/>\n";
-        content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
-        Iterator<HashMap>it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="<node id=\""+subClass.get("label")+"\"/>\n";
-                content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
-                content+="<edge id=\"e"+(edgeCounter+1)+"\" source=\""+rootClass.get("label")+"\" target=\""+subClass.get("label")+"\"/>\n";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            String rootLabel = filterLabel(rootClass.get("label"));
+            String classLabel = filterLabel(subClass.get("label"));
+
+            content = "<node id=\""+rootLabel+"\"/>\n";
+            content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
+            content+="<node id=\""+classLabel+"\"/>\n";
+            content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
+            content+="<edge id=\"e"+(edgeCounter+1)+"\" source=\""+rootLabel+"\" target=\""+classLabel+"\"/>\n";
         }
         return content;
     }
 
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses, String objectProperty){
+    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content="";
-        content = "<node id=\""+rootClass.get("label")+"\"/>\n";
-        content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
-        Iterator<HashMap>it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="<node id=\""+subClass.get("label")+"\"/>\n";
-                content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
-                content+="<edge id=\"e"+(edgeCounter+1)+"\" source=\""+rootClass.get("label")+"\" target=\""+subClass.get("label")+"\"/>\n";
-                content+="\t<data key=\"d1\">"+objectProperty+"</data>\n";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            String rootLabel = filterLabel(rootClass.get("label"));
+            String classLabel = filterLabel(subClass.get("label"));
+
+            content = "<node id=\""+rootLabel+"\"/>\n";
+            content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
+            content+="<node id=\""+classLabel+"\"/>\n";
+            content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
+            content+="<edge id=\"e"+(edgeCounter+1)+"\" source=\""+rootLabel+"\" target=\""+classLabel+"\"/>\n";
+            content+="\t<data key=\"d1\">"+objectProperty+"</data>\n";
         }
         return(content);
     }
+
 
     public String getExtension(){
         return(".graphml");

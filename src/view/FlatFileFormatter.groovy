@@ -16,35 +16,25 @@ public class FlatFileFormatter extends ViewFormat {
     }
 
     public String getHeader(){
-        return("\tNodes\t\tEdges+\n");
+        return("\tNodes\t\t\t\tEdges+\n");
     }
 
     public String getFooter(){
         return("");
     }
 
-    String formatter(HashMap rootClass,Set<HashMap> subClasses) {
+    String formatter(HashMap rootClass,HashMap subClass) {
         String content= "";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="\t"+rootClass.get("label")+","+subClass.get("label")+"\t\t\n";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            content+="\t"+rootClass.get("label")+",\t"+subClass.get("label")+"\n";
         }
         return (content);
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses, String objectProperty){
+    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="\t"+rootClass.get("label")+","+subClass.get("label")+"\t\t"+objectProperty+"\n";
-            }
+        if((rootClass)&&(subClass!=null)){
+            content+="\t"+rootClass.get("label")+",\t"+subClass.get("label")+"\t\t"+objectProperty+"\n";
         }
         return(content);
     }

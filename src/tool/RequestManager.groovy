@@ -37,56 +37,29 @@ public class RequestManager {
         return(instance);
     }
 
-    /** This returns the direct R-successors of a class C in O
-     class and relations are given as String-IRIs
-     */
-    Set relationQuery(String relation, String clazz, OWLOntology ontology) {
-        Set classes = new HashSet<>();
-        OWLManager manager = ontology.getOWLOntologyManager()
-        def sForm = new NewShortFormProvider(aProperties, preferredLanguageMap, manager);
-        QueryEngine queryEngine = new QueryEngine(oReasoner, sForm);
-
-        // get the direct subclasses of cl
-        Set<OWLClass> subclasses = queryEngine.getClasses(cl, RequestType.SUBCLASS, true, false)
-        // These are all the classes for which the R some C property holds
-        String query1 = "<$relation> SOME $cl"
-        Set<OWLClass> mainResult = queryEngine.getClasses(query1, RequestType.SUBCLASS, true, false)
-        // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
-        subclasses.each { sc ->
-            String query2 = "$relation SOME "+sc.toString()
-            def subResult = queryEngine.getClasses(query2, RequestType.SUBCLASS, true, false)
-            mainResult = mainResult - subResult
-        }
-        classes.addAll(classes2info(mainResult, ontology, ontUri))
-        return classes
-    }
-
     /**
      * Gets the sub object properties from the ontology given
      * oString This paramater represents the id of the ontology.
      * rootObjectProperty This parameter represents the root object property asked.
      */
-    Set getObjectProperties(String oString,String rootObjectProperty){
-        Set objectProperties = new HashSet();
-        if((oString!=null)&&(oString.length()>0)&&(rootObjectProperty!=null)&&(rootObjectProperty.length()>0)){
-            if(ontologies.containsKey(oString)) {
-                OWLOntology ontology = ontologies.get(oString);
-                StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
-                OWLObjectProperty objectProperty = df.getOWLObjectProperty(IRI.create(rootObjectProperty));
-                Set<OWLObjectPropertyExpression> properties = structuralReasoner.getSubObjectProperties(objectProperty,true).getFlattened();
-
-                for(OWLObjectPropertyExpression expression : properties) {
-                    Iterator<OWLAnnotationAssertionAxiom> jt = EntitySearcher.getAnnotationAssertionAxioms(expression.getNamedProperty(), structuralReasoner.getRootOntology()).iterator();
-                    OWLAnnotationAssertionAxiom axiom;
-                    HashMap subProperty = new HashMap<String,String>();
-                    while (jt.hasNext()) {
-                        axiom = jt.next();
-                        if (axiom.getProperty().isLabel()) {
-                            OWLLiteral value = (OWLLiteral) axiom.getValue();
-                            subProperty.put('classURI',axiom.getSubject().toString());
-                            subProperty.put('label',value.getLiteral().toString());
-                            objectProperties.add(subProperty);
-                        }
+    HashMap getObjectProperties(OWLOntology ontology){
+        HashMap objectProperties = new HashMap<String,String>();
+        if(ontology!=null){
+            StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
+            def df = ontology.getOWLOntologyManager().getOWLDataFactory();
+            OWLObjectProperty objectProperty = df.getOWLTopObjectProperty();
+            Set<OWLObjectPropertyExpression> properties = structuralReasoner.getSubObjectProperties(objectProperty,true).getFlattened();
+            for(OWLObjectPropertyExpression expression : properties) {
+                Iterator<OWLAnnotationAssertionAxiom> jt = EntitySearcher.getAnnotationAssertionAxioms(expression.getNamedProperty(), structuralReasoner.getRootOntology()).iterator();
+                OWLAnnotationAssertionAxiom axiom;
+                while (jt.hasNext()) {
+                    axiom = jt.next();
+                    if (axiom.getProperty().isLabel()) {
+                        OWLLiteral value = (OWLLiteral) axiom.getValue();
+                        String label = value.getLiteral().toString();
+                        label = label.toLowerCase();
+                        String classURI = axiom.getSubject().toString();
+                        objectProperties.put(label,classURI);
                     }
                 }
             }
@@ -136,6 +109,48 @@ public class RequestManager {
         resultSet.remove(df.getOWLThing())
         classes.addAll(classes2info(resultSet, ontology, ontUri));
         return(classes);
+    }
+
+    /**
+     * This returns the direct R-successors of a class C in O
+     * class and relations are given as String-IRIs
+     */
+    Set relationQuery(String relation, String clazz, OWLOntology ontology,OWLReasoner reasoner) {
+        Set classes = new HashSet<>();
+        def manager = ontology.getOWLOntologyManager();
+        def df = manager.getOWLDataFactory();
+        String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
+
+        if(queryEngine==null){
+            List<OWLAnnotationProperty> aProperties = new ArrayList<>();
+            List<String> langs = new ArrayList<>();
+            Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
+            for (OWLAnnotationProperty annotationProperty : aProperties) {
+                preferredLanguageMap.put(annotationProperty, langs);
+            }
+            def provider = new NewShortFormProvider(aProperties, preferredLanguageMap, manager);
+            queryEngine = new QueryEngine(reasoner,provider);
+        }
+        // get the direct subclasses of cl
+        Set<OWLClass> subclasses = queryEngine.getClasses(clazz, RequestType.SUBCLASS, true, false)
+        // These are all the classes for which the R some C property holds
+        String query1 = "<$relation> SOME $clazz"
+        Set<OWLClass> mainResult = queryEngine.getClasses(query1, RequestType.SUBCLASS, true, false)
+        // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
+        subclasses.remove(df.getOWLNothing());
+        subclasses.remove(df.getOWLThing());
+        subclasses.each { sc ->
+            String query2 = "<$relation> SOME "+sc.toString()
+            def subResult = queryEngine.getClasses(query2, RequestType.SUBCLASS, true, false)
+            mainResult = mainResult - subResult
+        }
+        mainResult.remove(df.getOWLNothing())
+        mainResult.remove(df.getOWLThing())
+        classes.addAll(classes2info(mainResult, ontology, ontUri))
+        if(classes.size()>0){
+            System.out.println("greather than 0");
+        }
+        return classes;
     }
 
     Set classes2info(Set<OWLClass> classes, OWLOntology o, String uri) {

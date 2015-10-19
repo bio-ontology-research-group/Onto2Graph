@@ -30,31 +30,21 @@ public class RDFXMLFormatter extends ViewFormat {
         return("</rdf:RDF>");
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses){
+    public String formatter(HashMap rootClass,HashMap subClass){
         String content="";
-        content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="<rdfs:subClassOf rdf:resource=\""+subClass.get("owlClass")+"\"/>";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
+             content+="<rdfs:subClassOf rdf:resource=\""+subClass.get("owlClass")+"\"/>";
         }
         content+="</rdf:Description>";
         return(content);
     }
 
-    public String formatter(HashMap rootClass,Set<HashMap> subClasses, String objectProperty){
+    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content="";
-        content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
-        Iterator<HashMap> it = subClasses.iterator();
-        HashMap subClass;
-        while(it.hasNext()){
-            subClass = it.next();
-            if(subClass!=null){
-                content+="<rdfs:"+objectProperty+" rdf:resource=\""+subClass.get("owlClass")+"\"/>";
-            }
+        if((rootClass!=null)&&(subClass!=null)){
+            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
+            content+="<rdfs:"+objectProperty+" rdf:resource=\""+subClass.get("owlClass")+"\"/>";
         }
         content+="</rdf:Description>";
         return(content);
