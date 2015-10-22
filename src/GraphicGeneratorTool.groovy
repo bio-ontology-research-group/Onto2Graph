@@ -5,7 +5,6 @@ import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.OptionBuilder
 import org.apache.commons.cli.Options
-import org.openrdf.model.vocabulary.OWL
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
 import org.semanticweb.owlapi.apibinding.OWLManager
@@ -133,7 +132,9 @@ public class GraphicGeneratorTool {
                 .create(format);
 
         String objectProperties = "op";
-        String objectPropertiesDescription = "This parameter should contain the ontology file or at least the path where the ontology is located.";
+        String objectPropertiesDescription = "args[4] -op This parameter will contain the list of object properties labels that will be used to visualized the ontology (Optional). \n"+
+                                        "The object properties should be formatted as array, here you can see an example: [\"first_label\",\"second_label\",\"third_label\"]. \n"+
+                                        "In order to include all object properties from an ontology given just provide: [\"*\"]. \n";
         Option objectPropertiesOption = OptionBuilder
                 .hasArg(true)
                 .isRequired(false)
@@ -157,7 +158,8 @@ public class GraphicGeneratorTool {
         info+="args[2] -r The reasoner will be used (ELK[DEFAULT],HERMIT). \n";
         info+="args[3] -f The different visualization formatted available (RDFXML, GRAPHVIZ[DEFAULT], FLATFILE,GRAPHML) (Optional). \n";
         info+="args[4] -op This parameter will contain the list of object properties labels that will be used to visualized the ontology (Optional). \n";
-        info+="The object properties should be formatted as array, here you can see an example: [\"first_label\", \"second_label\", \"third_label\"]. (Optional) \n";
+        info+="The object properties should be formatted as array, here you can see an example: [\"first_label\",\"second_label\",\"third_label\"]. \n";
+        info+="In order to include all object properties from an ontology given just provide: [\"*\"]. \n";
         return(info);
     }
 
@@ -194,7 +196,7 @@ public class GraphicGeneratorTool {
                 }
             }
             if(commandLine.hasOption("op")){
-                String sProperties = commandLine.getOptionValue("f");
+                String sProperties = commandLine.getOptionValue("op");
                 if((sProperties!=null)&&(!sProperties.isEmpty())){
                     Pattern pattern = Pattern.compile("\\[(.*)\\]");
                     Matcher matcher = pattern.matcher(sProperties);
@@ -203,6 +205,7 @@ public class GraphicGeneratorTool {
                         if(sObjectProperties.contains(",")){
                             properties = sObjectProperties.split(",");
                         }else{
+                            properties = new String[1];
                             properties[0] = sObjectProperties;
                         }
                     }
@@ -215,6 +218,7 @@ public class GraphicGeneratorTool {
                 System.out.println(getManual());
             }
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println("Error providing the parameters");
             System.out.println(getManual());
         }

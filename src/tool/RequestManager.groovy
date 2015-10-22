@@ -1,21 +1,23 @@
 package tool
 
-import com.thoughtworks.xstream.mapper.Mapper
-import org.semanticweb.owlapi.apibinding.OWLManager
+import groovyx.gpars.GParsPool
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLAnnotation
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom
-import org.semanticweb.owlapi.model.OWLAnnotationProperty
 import org.semanticweb.owlapi.model.OWLClass
+import org.semanticweb.owlapi.model.OWLClassExpression
+import org.semanticweb.owlapi.model.OWLDataFactory
 import org.semanticweb.owlapi.model.OWLLiteral
 import org.semanticweb.owlapi.model.OWLObjectProperty
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression
+import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.OWLReasoner
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
-import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.search.EntitySearcher
+import show.ProgressBar
 
 /**
  * Singleton class that contains the tools needed to work with the ontology.
@@ -24,11 +26,13 @@ import org.semanticweb.owlapi.search.EntitySearcher;
  */
 public class RequestManager {
     public static RequestManager instance = null;
-    private QueryEngine queryEngine=null;
+    private HashMap<String,HashSet> preComputedSubClasses = null;
     /**
      * Private constructor
      */
-    private RequestManager(){}
+    private RequestManager(){
+        preComputedSubClasses = new HashMap<String,HashSet>();
+    }
 
     public static RequestManager getInstance(){
         if(instance==null){
@@ -37,34 +41,64 @@ public class RequestManager {
         return(instance);
     }
 
-    /**
-     * Gets the sub object properties from the ontology given
-     * oString This paramater represents the id of the ontology.
-     * rootObjectProperty This parameter represents the root object property asked.
-     */
-    HashMap getObjectProperties(OWLOntology ontology){
-        HashMap objectProperties = new HashMap<String,String>();
-        if(ontology!=null){
-            StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
-            def df = ontology.getOWLOntologyManager().getOWLDataFactory();
-            OWLObjectProperty objectProperty = df.getOWLTopObjectProperty();
-            Set<OWLObjectPropertyExpression> properties = structuralReasoner.getSubObjectProperties(objectProperty,true).getFlattened();
-            for(OWLObjectPropertyExpression expression : properties) {
-                Iterator<OWLAnnotationAssertionAxiom> jt = EntitySearcher.getAnnotationAssertionAxioms(expression.getNamedProperty(), structuralReasoner.getRootOntology()).iterator();
-                OWLAnnotationAssertionAxiom axiom;
-                while (jt.hasNext()) {
-                    axiom = jt.next();
-                    if (axiom.getProperty().isLabel()) {
-                        OWLLiteral value = (OWLLiteral) axiom.getValue();
-                        String label = value.getLiteral().toString();
-                        label = label.toLowerCase();
-                        String classURI = axiom.getSubject().toString();
-                        objectProperties.put(label,classURI);
+    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,String[] properties){
+
+        if((properties!=null)&&(properties.size()>0)){
+            HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
+            String property;
+            int classesIndex=0;
+            int classesCounter = classes.size();
+            long init = System.currentTimeMillis();
+            GParsPool.withPool {
+                classes.eachParallel { clazz ->
+                    ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+                    classesIndex++;
+                    for (int i = 0; i < properties.length; i++) {
+                        property = properties[i];
+                        if (property != null) {
+                            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+                            OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
+                            OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
+                            HashSet<OWLClass> subClasses = reasoner.getSubClasses(query,true).getFlattened();
+                            subClasses.remove(factory.getOWLNothing());
+                            subClasses.remove(factory.getOWLThing());
+                            if((subClasses!=null)&&(!subClasses.isEmpty())) {
+                                this.preComputedSubClasses.put(clazz.toString()+property, subClasses);
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Retrieve the list of objects properties
+     */
+    Set<String> getObjectProperties(OWLOntology ontology){
+        HashSet<String> objectProperties = new HashSet<String>();
+        if(ontology!=null) {
+            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+            StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
+            getRecursiveObjectProperties(objectProperties,factory.getOWLTopObjectProperty(),structuralReasoner);
+        }
         return objectProperties;
+    }
+
+    private void getRecursiveObjectProperties(HashSet objectProperties,OWLObjectProperty rootObjectProperty, OWLReasoner reasoner){
+        Set<OWLObjectPropertyExpression> properties = reasoner.getSubObjectProperties(rootObjectProperty,true).getFlattened();
+
+        if(properties.empty){
+            return;
+        }
+        for(OWLObjectPropertyExpression expression : properties) {
+            if((expression instanceof OWLObjectProperty)&&(!expression.isAnonymous())&&
+                    (!expression.isOWLTopObjectProperty())&&(!expression.isOWLBottomObjectProperty())) {
+                objectProperties.add(expression.getNamedProperty().getIRI().toString());
+                getRecursiveObjectProperties(objectProperties, expression.getNamedProperty(), reasoner);
+            }
+        }
+        return;
     }
 
     /**
@@ -74,81 +108,44 @@ public class RequestManager {
      * @param requestType Type of class match to be performed. Valid values are: subclass, superclass, equivalent or all.
      * @return Set of OWL Classes.
      */
-    Set<HashMap> runQuery(String mOwlQuery,OWLOntology ontology, OWLReasoner reasoner, String type, boolean direct,boolean labels) {
-
-        type = type.toLowerCase()
-        def requestType
-        switch(type) {
-            case "superclass": requestType = RequestType.SUPERCLASS; break;
-            case "subclass": requestType = RequestType.SUBCLASS; break;
-            case "equivalent": requestType = RequestType.EQUIVALENT; break;
-            case "supeq": requestType = RequestType.SUPEQ; break;
-            case "subeq": requestType = RequestType.SUBEQ; break;
-            case "realize": requestType = RequestType.REALIZE; break;
-            default: requestType = RequestType.SUBEQ; break;
-        }
-
-        Set classes = new HashSet<HashMap>();
-        def manager = ontology.getOWLOntologyManager();
-        def df = manager.getOWLDataFactory();
-        String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
-
-        if(queryEngine==null){
-            List<OWLAnnotationProperty> aProperties = new ArrayList<>();
-            List<String> langs = new ArrayList<>();
-            Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
-            for (OWLAnnotationProperty annotationProperty : aProperties) {
-                preferredLanguageMap.put(annotationProperty, langs);
-            }
-            def provider = new NewShortFormProvider(aProperties, preferredLanguageMap, manager);
-            queryEngine = new QueryEngine(reasoner,provider);
-        }
-
-        Set<OWLClass> resultSet = queryEngine.getClasses(mOwlQuery, requestType, direct,labels)
-        resultSet.remove(df.getOWLNothing())
-        resultSet.remove(df.getOWLThing())
-        classes.addAll(classes2info(resultSet, ontology, ontUri));
-        return(classes);
+    Set<HashMap> subClassesQuery(OWLClass clazz,OWLOntology ontology, OWLReasoner reasoner, boolean direct) {
+        Set<OWLClass> classes = reasoner.getSubClasses(clazz,direct).getFlattened();
+        OWLDataFactory df = ontology.getOWLOntologyManager().getOWLDataFactory();
+        String ontUri = ontology.getOntologyID().toString();
+        classes.remove(df.getOWLNothing())
+        Set result = new HashSet<>();
+        result.addAll(classes2info(classes, ontology, ontUri))
+        return(result);
     }
 
     /**
      * This returns the direct R-successors of a class C in O
      * class and relations are given as String-IRIs
      */
-    Set relationQuery(String relation, String clazz, OWLOntology ontology,OWLReasoner reasoner) {
+    Set relationQuery(String relation, String sClazz, OWLOntology ontology,OWLReasoner reasoner) {
         Set classes = new HashSet<>();
         def manager = ontology.getOWLOntologyManager();
-        def df = manager.getOWLDataFactory();
+        def factory = manager.getOWLDataFactory();
         String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
 
-        if(queryEngine==null){
-            List<OWLAnnotationProperty> aProperties = new ArrayList<>();
-            List<String> langs = new ArrayList<>();
-            Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
-            for (OWLAnnotationProperty annotationProperty : aProperties) {
-                preferredLanguageMap.put(annotationProperty, langs);
-            }
-            def provider = new NewShortFormProvider(aProperties, preferredLanguageMap, manager);
-            queryEngine = new QueryEngine(reasoner,provider);
-        }
+        OWLClass clazz = factory.getOWLClass(IRI.create(sClazz));
+
         // get the direct subclasses of cl
-        Set<OWLClass> subclasses = queryEngine.getClasses(clazz, RequestType.SUBCLASS, true, false)
-        // These are all the classes for which the R some C property holds
-        String query1 = "<$relation> SOME $clazz"
-        Set<OWLClass> mainResult = queryEngine.getClasses(query1, RequestType.SUBCLASS, true, false)
-        // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
-        subclasses.remove(df.getOWLNothing());
-        subclasses.remove(df.getOWLThing());
-        subclasses.each { sc ->
-            String query2 = "<$relation> SOME "+sc.toString()
-            def subResult = queryEngine.getClasses(query2, RequestType.SUBCLASS, true, false)
-            mainResult = mainResult - subResult
-        }
-        mainResult.remove(df.getOWLNothing())
-        mainResult.remove(df.getOWLThing())
-        classes.addAll(classes2info(mainResult, ontology, ontUri))
-        if(classes.size()>0){
-            System.out.println("greather than 0");
+        Set<OWLClass> subclasses = reasoner.getSubClasses(clazz,true).getFlattened();
+
+        if(preComputedSubClasses.containsKey(clazz.toString()+relation)) {
+            Set<OWLClass> mainResult = new HashSet(preComputedSubClasses.get(clazz.toString() + relation));
+
+            // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
+            subclasses.each { subClass ->
+                if(preComputedSubClasses.containsKey(subClass.toString()+relation)) {
+                    def subResult = new HashSet(preComputedSubClasses.get(subClass.toString() + relation));
+                    mainResult = mainResult - subResult;
+                }
+            }
+            mainResult.remove(factory.getOWLNothing())
+            mainResult.remove(factory.getOWLThing())
+            classes.addAll(classes2info(mainResult, ontology, ontUri))
         }
         return classes;
     }

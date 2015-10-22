@@ -28,8 +28,8 @@ public class GraphVizFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass) {
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("label"));
-            String classLabel = filterLabel(subClass.get("label"));
+            String rootLabel = filterLabel(rootClass.get("reminder"));
+            String classLabel = filterLabel(subClass.get("reminder"));
 
             content = "<" + rootLabel + "> [label=<\""+ rootLabel +"\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
             content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
@@ -41,8 +41,8 @@ public class GraphVizFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("label"));
-            String classLabel = filterLabel(subClass.get("label"));
+            String rootLabel = filterLabel(rootClass.get("reminder"));
+            String classLabel = filterLabel(subClass.get("reminder"));
 
             content = "<" + rootLabel + "> [label=<\"" + rootLabel + "\">, shape=\"circle\" style=\"filled\" color=\"" + color+"\"];\n";
             content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+propertyColor+"\"];\n";

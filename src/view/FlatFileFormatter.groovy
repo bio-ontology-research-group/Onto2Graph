@@ -26,7 +26,7 @@ public class FlatFileFormatter extends ViewFormat {
     String formatter(HashMap rootClass,HashMap subClass) {
         String content= "";
         if((rootClass!=null)&&(subClass!=null)){
-            content+="\t"+rootClass.get("label")+",\t"+subClass.get("label")+"\n";
+            content+="\t"+rootClass.get("reminder")+",\t"+subClass.get("reminder")+"\n";
         }
         return (content);
     }
@@ -34,7 +34,7 @@ public class FlatFileFormatter extends ViewFormat {
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
         if((rootClass)&&(subClass!=null)){
-            content+="\t"+rootClass.get("label")+",\t"+subClass.get("label")+"\t\t"+objectProperty+"\n";
+            content+="\t"+rootClass.get("reminder")+",\t"+subClass.get("reminder")+"\t\t"+objectProperty+"\n";
         }
         return(content);
     }
