@@ -39,7 +39,7 @@ public abstract class ViewFormat {
     }
 
     protected String[] checkObjectProperties(ontology,String[] properties){
-        if((properties.length==1)&&(properties[0]=="*")){
+        if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
             HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
             properties = objectProperties.toArray(new String[objectProperties.size()]);
         }
@@ -69,7 +69,7 @@ public abstract class ViewFormat {
                 }
             }
             if (root['deprecated']) {
-                root = [];
+                root = null;
             }
         }
         return root;
@@ -83,30 +83,32 @@ public abstract class ViewFormat {
         classes.remove(ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
         Iterator<OWLClass> it = classes.iterator();
         //HashMap subClass;
-        GParsPool.withPool {
-            classes.eachParallel { clazz ->
-                ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
-                classesIndex++;
-                HashMap root = new HashMap(buildNode(clazz,ontology))
+        classes.each { clazz ->
+            ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
+            classesIndex++;
+            HashMap root = buildNode(clazz,ontology)
+            if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
-                if((root!=null)&&(!root.isEmpty())) {
-                    Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(clazz, ontology, reasoner, true);
-                    if(subClasses!=null){
-                        subClasses.each { subClass ->
+                Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(clazz, ontology, reasoner, true);
+                if(subClasses!=null){
+                    subClasses.each { subClass ->
+                        synchronized (graph) {
                             graph.addVertex(subClass);
-                            graph.addEdge(root.get("classURI")+subClass.get("classURI"), root, subClass);
+                            graph.addEdge(root.get("classURI") + subClass.get("classURI"), root, subClass);
                         }
                     }
-                    if ((properties != null) && (properties.length > 0)) {
-                        String objectProperty;
-                        for (int i = 0; i < properties.length; i++) {
-                            objectProperty = properties[i];
-                            if (objectProperty != null) {
-                                Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("classURI").toString(), ontology, reasoner);
-                                if(result!=null){
-                                    result.each { objectPropertyClass ->
+                }
+                if ((properties != null) && (properties.length > 0)) {
+                    String objectProperty;
+                    for (int i = 0; i < properties.length; i++) {
+                        objectProperty = properties[i];
+                        if (objectProperty != null) {
+                            Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("classURI").toString(), ontology, reasoner);
+                            if(result!=null){
+                                result.each { objectPropertyClass ->
+                                    synchronized (graph) {
                                         graph.addVertex(objectPropertyClass);
-                                        graph.addEdge(root.get("classURI")+"_"+objectPropertyClass, root, objectPropertyClass);
+                                        graph.addEdge(root.get("classURI") + "_" + objectPropertyClass, root, objectPropertyClass);
                                     }
                                 }
                             }
