@@ -3,7 +3,6 @@ package view
 import edu.uci.ics.jung.graph.DirectedSparseGraph
 import edu.uci.ics.jung.graph.Graph
 import edu.uci.ics.jung.graph.util.Pair
-import groovyx.gpars.GParsPool
 import org.semanticweb.owlapi.model.OWLAnnotation
 import org.semanticweb.owlapi.model.OWLClass
 import org.semanticweb.owlapi.model.OWLLiteral

@@ -1,6 +1,5 @@
 package view
 
-import org.semanticweb.owlapi.model.OWLClass;
 
 /**
  * Formatter responsible for building a file that contains the representation of an ontology given
@@ -33,8 +32,8 @@ public class GraphMLFormatter extends ViewFormat {
     public String formatter(HashMap rootClass,HashMap subClass) {
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("reminder"));
-            String classLabel = filterLabel(subClass.get("reminder"));
+            String rootLabel = filterLabel(rootClass.get("remainder"));
+            String classLabel = filterLabel(subClass.get("remainder"));
 
             content = "<node id=\""+rootLabel+"\"/>\n";
             content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";
@@ -49,8 +48,8 @@ public class GraphMLFormatter extends ViewFormat {
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("reminder"));
-            String classLabel = filterLabel(subClass.get("reminder"));
+            String rootLabel = filterLabel(rootClass.get("remainder"));
+            String classLabel = filterLabel(subClass.get("remainder"));
 
             content = "<node id=\""+rootLabel+"\"/>\n";
             content += "\t<data key=\"d0\">"+nodeColor+"</data>\n";

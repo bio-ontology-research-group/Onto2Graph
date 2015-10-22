@@ -1,7 +1,4 @@
 package view
-
-import org.semanticweb.owlapi.model.OWLClass;
-
 /**
  * Formatter responsible for building a file that contains the representation of an ontology given
  * in Flatfile format.
@@ -26,7 +23,7 @@ public class FlatFileFormatter extends ViewFormat {
     String formatter(HashMap rootClass,HashMap subClass) {
         String content= "";
         if((rootClass!=null)&&(subClass!=null)){
-            content+="\t"+rootClass.get("reminder")+",\t"+subClass.get("reminder")+"\n";
+            content+="\t"+rootClass.get("remainder")+",\t"+subClass.get("remainder")+"\n";
         }
         return (content);
     }
@@ -34,7 +31,7 @@ public class FlatFileFormatter extends ViewFormat {
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
         if((rootClass)&&(subClass!=null)){
-            content+="\t"+rootClass.get("reminder")+",\t"+subClass.get("reminder")+"\t\t"+objectProperty+"\n";
+            content+="\t"+rootClass.get("remainder")+",\t"+subClass.get("remainder")+"\t\t"+objectProperty+"\n";
         }
         return(content);
     }

@@ -1,13 +1,8 @@
 package commands
 
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.OWLReasoner
-import view.FlatFileFormatter
-import view.FormatterType
-import view.GraphMLFormatter
-import view.GraphVizFormatter
-import view.RDFXMLFormatter
-import view.ViewFormat;
+import view.*
 
 /**
  * This commando is in charge of generating an output file that will contain a graphic representation of an ontology given.

@@ -1,20 +1,14 @@
 package view;
 
-import org.semanticweb.owlapi.model.OWLClass;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by marg27 on 04/10/15.
  */
-public class RDFXMLFormatter extends ViewFormat {
+public class RDFXMLFormatter extends ViewFormat{
 
     public RDFXMLFormatter(){
+
         super();
     }
 

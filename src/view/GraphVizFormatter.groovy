@@ -1,6 +1,5 @@
 package view
 
-import org.semanticweb.owlapi.model.OWLClass;
 
 /**
  * Formatter responsible for building a file that contains the representation of an ontology given
@@ -28,8 +27,8 @@ public class GraphVizFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass) {
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("reminder"));
-            String classLabel = filterLabel(subClass.get("reminder"));
+            String rootLabel = filterLabel(rootClass.get("remainder"));
+            String classLabel = filterLabel(subClass.get("remainder"));
 
             content = "<" + rootLabel + "> [label=<\""+ rootLabel +"\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
             content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
@@ -41,8 +40,8 @@ public class GraphVizFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content = "";
         if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("reminder"));
-            String classLabel = filterLabel(subClass.get("reminder"));
+            String rootLabel = filterLabel(rootClass.get("remainder"));
+            String classLabel = filterLabel(subClass.get("remainder"));
 
             content = "<" + rootLabel + "> [label=<\"" + rootLabel + "\">, shape=\"circle\" style=\"filled\" color=\"" + color+"\"];\n";
             content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+propertyColor+"\"];\n";
