@@ -41,6 +41,21 @@ public abstract class ViewFormat {
         if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
             HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
             properties = objectProperties.toArray(new String[objectProperties.size()]);
+        }else if((properties!=null)&&(properties.length>0)){
+            HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
+            properties.each{objectProperty->
+                boolean isContained = false;
+                objectProperties.each{ op->
+                    if(op.compareTo(objectProperty)==0){
+                        isContained = true;
+                    }
+                }
+                if(!isContained){
+                    System.out.println("The Object Property: "+objectProperty+" is not defined in the ontology");
+                    System.exit(-1);
+                }
+            }
+
         }
         return(properties);
     }
@@ -80,7 +95,6 @@ public abstract class ViewFormat {
         int classesIndex = 0;
         int classesCounter = ontology.getClassesInSignature(true).size();
         classes.remove(ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
-        Iterator<OWLClass> it = classes.iterator();
         //HashMap subClass;
         classes.each { clazz ->
             ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
@@ -89,25 +103,29 @@ public abstract class ViewFormat {
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
                 Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(clazz, ontology, reasoner, true);
+                String edge = "";
                 if(subClasses!=null){
                     subClasses.each { subClass ->
-                        synchronized (graph) {
-                            graph.addVertex(subClass);
-                            graph.addEdge(root.get("classURI") + subClass.get("classURI"), root, subClass);
+                        graph.addVertex(subClass);
+                        edge = root.get("classURI") + subClass.get("classURI");
+                        if(!graph.containsEdge(edge)) {
+                            graph.addEdge(edge, root, subClass);
                         }
                     }
                 }
                 if ((properties != null) && (properties.length > 0)) {
                     String objectProperty;
+                    String edgeProperty;
                     for (int i = 0; i < properties.length; i++) {
                         objectProperty = properties[i];
                         if (objectProperty != null) {
                             Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("classURI").toString(), ontology, reasoner);
                             if(result!=null){
                                 result.each { objectPropertyClass ->
-                                    synchronized (graph) {
-                                        graph.addVertex(objectPropertyClass);
-                                        graph.addEdge(root.get("classURI") + "_" + objectPropertyClass, root, objectPropertyClass);
+                                    graph.addVertex(objectPropertyClass);
+                                    edgeProperty = root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty;
+                                    if(!graph.containsEdge(edgeProperty)) {
+                                        graph.addEdge(edgeProperty, root, objectPropertyClass);
                                     }
                                 }
                             }
@@ -123,42 +141,27 @@ public abstract class ViewFormat {
     protected void serializeGraph(String fileOutPath,Graph graph){
         if((graph!=null)&&(fileOutPath!=null)&&(!fileOutPath.isEmpty())){
             try {
-                int vertexCounter = graph.getVertexCount();
-                int vertexIndex = 0;
                 File file = new File(fileOutPath+getExtension());
                 output = new BufferedWriter(new FileWriter(file));
                 if(output!=null){
                     if(graph!=null){
                         output.append(this.getHeader());
-                        Iterator it = graph.getVertices().iterator();
-                        HashMap vertex;
+                        int edgesCount = graph.getEdgeCount();
+                        int edgesIndex = 0;
+                        Iterator it = graph.getEdges().iterator();
+                        Object edge;
+                        HashMap source,destiny;
                         while(it.hasNext()){
-                            vertex = (HashMap)it.next();
-                            Iterator jt = graph.getOutEdges(vertex).iterator();
-                            Object edge;
-                            vertexIndex++;
-                            ProgressBar.getInstance().printProgressBar((int)Math.round((vertexIndex*100)/(vertexCounter)),"serializing the graph...")
-                            while(jt.hasNext()){
-                                edge = jt.next();
-                                Pair pair = graph.getEndpoints(edge);
-                                if(pair!=null) {
-                                    if (edge.toString().indexOf("_") > 0) {//It does mean the edge is not a object property
-                                        if (pair.getFirst().hashCode() != vertex.hashCode()) {
-                                            output.append(formatter(vertex, pair.getFirst()));
-                                        } else {
-                                            output.append(formatter(vertex, pair.getSecond()));
-                                        }
-                                    } else {
-                                        String[] objectProperty = edge.toString().split("_");
-                                        if (objectProperty.length > 0) {
-                                            if (pair.getFirst().hashCode() != vertex.hashCode()) {
-                                                output.append(formatter(vertex, pair.getFirst(), objectProperty[0]));
-                                            } else {
-                                                output.append(formatter(vertex, pair.getSecond(), objectProperty[0]));
-                                            }
-                                        }
-                                    }
-                                }
+                            edge = it.next();
+                            edgesIndex++;
+                            source = graph.getSource(edge);
+                            destiny = graph.getDest(edge);
+                            ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                            String[] objectProperty = edge.split("&&");
+                            if (objectProperty.length == 2) {
+                                output.append(formatter(source,destiny, objectProperty[1]));
+                            }else{
+                                output.append(formatter(source,destiny));
                             }
                         }
                         output.append(this.getFooter());

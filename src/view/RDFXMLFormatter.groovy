@@ -27,20 +27,21 @@ public class RDFXMLFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass){
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
-             content+="<rdfs:subClassOf rdf:resource=\""+subClass.get("owlClass")+"\"/>";
+            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">\n";
+             content+="<rdfs:subClassOf rdf:resource=\""+subClass.get("owlClass")+"\"/>\n";
+            content+="</rdf:Description>\n";
         }
-        content+="</rdf:Description>";
         return(content);
     }
 
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">";
-            content+="<rdfs:"+objectProperty+" rdf:resource=\""+subClass.get("owlClass")+"\"/>";
+            content="<rdf:Description rdf:about=\""+rootClass.get("owlClass")+"\">\n";
+            content+="<rdfs:"+objectProperty+" rdf:resource=\""+subClass.get("owlClass")+"\"/>\n";
+            content+="</rdf:Description>\n";
         }
-        content+="</rdf:Description>";
+
         return(content);
     }
 

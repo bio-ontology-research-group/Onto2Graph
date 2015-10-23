@@ -98,7 +98,7 @@ public class RequestManager {
      * @param requestType Type of class match to be performed. Valid values are: subclass, superclass, equivalent or all.
      * @return Set of OWL Classes.
      */
-    Set<HashMap> subClassesQuery(OWLClass clazz,OWLOntology ontology, OWLReasoner reasoner, boolean direct) {
+    public Set<HashMap> subClassesQuery(OWLClass clazz,OWLOntology ontology, OWLReasoner reasoner, boolean direct) {
         Set<OWLClass> classes = reasoner.getSubClasses(clazz,direct).getFlattened();
         OWLDataFactory df = ontology.getOWLOntologyManager().getOWLDataFactory();
         String ontUri = ontology.getOntologyID().toString();
@@ -112,7 +112,7 @@ public class RequestManager {
      * This returns the direct R-successors of a class C in O
      * class and relations are given as String-IRIs
      */
-    Set relationQuery(String relation, String sClazz, OWLOntology ontology,OWLReasoner reasoner) {
+    public Set relationQuery(String relation, String sClazz, OWLOntology ontology,OWLReasoner reasoner) {
         Set classes = new HashSet<>();
         def manager = ontology.getOWLOntologyManager();
         def factory = manager.getOWLDataFactory();
@@ -140,7 +140,7 @@ public class RequestManager {
         return classes;
     }
 
-    Set classes2info(Set<OWLClass> classes, OWLOntology o, String uri) {
+    public Set classes2info(Set<OWLClass> classes, OWLOntology o, String uri) {
         ArrayList result = new ArrayList<HashMap>();
         for(def c : classes) {
             def info = [
