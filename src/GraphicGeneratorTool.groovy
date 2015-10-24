@@ -183,7 +183,7 @@ public class GraphicGeneratorTool {
             if(commandLine.hasOption("out")){
                 outputPath = commandLine.getOptionValue("out");
                 if ((outputPath == null) || (outputPath.isEmpty())) {
-                    outputPath = System.getProperty("user.dir");
+                    outputPath = System.getProperty("user.dir")+System.getProperty("file.separator")+"graph";
                 }
             }
             if(commandLine.hasOption("r")){
