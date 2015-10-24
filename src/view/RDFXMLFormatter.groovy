@@ -25,7 +25,7 @@ public class RDFXMLFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass){
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:ID=\""+rootClass.get("classURI")+"\">\n";
+            content="<rdf:Description rdf:about=\""+rootClass.get("classURI")+"\">\n";
             content+="\t<rdf:type resource=\"http://www.w3.org/2000/01/rdf-schema#Class\"/>\n"
             content+="\t<rdfs:subClassOf rdf:resource=\""+subClass.get("classURI")+"\"/>\n";
             content+="</rdf:Description>\n";
@@ -36,7 +36,7 @@ public class RDFXMLFormatter extends ViewFormat{
     public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
         String content="";
         if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:ID=\""+rootClass.get("classURI")+"\">\n";
+            content="<rdf:Description rdf:about=\""+rootClass.get("classURI")+"\">\n";
             content+="\t<rdf:type resource=\"http://www.w3.org/2000/01/rdf-schema#Class\"/>\n"
             content+="\t<rdfs:"+extractLabel(objectProperty)+" rdf:resource=\""+subClass.get("classURI")+"\"/>\n";
             content+="</rdf:Description>\n";
