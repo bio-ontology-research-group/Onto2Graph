@@ -13,36 +13,33 @@ public class VisualizerCommand implements Command{
     protected OWLReasoner reasoner = null;
     protected OWLOntology ontology = null;
     protected String[] properties = null;
-    protected FormatterType formatterType = null;
+    protected Set<FormatterType> setFormatterType = null;
     protected String outpath = null;
-    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,FormatterType formatterType,String outpath, String[] properties){
+    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath, String[] properties){
         this.reasoner = reasoner;
         this.ontology = ontology;
+        this.setFormatterType = setFormatterType;
+        this.outpath = outpath;
         this.properties = properties;
-        this.formatterType = formatterType;
-        this.outpath = outpath;
-
-    }
-    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,FormatterType formatterType,String outpath){
-        this.reasoner = reasoner;
-        this.ontology = ontology;
-        this.formatterType = formatterType;
-        this.outpath = outpath;
-        properties = null;
     }
     public void executeCommand() {
         ViewFormat viewFormat = null;
-        if (formatterType == FormatterType.RDFXML_FORMATTER){
-            viewFormat = new RDFXMLFormatter();
-        }else if(formatterType == FormatterType.GRAPHVIZ_FORMATTER) {
-            viewFormat = new GraphVizFormatter();
-        }else if(formatterType == FormatterType.GRAPHML_FORMATTER) {
-            viewFormat = new GraphMLFormatter();
-        }else if(formatterType == FormatterType.FLATFILE_FORMATTER) {
-            viewFormat = new FlatFileFormatter();
-        }
-        if(viewFormat!=null){
-            viewFormat.parseOntology(ontology,reasoner,properties,outpath);
+        Iterator<FormatterType> it = setFormatterType.iterator();
+        FormatterType formatterType;
+        while(it.hasNext()){
+            formatterType = it.next();
+            if (formatterType == FormatterType.RDFXML_FORMATTER) {
+                viewFormat = new RDFXMLFormatter();
+            } else if (formatterType == FormatterType.GRAPHVIZ_FORMATTER) {
+                viewFormat = new GraphVizFormatter();
+            } else if (formatterType == FormatterType.GRAPHML_FORMATTER) {
+                viewFormat = new GraphMLFormatter();
+            } else if (formatterType == FormatterType.FLATFILE_FORMATTER) {
+                viewFormat = new FlatFileFormatter();
+            }
+            if (viewFormat != null) {
+                viewFormat.parseOntology(ontology, reasoner, properties, outpath);
+            }
         }
 
     }

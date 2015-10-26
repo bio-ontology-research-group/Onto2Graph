@@ -95,14 +95,13 @@ public abstract class ViewFormat {
         int classesIndex = 0;
         int classesCounter = ontology.getClassesInSignature(true).size();
         classes.remove(ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
-        //HashMap subClass;
         classes.each { clazz ->
             ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
             classesIndex++;
             HashMap root = buildNode(clazz,ontology)
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
-                Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(clazz, ontology, reasoner, true);
+                Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(clazz, ontology);
                 String edge = "";
                 if(subClasses!=null){
                     subClasses.each { subClass ->
@@ -119,7 +118,7 @@ public abstract class ViewFormat {
                     for (int i = 0; i < properties.length; i++) {
                         objectProperty = properties[i];
                         if (objectProperty != null) {
-                            Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("classURI").toString(), ontology, reasoner);
+                            Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("classURI").toString(), ontology);
                             if(result!=null){
                                 result.each { objectPropertyClass ->
                                     graph.addVertex(objectPropertyClass);

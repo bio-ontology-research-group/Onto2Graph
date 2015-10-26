@@ -38,24 +38,11 @@ public class RDFXMLFormatter extends ViewFormat{
         if((rootClass!=null)&&(subClass!=null)){
             content="<rdf:Description rdf:about=\""+rootClass.get("classURI")+"\">\n";
             content+="\t<rdf:type resource=\"http://www.w3.org/2000/01/rdf-schema#Class\"/>\n"
-            content+="\t<rdfs:"+extractLabel(objectProperty)+" rdf:resource=\""+subClass.get("classURI")+"\"/>\n";
+            content+="\t<rdfs:"+objectProperty+" rdf:resource=\""+subClass.get("classURI")+"\"/>\n";
             content+="</rdf:Description>\n";
         }
 
         return(content);
-    }
-
-    private String extractLabel(String objectProperty){
-        if((objectProperty!=null)&&(!objectProperty.isEmpty())){
-            int pos = objectProperty.lastIndexOf("#",objectProperty.length());
-            if(pos==-1){
-                pos = objectProperty.lastIndexOf("/",objectProperty.length());
-            }
-            if(pos>0){
-                return(objectProperty.substring(pos+1,objectProperty.length()));
-            }
-        }
-        return(objectProperty);
     }
 
     public String getExtension(){

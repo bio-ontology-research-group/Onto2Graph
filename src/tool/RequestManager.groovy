@@ -33,27 +33,31 @@ public class RequestManager {
 
     public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,String[] properties){
 
-        if((properties!=null)&&(properties.size()>0)){
-            HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
-            String property;
-            int classesIndex=0;
-            int classesCounter = classes.size();
-            long init = System.currentTimeMillis();
-            GParsPool.withPool {
-                classes.eachParallel { clazz ->
-                    ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
-                    classesIndex++;
+        HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
+        String property;
+        int classesIndex=0;
+        int classesCounter = classes.size();
+        GParsPool.withPool {
+            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+            classes.eachParallel { clazz ->
+                ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+                classesIndex++;
+                HashSet<OWLClass> subClasses = reasoner.getSubClasses(clazz,true).getFlattened();
+                subClasses.remove(factory.getOWLNothing());
+                if((subClasses!=null)&&(!subClasses.isEmpty())){
+                    this.preComputedSubClasses.put(clazz.toString(),subClasses);
+                }
+                if((properties!=null)&&(properties.length>0)){
                     for (int i = 0; i < properties.length; i++) {
                         property = properties[i];
                         if (property != null) {
-                            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
-                            HashSet<OWLClass> subClasses = reasoner.getSubClasses(query,true).getFlattened();
-                            subClasses.remove(factory.getOWLNothing());
-                            subClasses.remove(factory.getOWLThing());
-                            if((subClasses!=null)&&(!subClasses.isEmpty())) {
-                                this.preComputedSubClasses.put(clazz.toString()+property, subClasses);
+                            HashSet<OWLClass> subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
+                            subClassesProperty.remove(factory.getOWLNothing());
+                            subClassesProperty.remove(factory.getOWLThing());
+                            if ((subClassesProperty != null) && (!subClassesProperty.isEmpty())) {
+                                this.preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                             }
                         }
                     }
@@ -98,12 +102,10 @@ public class RequestManager {
      * @param requestType Type of class match to be performed. Valid values are: subclass, superclass, equivalent or all.
      * @return Set of OWL Classes.
      */
-    public Set<HashMap> subClassesQuery(OWLClass clazz,OWLOntology ontology, OWLReasoner reasoner, boolean direct) {
-        Set<OWLClass> classes = reasoner.getSubClasses(clazz,direct).getFlattened();
-        OWLDataFactory df = ontology.getOWLOntologyManager().getOWLDataFactory();
-        String ontUri = ontology.getOntologyID().toString();
-        classes.remove(df.getOWLNothing())
-        Set result = new HashSet<>();
+    public Set<HashMap> subClassesQuery(OWLClass clazz,OWLOntology ontology) {
+        Set result = new HashSet();
+        String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
+        Set classes = this.preComputedSubClasses.get(clazz.toString());
         result.addAll(classes2info(classes, ontology, ontUri))
         return(result);
     }
@@ -112,19 +114,17 @@ public class RequestManager {
      * This returns the direct R-successors of a class C in O
      * class and relations are given as String-IRIs
      */
-    public Set relationQuery(String relation, String sClazz, OWLOntology ontology,OWLReasoner reasoner) {
+    public Set relationQuery(String relation, String sClazz, OWLOntology ontology) {
         Set classes = new HashSet<>();
         def manager = ontology.getOWLOntologyManager();
         def factory = manager.getOWLDataFactory();
         String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
 
-        OWLClass clazz = factory.getOWLClass(IRI.create(sClazz));
-
         // get the direct subclasses of cl
-        Set<OWLClass> subclasses = reasoner.getSubClasses(clazz,true).getFlattened();
+        Set<OWLClass> subclasses = preComputedSubClasses.get(sClazz);
 
-        if(preComputedSubClasses.containsKey(clazz.toString()+relation)) {
-            Set<OWLClass> mainResult = new HashSet(preComputedSubClasses.get(clazz.toString() + relation));
+        if(preComputedSubClasses.containsKey(sClazz+relation)) {
+            Set<OWLClass> mainResult = new HashSet(preComputedSubClasses.get(sClazz + relation));
 
             // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
             subclasses.each { subClass ->
