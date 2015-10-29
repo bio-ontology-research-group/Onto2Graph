@@ -162,7 +162,6 @@ public class RequestManager {
         Set classes = new HashSet<>();
         def manager = ontology.getOWLOntologyManager();
         def factory = manager.getOWLDataFactory();
-        String ontUri = ontology.getOntologyID().getOntologyIRI().toString();
 
         // get the direct subclasses of cl
         Set<OWLClass> subclasses = preComputedSubClasses.get(sClazz);
