@@ -1,5 +1,22 @@
 package view
 
+import edu.uci.ics.jung.graph.Graph
+import org.apache.jena.ontology.OntClass
+import org.apache.jena.ontology.OntModel
+import org.apache.jena.rdf.model.ModelFactory
+import org.apache.jena.rdf.model.Property
+import org.apache.jena.vocabulary.RDFS
+import org.jgrapht.Graph
+import org.jgrapht.UndirectedGraph
+import org.jgrapht.ext.DOTExporter
+import org.jgrapht.ext.GmlExporter
+import org.jgrapht.ext.IntegerNameProvider
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleGraph
+import show.ProgressBar
+import view.provider.EdgeLabelProvider
+import view.provider.VertexLabelProvider
+
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
  *
@@ -34,72 +51,23 @@ public class GraphVizFormatter extends ViewFormat{
     protected String propertyColor = "#5FB404";
 
     /**
-     * Constructor of the class.
+     * Constructor of the class
+     * @param fileOutPath The file path where the graph will be serialized.
      */
-    public GraphVizFormatter(){
-        super();
+    public GraphVizFormatter(String fileOutPath){
+        super(fileOutPath);
     }
 
-    /**
-     * It provides the header of the GraphViz file.
-     * @return The header of the GraphViz file.
-     */
-    public String getHeader(){
-        return("digraph{\n");
-    }
+    public void serializeGraph(Graph graph){
+        if ((graph != null)&&(fileOutPath!=null)) {
+            ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+            System.out.println();
+            DOTExporter<HashMap, RelationshipEdge> exporter = new DOTExporter<HashMap, RelationshipEdge>(
+                    new IntegerNameProvider(),new VertexLabelProvider(),new EdgeLabelProvider());
 
-    /**
-     * It provides the header of the GraphViz file.
-     * @return The header of the GraphViz file.
-     */
-    public String getFooter(){
-        return("}");
-    }
-
-    /**
-     * Its aim is to transform a root class and its subclass in GraphViz format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @return A string that contains a representation of the root class and the subclass given in GraphViz
-     */
-    public String formatter(HashMap rootClass,HashMap subClass) {
-        String content="";
-        if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("remainder"));
-            String classLabel = filterLabel(subClass.get("remainder"));
-
-            content = "<" + rootLabel + "> [label=<\""+ rootLabel +"\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
-            content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+color+"\"];\n";
-            content+=" <" + classLabel + "> -> <" + rootLabel + ">;\n ";
+            FileWriter writer = new FileWriter(fileOutPath+".dot");
+            exporter.export(writer, graph);
         }
-        return(content);
     }
 
-    /**
-     * Its aim is to transform a root class, its subclass and the object property that relation both in GraphViz format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @param objectProperty Object Property that will be parsed.
-     * @return A string that contains a representation of the root class and its subclass related to the object property given in GraphViz.
-     */
-    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
-        String content = "";
-        if((rootClass!=null)&&(subClass!=null)){
-            String rootLabel = filterLabel(rootClass.get("remainder"));
-            String classLabel = filterLabel(subClass.get("remainder"));
-
-            content = "<" + rootLabel + "> [label=<\"" + rootLabel + "\">, shape=\"circle\" style=\"filled\" color=\"" + color+"\"];\n";
-            content+= "<" + classLabel + "> [label=<\"" + classLabel + "\">, shape=\"circle\" style=\"filled\" color=\""+propertyColor+"\"];\n";
-            content+=" <" + classLabel + "> -> <" + rootLabel + ">;\n ";
-        }
-        return(content);
-    }
-
-    /**
-     * It provides the extension of the GraphViz file.
-     * @return The extension of the GraphViz file that is ".dot".
-     */
-    public String getExtension(){
-        return(".dot");
-    }
 }

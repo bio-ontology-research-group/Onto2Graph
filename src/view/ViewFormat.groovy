@@ -1,12 +1,21 @@
 package view
 
-import edu.uci.ics.jung.graph.DirectedSparseGraph
-import edu.uci.ics.jung.graph.Graph
+import org.apache.jena.tdb.store.Hash
+import org.jgrapht.DirectedGraph
+import org.jgrapht.Graph
+import org.jgrapht.UndirectedGraph
+import org.jgrapht.graph.ClassBasedEdgeFactory
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.DirectedMultigraph
+import org.jgrapht.graph.SimpleDirectedGraph
+import org.jgrapht.graph.SimpleGraph
 import org.semanticweb.owlapi.model.OWLClass
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.OWLReasoner
 import show.ProgressBar
 import tool.RequestManager
+
+import javax.management.relation.Relation
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -32,9 +41,16 @@ import tool.RequestManager
 public abstract class ViewFormat {
 
     /**
-     * Constructor of the class
+     * The output file path
      */
-    public ViewFormat(){
+    protected String fileOutPath;
+
+    /**
+     * Constructor of the class
+     * @param fileOutPath The file path where the graph will be serialized.
+     */
+    public ViewFormat(String fileOutPath){
+        this.fileOutPath = fileOutPath;
     }
 
     /**
@@ -47,12 +63,12 @@ public abstract class ViewFormat {
      * @param fileOutPath The output file path.
      *
      */
-    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties,String fileOutPath) {
+    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
         if((ontology!=null)&&(reasoner!=null)) {
             properties = checkObjectProperties(ontology,properties);
             RequestManager.getInstance().computedSubClases(ontology,reasoner,properties);
             Graph graph = this.buildGraph(ontology, properties);
-            this.serializeGraph(fileOutPath,graph);
+            this.serializeGraph(graph);
         }
     }
 
@@ -92,7 +108,7 @@ public abstract class ViewFormat {
      * @return Graph is built.
      */
     protected Graph buildGraph(OWLOntology ontology,String[] properties) {
-        DirectedSparseGraph graph = new DirectedSparseGraph<>();
+        DirectedGraph<String, RelationshipEdge> graph = new DirectedMultigraph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
         Set<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesIndex = 0;
         int classesCounter = ontology.getClassesInSignature(true).size();
@@ -104,19 +120,19 @@ public abstract class ViewFormat {
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
                 Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(root.get("owlClass"), ontology);
-                String edge = "";
+                RelationshipEdge edge = null;
                 if(subClasses!=null){
                     subClasses.each { subClass ->
                         graph.addVertex(subClass);
-                        edge = root.get("classURI") + subClass.get("classURI");
+                        edge = new RelationshipEdge<HashMap>(subClass,root,root.get("classURI") + subClass.get("classURI"));
                         if(!graph.containsEdge(edge)) {
-                            graph.addEdge(edge, root, subClass);
+                            graph.addEdge(subClass, root, edge);
                         }
                     }
                 }
                 if ((properties != null) && (properties.length > 0)) {
                     String objectProperty;
-                    String edgeProperty;
+                    RelationshipEdge edgeProperty;
                     for (int i = 0; i < properties.length; i++) {
                         objectProperty = properties[i];
                         if (objectProperty != null) {
@@ -124,9 +140,9 @@ public abstract class ViewFormat {
                             if(result!=null){
                                 result.each { objectPropertyClass ->
                                     graph.addVertex(objectPropertyClass);
-                                    edgeProperty = root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty;
+                                    edgeProperty = new RelationshipEdge<HashMap>(objectPropertyClass,root,root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty);
                                     if(!graph.containsEdge(edgeProperty)) {
-                                        graph.addEdge(edgeProperty, root, objectPropertyClass);
+                                        graph.addEdge(objectPropertyClass, root, edgeProperty);
                                     }
                                 }
                             }
@@ -141,102 +157,32 @@ public abstract class ViewFormat {
 
     /**
      * It serializes the built graph in a file.
-     * @param fileOutPath The file path where the graph will be saved.
      * @param graph The graph built that it will be serialised in a file.
      */
-    protected void serializeGraph(String fileOutPath,Graph graph){
-        if((graph!=null)&&(fileOutPath!=null)&&(!fileOutPath.isEmpty())){
-            BufferedWriter output;
-            try {
-                File file = new File(fileOutPath+getExtension());
-                output = new BufferedWriter(new FileWriter(file));
+    public abstract void serializeGraph(Graph graph);
 
-                if(output!=null){
-                    if(graph!=null){
-                        output.append(this.getHeader());
-                        int edgesCount = graph.getEdgeCount();
-                        int edgesIndex = 0;
-                        Iterator it = graph.getEdges().iterator();
-                        Object edge;
-                        HashMap source,destiny;
-                        while(it.hasNext()){
-                            edge = it.next();
-                            edgesIndex++;
-                            source = graph.getSource(edge);
-                            destiny = graph.getDest(edge);
-                            ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
-                            String[] objectProperty = edge.split("&&");
-                            if (objectProperty.length == 2) {
-                                output.append(formatter(source,destiny, objectProperty[1]));
-                            }else{
-                                output.append(formatter(source,destiny));
-                            }
-                        }
-                        output.append(this.getFooter());
-                        ProgressBar.getInstance().printProgressBar(100,"serializing the graph...");
-                        System.out.println();
-                    }
-                }
+    public static class RelationshipEdge<V> extends DefaultEdge {
+        private V v1;
+        private V v2;
+        private String label;
 
-            } catch ( IOException e ) {
-                System.out.println("There was an error: "+e.getMessage());
-            } finally {
-                if ( output != null ) {
-                    output.close();
-                }
-            }
-        }else{
-            System.out.println("The file was not created");
-            System.exit(-1);
+        public RelationshipEdge(V v1, V v2, String label) {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.label = label;
+        }
+
+        public V getV1() {
+            return v1;
+        }
+
+        public V getV2() {
+            return v2;
+        }
+
+        public String toString() {
+            return label;
         }
     }
-
-    /**
-     * It is in charge of obtaining the text from the label.
-     * @param label The label that will be filtered.
-     * @return The label filtered.
-     */
-    protected String filterLabel(String label){
-        if(label!=null) {
-            label = label.replace("<", "");
-            label = label.replace(">", "");
-        }
-        return(label);
-    }
-
-    /**
-     * It retrieves the header of the specific format
-     * @return The header of the specific format
-     */
-    public abstract String getHeader();
-
-    /**
-     * This method will provide the footer of a specific format.
-     * @return The footer of the specific formatter.
-     */
-    public abstract String getFooter();
-
-    /**
-     * It is in charge of transforming into a specific format a root class given and its subclass.     * @param rootClass
-     * @param rootClass The root class that will be formatted in the correct format.
-     * @param subClass The subclass that will be formatted in the correct format.
-     * @return The classes transformed into the correct format.
-     */
-    public abstract String formatter(HashMap rootClass,HashMap subClass)
-
-    /**
-     * It is in charge of transforming into a specific format a complete relation given (root->object_property->class)
-     * @param rootClass The root clas that will be formatted in the correct format.
-     * @param subClass The subclass that will be formatted in the correct format.
-     * @param objectProperty The object property that will be formatted.
-     * @return The whole transformation of the root class, subclass and object property that related both.
-     */
-    public abstract String formatter(HashMap rootClass,HashMap subClass, String objectProperty)
-
-    /**
-     * It provides the extension of the file.
-     * @return The extension of the file
-     */
-    public abstract String getExtension();
 
 }

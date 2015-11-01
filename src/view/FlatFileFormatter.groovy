@@ -1,5 +1,8 @@
 package view
 
+import org.jgrapht.Graph
+import show.ProgressBar
+
 
 /* 
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -27,62 +30,48 @@ package view
 public class FlatFileFormatter extends ViewFormat {
 
     /**
-     * Constructor of the class.
+     * Constructor of the class
+     * @param fileOutPath The file path where the graph will be serialized.
      */
-    public FlatFileFormatter(){
-        super();
+    public FlatFileFormatter(String fileOutPath){
+        super(fileOutPath);
     }
 
-    /**
-     * It provides the header of the FlatFile format.
-     * @return The header of the FlatFile format.
-     */
-    public String getHeader(){
-        return("\tNodes\t\t\t\tEdges+\n");
-    }
+    public void serializeGraph(Graph graph){
+        BufferedWriter output;
+        try{
+            if ((graph != null)&&(fileOutPath!=null)) {
+                int edgesCount = graph.edgeSet().size();
+                int edgesIndex = 0;
+                Iterator its = graph.edgeSet().iterator();
+                Object edge;
+                HashMap source, destiny;
+                output = new BufferedWriter(new FileWriter(fileOutPath+".flatfile"));
+                output.append("\tNodes\t\t\t\tEdges+\n");
+                while (its.hasNext()) {
+                    edge = its.next();
+                    edgesIndex++;
+                    source = graph.getEdgeSource(edge);
+                    destiny = graph.getEdgeTarget(edge);
+                    ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    String[] objectProperty = edge.toString().split("&&");
+                    if (objectProperty.length == 2) {
+                        output.append("\t"+source.get("remainder")+",\t"+destiny.get("remainder")+"\t\t"+objectProperty[1]+"\n");
+                    } else {
+                        output.append("\t"+source.get("remainder")+",\t"+destiny.get("remainder")+"\t\tsubClassOf\n");
 
-    /**
-     * It provides the footer of the FlatFile format.
-     * @return The footer of the FlatFile format.
-     */
-    public String getFooter(){
-        return("");
-    }
-
-    /**
-     * Its aim is to transform a root class and its subclass in FlatFile format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @return A string that contains a representation of the root class and the subclass given in FlatFile
-     */
-    String formatter(HashMap rootClass,HashMap subClass) {
-        String content= "";
-        if((rootClass!=null)&&(subClass!=null)){
-            content+="\t"+rootClass.get("remainder")+",\t"+subClass.get("remainder")+"\n";
+                    }
+                }
+                ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+                System.out.println();
+            }
+        } catch ( IOException e ) {
+            System.out.println("There was an error: "+e.getMessage());
+        } finally {
+            if ( output != null ) {
+                output.close();
+            }
         }
-        return (content);
     }
 
-    /**
-     * Its aim is to transform a root class, its subclass and the object property that relation both in FlatFile format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @param objectProperty Object Property that will be parsed.
-     * @return A string that contains a representation of the root class and its subclass related to the object property given in FlatFile.
-     */
-    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
-        String content = "";
-        if((rootClass)&&(subClass!=null)){
-            content+="\t"+rootClass.get("remainder")+",\t"+subClass.get("remainder")+"\t\t"+objectProperty+"\n";
-        }
-        return(content);
-    }
-
-    /**
-     * It provides the extension of the FlatFile file.
-     * @return The extension of the FlatFile file that is ".flatfile".
-     */
-    public String getExtension(){
-        return(".flatfile");
-    }
 }

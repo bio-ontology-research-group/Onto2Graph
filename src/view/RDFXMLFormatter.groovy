@@ -1,4 +1,19 @@
 package view
+
+import edu.uci.ics.jung.graph.Graph
+import javafx.beans.property.ObjectProperty
+import org.apache.jena.assembler.assemblers.DefaultModelAssembler
+import org.apache.jena.ontology.OntClass
+import org.apache.jena.ontology.OntModel
+import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
+import org.apache.jena.rdf.model.Property
+import org.apache.jena.rdf.model.Resource
+import org.apache.jena.riot.RDFFormat
+import org.apache.jena.vocabulary.RDFS
+import org.jgrapht.Graph
+import show.ProgressBar
+
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
  *
@@ -25,72 +40,47 @@ package view
 public class RDFXMLFormatter extends ViewFormat{
 
     /**
-     * Constructor of the class.
+     * Constructor of the class
+     * @param fileOutPath The file path where the graph will be serialized.
      */
-    public RDFXMLFormatter(){
-        super();
+    public RDFXMLFormatter(String fileOutPath){
+        super(fileOutPath);
     }
 
-    /**
-     * It provides the header of the RDFXML file.
-     * @return The header of the RDFXML file.
-     */
-    public String getHeader(){
-        return("<?xml version=\"1.0\"?>\n" +
-                "<rdf:RDF\n" +
-                "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-                "xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n");
-    }
-
-    /**
-     * It provides the footer of the RDFXML file.
-     * @return The header of the RDFXML file.
-     */
-    public String getFooter() {
-        return("</rdf:RDF>");
-    }
-
-    /**
-     * Its aim is to transform a root class and its subclass in RDFXML format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @return A string that contains a representation of the root class and the subclass given in RDFXML
-     */
-    public String formatter(HashMap rootClass,HashMap subClass){
-        String content="";
-        if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:about=\""+subClass.get("classURI")+"\">\n";
-            content+="\t<rdf:type resource=\"http://www.w3.org/2000/01/rdf-schema#Class\"/>\n"
-            content+="\t<rdfs:subClassOf rdf:resource=\""+rootClass.get("classURI")+"\"/>\n";
-            content+="</rdf:Description>\n";
+    public void serializeGraph(Graph graph){
+        try {
+            if ((graph != null)&&(fileOutPath!=null)) {
+                OntModel model = ModelFactory.createOntologyModel();
+                int edgesCount = graph.edgeSet().size();
+                int edgesIndex = 0;
+                Iterator its = graph.edgeSet().iterator();
+                Object edge;
+                HashMap source, destiny;
+                while (its.hasNext()) {
+                    edge = its.next();
+                    edgesIndex++;
+                    source = graph.getEdgeSource(edge);
+                    destiny = graph.getEdgeTarget(edge);
+                    ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    String[] objectProperty = edge.toString().split("&&");
+                    if (objectProperty.length == 2) {
+                        OntClass rootClass = model.createClass(source.get("classURI"));
+                        OntClass subClass = model.createClass(destiny.get("classURI"));
+                        Property objProperty = model.createProperty(objectProperty[1]);
+                        model.add(rootClass,objProperty,subClass)
+                    } else {
+                        OntClass rootClass = model.createClass(source.get("classURI"));
+                        OntClass subClass = model.createClass(destiny.get("classURI"));
+                        model.add(rootClass, RDFS.subClassOf, subClass);
+                    }
+                }
+                ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+                System.out.println();
+                model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
+            }
+        }catch(Exception e){
+            System.out.println("There was an error: "+e.getMessage());
         }
-        return(content);
     }
 
-    /**
-     * Its aim is to transform a root class, its subclass and the object property that relation both in RDFXML format.
-     * @param rootClass Root class that will be parsed.
-     * @param subClass Subclass that will be parsed.
-     * @param objectProperty Object Property that will be parsed.
-     * @return A string that contains a representation of the root class and its subclass related to the object property given in RDFXML.
-     */
-    public String formatter(HashMap rootClass,HashMap subClass, String objectProperty){
-        String content="";
-        if((rootClass!=null)&&(subClass!=null)){
-            content="<rdf:Description rdf:about=\""+subClass.get("classURI")+"\">\n";
-            content+="\t<rdf:type resource=\"http://www.w3.org/2000/01/rdf-schema#Class\"/>\n"
-            content+="\t<rdfs:"+objectProperty+" rdf:resource=\""+rootClass.get("classURI")+"\"/>\n";
-            content+="</rdf:Description>\n";
-        }
-
-        return(content);
-    }
-
-    /**
-     * It provides the extension of the RDFXML file.
-     * @return The extension of the RDFXML file that is ".rdfxml".
-     */
-    public String getExtension(){
-        return(".rdfxml");
-    }
 }
