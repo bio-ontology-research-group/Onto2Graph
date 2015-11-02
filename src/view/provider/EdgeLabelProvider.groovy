@@ -1,6 +1,5 @@
 package view.provider
 
-import org.jgraph.graph.Edge
 import org.jgrapht.ext.EdgeNameProvider
 
 /*

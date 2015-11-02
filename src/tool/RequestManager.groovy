@@ -10,7 +10,6 @@ import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedDeque
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -68,7 +67,7 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,ConcurrentLinkedDeque properties){
+    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,String[] properties){
 
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesIndex=0;
@@ -76,6 +75,9 @@ public class RequestManager {
         GParsPool.withPool {
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
             classes.eachParallel { clazz ->
+                if(clazz.toString().contains("GO_0031654")){
+                    System.out.println("");
+                }
                 ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
                 classesIndex++;
                 HashSet<OWLClass> subClasses = reasoner.getSubClasses(clazz,true).getFlattened();
@@ -84,7 +86,9 @@ public class RequestManager {
                     this.preComputedSubClasses.put(clazz.toString(),subClasses);
                 }
                 if((properties!=null)&&(properties.size()>0)){
-                    for (String property : properties) {
+                    String property;
+                    for (int i = 0; i < properties.length; i++) {
+                        property = properties[i];
                         if (property != null) {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);

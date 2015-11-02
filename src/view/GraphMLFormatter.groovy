@@ -1,19 +1,9 @@
 package view
 
-import edu.uci.ics.jung.graph.Graph
-import org.apache.jena.ontology.OntModel
-import org.apache.jena.rdf.model.ModelFactory
 import org.jgrapht.Graph
-import org.jgrapht.UndirectedGraph
-import org.jgrapht.ext.EdgeNameProvider
-import org.jgrapht.ext.GmlExporter
 import org.jgrapht.ext.GraphMLExporter
 import org.jgrapht.ext.IntegerEdgeNameProvider
 import org.jgrapht.ext.IntegerNameProvider
-import org.jgrapht.ext.StringEdgeNameProvider
-import org.jgrapht.ext.StringNameProvider
-import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.graph.SimpleGraph
 import show.ProgressBar
 import view.provider.EdgeLabelProvider
 import view.provider.VertexLabelProvider

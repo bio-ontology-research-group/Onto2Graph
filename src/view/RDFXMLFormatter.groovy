@@ -1,15 +1,9 @@
 package view
 
-import edu.uci.ics.jung.graph.Graph
-import javafx.beans.property.ObjectProperty
-import org.apache.jena.assembler.assemblers.DefaultModelAssembler
 import org.apache.jena.ontology.OntClass
 import org.apache.jena.ontology.OntModel
-import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
-import org.apache.jena.rdf.model.Resource
-import org.apache.jena.riot.RDFFormat
 import org.apache.jena.vocabulary.RDFS
 import org.jgrapht.Graph
 import show.ProgressBar
