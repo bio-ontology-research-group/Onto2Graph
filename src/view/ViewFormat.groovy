@@ -16,6 +16,7 @@ import show.ProgressBar
 import tool.RequestManager
 
 import javax.management.relation.Relation
+import java.util.concurrent.ConcurrentLinkedDeque
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -65,8 +66,8 @@ public abstract class ViewFormat {
      */
     public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
         if((ontology!=null)&&(reasoner!=null)) {
-            properties = checkObjectProperties(ontology,properties);
-            RequestManager.getInstance().computedSubClases(ontology,reasoner,properties);
+            ConcurrentLinkedDeque objectProperties = checkObjectProperties(ontology,properties);
+            RequestManager.getInstance().computedSubClases(ontology,reasoner,objectProperties);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
         }
@@ -78,17 +79,22 @@ public abstract class ViewFormat {
      * @param properties The objects properties that will be checked.
      * @return The list of Objects properties checked.
      */
-    protected String[] checkObjectProperties(ontology,String[] properties){
+    protected ConcurrentLinkedDeque checkObjectProperties(ontology,String[] properties){
         if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
+            ConcurrentLinkedDeque objProperties = new ConcurrentLinkedDeque();
             HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
-            properties = objectProperties.toArray(new String[objectProperties.size()]);
+            //properties = objectProperties.toArray(new String[objectProperties.size()]);
+            objProperties.addAll(objectProperties);
+            return(objProperties);
         }else if((properties!=null)&&(properties.length>0)){
+            ConcurrentLinkedDeque objProperties = new ConcurrentLinkedDeque();
             HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
             properties.each{objectProperty->
                 boolean isContained = false;
                 objectProperties.each{ op->
                     if(op.compareTo(objectProperty)==0){
                         isContained = true;
+                        objProperties.add(objectProperty);
                     }
                 }
                 if(!isContained){
@@ -96,9 +102,9 @@ public abstract class ViewFormat {
                     System.exit(-1);
                 }
             }
-
+            return(objProperties);
         }
-        return(properties);
+        return(null);
     }
 
     /**
@@ -107,7 +113,7 @@ public abstract class ViewFormat {
      * @param properties Object Properties that belong to ontology and they are using to create the graph.
      * @return Graph is built.
      */
-    protected Graph buildGraph(OWLOntology ontology,String[] properties) {
+    protected Graph buildGraph(OWLOntology ontology,ConcurrentLinkedDeque properties) {
         DirectedGraph<String, RelationshipEdge> graph = new DirectedMultigraph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
         Set<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesIndex = 0;
@@ -130,11 +136,9 @@ public abstract class ViewFormat {
                         }
                     }
                 }
-                if ((properties != null) && (properties.length > 0)) {
-                    String objectProperty;
+                if ((properties != null) && (properties.size() > 0)) {
                     RelationshipEdge edgeProperty;
-                    for (int i = 0; i < properties.length; i++) {
-                        objectProperty = properties[i];
+                    for (String objectProperty : properties) {
                         if (objectProperty != null) {
                             Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("owlClass").toString(), ontology);
                             if(result!=null){

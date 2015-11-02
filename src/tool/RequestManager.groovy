@@ -9,6 +9,9 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
 
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
+
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
  *
@@ -39,13 +42,13 @@ public class RequestManager {
     /**
      * List of computed subclasses.
      */
-    private HashMap<String,HashSet> preComputedSubClasses = null;
+    private ConcurrentHashMap<String,HashSet> preComputedSubClasses = null;
 
     /**
      * Private constructor
      */
     private RequestManager(){
-        preComputedSubClasses = new HashMap<String,HashSet>();
+        preComputedSubClasses = new ConcurrentHashMap<String,HashSet>();
     }
 
     /**
@@ -65,10 +68,9 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,String[] properties){
+    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,ConcurrentLinkedDeque properties){
 
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
-        String property;
         int classesIndex=0;
         int classesCounter = classes.size();
         GParsPool.withPool {
@@ -81,9 +83,8 @@ public class RequestManager {
                 if((subClasses!=null)&&(!subClasses.isEmpty())){
                     this.preComputedSubClasses.put(clazz.toString(),subClasses);
                 }
-                if((properties!=null)&&(properties.length>0)){
-                    for (int i = 0; i < properties.length; i++) {
-                        property = properties[i];
+                if((properties!=null)&&(properties.size()>0)){
+                    for (String property : properties) {
                         if (property != null) {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
