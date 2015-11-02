@@ -74,7 +74,7 @@ public class RequestManager {
         GParsPool.withPool {
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
             classes.eachParallel { clazz ->
-                ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+                ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
                 classesIndex++;
                 HashSet<OWLClass> subClasses = reasoner.getSubClasses(clazz,true).getFlattened();
                 subClasses.remove(factory.getOWLNothing());

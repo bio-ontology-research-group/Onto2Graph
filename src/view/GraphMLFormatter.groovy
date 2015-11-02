@@ -51,10 +51,14 @@ public class GraphMLFormatter extends ViewFormat {
         super(fileOutPath);
     }
 
+    /**
+     * It serializes the graph in a GraphML Format file.
+     * @param graph The graph that will be saved.
+     */
     public void serializeGraph(Graph graph){
         try{
             if ((graph != null)&&(fileOutPath!=null)) {
-                ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+                ProgressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
                 GraphMLExporter<HashMap, RelationshipEdge> exporter = new GraphMLExporter<HashMap, RelationshipEdge>(
                         new IntegerNameProvider(),new VertexLabelProvider(),new IntegerEdgeNameProvider(),new EdgeLabelProvider());

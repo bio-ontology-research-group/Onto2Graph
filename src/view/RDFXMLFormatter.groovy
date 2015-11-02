@@ -47,6 +47,10 @@ public class RDFXMLFormatter extends ViewFormat{
         super(fileOutPath);
     }
 
+    /**
+     * It serializes the graph in a RDFXML File Format file.
+     * @param graph The graph that will be saved.
+     */
     public void serializeGraph(Graph graph){
         try {
             if ((graph != null)&&(fileOutPath!=null)) {
@@ -61,7 +65,7 @@ public class RDFXMLFormatter extends ViewFormat{
                     edgesIndex++;
                     source = graph.getEdgeSource(edge);
                     destiny = graph.getEdgeTarget(edge);
-                    ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
                     if (objectProperty.length == 2) {
                         OntClass rootClass = model.createClass(source.get("classURI"));
@@ -74,7 +78,7 @@ public class RDFXMLFormatter extends ViewFormat{
                         model.add(rootClass, RDFS.subClassOf, subClass);
                     }
                 }
-                ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+                ProgressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
                 model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
             }

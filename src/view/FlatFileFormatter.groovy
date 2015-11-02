@@ -37,6 +37,10 @@ public class FlatFileFormatter extends ViewFormat {
         super(fileOutPath);
     }
 
+    /**
+     * It serializes the graph in a Flat File Format file.
+     * @param graph The graph that will be saved.
+     */
     public void serializeGraph(Graph graph){
         BufferedWriter output;
         try{
@@ -53,7 +57,7 @@ public class FlatFileFormatter extends ViewFormat {
                     edgesIndex++;
                     source = graph.getEdgeSource(edge);
                     destiny = graph.getEdgeTarget(edge);
-                    ProgressBar.getInstance().printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
                     if (objectProperty.length == 2) {
                         output.append("\t"+source.get("remainder")+",\t"+destiny.get("remainder")+"\t\t"+objectProperty[1]+"\n");
@@ -62,7 +66,7 @@ public class FlatFileFormatter extends ViewFormat {
 
                     }
                 }
-                ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+                ProgressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
             }
         } catch ( IOException e ) {

@@ -58,9 +58,13 @@ public class GraphVizFormatter extends ViewFormat{
         super(fileOutPath);
     }
 
+    /**
+     * It serializes the graph in a GraphViz File Format file.
+     * @param graph The graph that will be saved.
+     */
     public void serializeGraph(Graph graph){
         if ((graph != null)&&(fileOutPath!=null)) {
-            ProgressBar.getInstance().printProgressBar(100, "serializing the graph...");
+            ProgressBar.printProgressBar(100, "serializing the graph...");
             System.out.println();
             DOTExporter<HashMap, RelationshipEdge> exporter = new DOTExporter<HashMap, RelationshipEdge>(
                     new IntegerNameProvider(),new VertexLabelProvider(),new EdgeLabelProvider());

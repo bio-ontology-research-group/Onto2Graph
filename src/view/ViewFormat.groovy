@@ -114,7 +114,7 @@ public abstract class ViewFormat {
         int classesCounter = ontology.getClassesInSignature(true).size();
         classes.remove(ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
         classes.each { clazz ->
-            ProgressBar.getInstance().printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
+            ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
             classesIndex++;
             HashMap root = RequestManager.getInstance().class2info(clazz,ontology)
             if((root!=null)&&(!root.isEmpty())) {
@@ -151,7 +151,7 @@ public abstract class ViewFormat {
                 }
             }
         }
-        ProgressBar.getInstance().printProgressBar(100, "building the graph...");
+        ProgressBar.printProgressBar(100, "building the graph...");
         return(graph);
     }
 
@@ -161,25 +161,56 @@ public abstract class ViewFormat {
      */
     public abstract void serializeGraph(Graph graph);
 
+    /**
+     * Internal class that represents a new kind of edge that includes labels
+     * @param < V >
+     */
     public static class RelationshipEdge<V> extends DefaultEdge {
+        /**
+         * First vertex.
+         */
         private V v1;
+        /**
+         * Second vertex.
+         */
         private V v2;
+        /**
+         * Label given.
+         */
         private String label;
 
+        /**
+         * Constructor of the class.
+         * @param v1 Source vertex
+         * @param v2 Destiny vertex
+         * @param label Label of the edge.
+         */
         public RelationshipEdge(V v1, V v2, String label) {
             this.v1 = v1;
             this.v2 = v2;
             this.label = label;
         }
 
+        /**
+         * It retrieves the source vertex.
+         * @return Source vertex.
+         */
         public V getV1() {
             return v1;
         }
 
+        /**
+         * It retrieves the destiny vertex
+         * @return Destiny vertex
+         */
         public V getV2() {
             return v2;
         }
 
+        /**
+         * It retrieves the label of the vertex.
+         * @return Label of the vertex.
+         */
         public String toString() {
             return label;
         }

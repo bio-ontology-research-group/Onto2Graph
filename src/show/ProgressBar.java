@@ -23,33 +23,13 @@ package show;
  * @version 1.0
  */
 public class ProgressBar {
-    /**
-     * The singleton instance
-     */
-    public static ProgressBar instance = null;
-
-    /**
-     * The private constructor of the class.
-     */
-    private ProgressBar(){}
-
-    /**
-     * The static method that enable access to the unique instance.
-     * @return The singleton instance created.
-     */
-    public static ProgressBar getInstance(){
-        if(instance == null){
-            instance = new ProgressBar();
-        }
-        return(instance);
-    }
 
     /**
      * It prints the percentage of the process performed as a progress bar.
      * @param percentage Percentage of the process performed.
      * @param message Message to show.
      */
-    public void printProgressBar(int percentage,String message){
+    public static void printProgressBar(int percentage,String message){
         StringBuilder bar = new StringBuilder("[");
 
         for(int i = 0; i < 50; i++){
