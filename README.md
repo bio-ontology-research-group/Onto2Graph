@@ -35,9 +35,22 @@ An example of Onto2Graph execution without object properties would be:
 
 java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML
 
+In this example we are using the following parameters:
+-ont: In order to indicate the path where the ontology is located.
+-out: The path where the graph will be serialized.
+-r: In this example we are going to use the STRUCTURAL_REASONER
+-f: The formatter that will be applied over the ontology file will be RDFXML. So, as a result the tool will provide a graph in RDFXML format.
+
 An other example including all objects properties of the ontology would be:
 
 java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML -op [*]
+
+Unlike the early example, as you can see, here we have object properties. So, in this case the parameters are: 
+-ont: The path of the ontology that will be transformed into a graph.
+-out: The output path.
+-r: We are going to use the same reasoner that the example before shown.
+-f: The formatter that will be applied, in this example will be RDFXML
+-op: This parameter contains [*] which means all the object properties of the ontology will be included to the parse process of the ontology.
  
 # License
 
