@@ -10,7 +10,7 @@ The working of the tool is based on the following libraries:
 2. HermiT: The other reasoner that has been included in the tool.
 3. JGrapht: A graph library that is used to generate graphs from the ontology given.
 4. OWLAPI-osgidistribution (version 4.0.2): Library used to manipulate ontologies.
-5. Jena-Apache (version 3.0.0.2): Library used to generate the RDFXMLGraph.
+5. Jena-Apache (version 3.0.0.2): Library used to generate the RDFXML Graph.
 
 # Execution
 
@@ -31,7 +31,7 @@ The application does not have a GUI, it is a command line application. These are
 5. -op: It is an optional parameter and it represents a list of object properties that will be added to the graph. The list o		of object properties should be formatted as array, here you can see an example: ["first_label","second_label",
 	   "third_label"]. In order to include all object properties from the ontology given it is just needed to provide: [*] and then all object properties from the ontology will be added.  
 
-An example of Onto2Graph exection without object properties would be:
+An example of Onto2Graph execution without object properties would be:
 
 java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML
 
