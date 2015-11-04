@@ -22,13 +22,14 @@ The application does not have a GUI, it is a command line application. These are
 	3.1. ELK: Elk reasoner is the default option.
 	3.2. HERMIT.
 	3.3. STRUCTURAL_REASONER.
-4. -f: This is an optional paramenter and it should contain once of the different formatters that have included in the tool:
+4. -f: This is an optional parameter and it should contain once of the different formatters that have included in the tool:
 	4.1 RDFXML.
 	4.2 GRAPHVIZ [DEFAULT].
 	4.3 FLATFILE.
 	4.4 GRAPHML.
 	4.5 *: The "*" set that all formatters will be applied.
-5. -op: It is an optional parameter and it represents a list of object properties that will be added to the graph. The list o		of object properties should be formatted as array, here you can see an example: ["first_label","second_label",
+5. -eq: This parameter is flag to control the equivalent classes. If the flag is true, then for each equivalent class a different node will be added to the graph, else if the flag is false then for each set of equivalent classes just one node will be created. 
+6. -op: It is an optional parameter and it represents a list of object properties that will be added to the graph. The list o		of object properties should be formatted as array, here you can see an example: ["first_label","second_label",
 	   "third_label"]. In order to include all object properties from the ontology given it is just needed to provide: [*] and then all object properties from the ontology will be added.  
 
 An example of Onto2Graph execution without object properties would be:
