@@ -35,6 +35,10 @@ public class VisualizerCommand implements Command{
      */
     protected OWLOntology ontology = null;
     /**
+     * This flag controls whether or not the resulting graph will contain equivalent classes.
+     */
+    protected boolean equivalentClass;
+    /**
      * The list of Object Properties that will be used during the transformation.
      */
     protected String[] properties = null;
@@ -52,12 +56,15 @@ public class VisualizerCommand implements Command{
      * @param ontology the ontology that will be parsed in a specific format.
      * @param setFormatterType The list of formatters that will be used to transform the ontology.
      * @param outpath The outpath of file.
+     * @param equivalentClass Flag that contols whether (TRUE) or not (FALSE) the equivalent classes are going to be merged as unique node.
      * @param properties The list of Object Properties that will be used during the transformation.
      */
-    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath, String[] properties){
+    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath,
+                             boolean equivalentClasses, String[] properties){
         this.reasoner = reasoner;
         this.ontology = ontology;
         this.setFormatterType = setFormatterType;
+        this.equivalentClass = equivalentClasses;
         this.outpath = outpath;
         this.properties = properties;
     }
@@ -82,7 +89,7 @@ public class VisualizerCommand implements Command{
                 viewFormat = new FlatFileFormatter(outpath);
             }
             if (viewFormat != null) {
-                viewFormat.parseOntology(ontology, reasoner, properties);
+                viewFormat.parseOntology(ontology, reasoner, equivalentClass, properties);
             }
         }
 

@@ -57,10 +57,10 @@ public abstract class ViewFormat {
      * @param fileOutPath The output file path.
      *
      */
-    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
+    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner,boolean equivalentClass, String[] properties) {
         if((ontology!=null)&&(reasoner!=null)) {
             properties = checkObjectProperties(ontology,properties);
-            RequestManager.getInstance().computedSubClases(ontology,reasoner,properties);
+            RequestManager.getInstance().computedSubClases(ontology,reasoner,equivalentClass,properties);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
         }

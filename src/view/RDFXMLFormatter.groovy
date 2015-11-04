@@ -1,12 +1,13 @@
 package view
 
-import org.apache.jena.ontology.OntClass
-import org.apache.jena.ontology.OntModel
+import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
+import org.apache.jena.rdf.model.Resource
 import org.apache.jena.vocabulary.RDFS
 import org.jgrapht.Graph
 import show.ProgressBar
+import tool.RequestManager
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -48,7 +49,7 @@ public class RDFXMLFormatter extends ViewFormat{
     public void serializeGraph(Graph graph){
         try {
             if ((graph != null)&&(fileOutPath!=null)) {
-                OntModel model = ModelFactory.createOntologyModel();
+                Model model = ModelFactory.createDefaultModel();
                 int edgesCount = graph.edgeSet().size();
                 int edgesIndex = 0;
                 Iterator its = graph.edgeSet().iterator();
@@ -62,21 +63,22 @@ public class RDFXMLFormatter extends ViewFormat{
                     ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
                     if (objectProperty.length == 2) {
-                        OntClass rootClass = model.createClass(source.get("classURI"));
-                        OntClass subClass = model.createClass(destiny.get("classURI"));
+                        Resource rootClass = model.createResource(source.get("classURI"));
+                        Resource subClass = model.createResource(destiny.get("classURI"));
                         Property objProperty = model.createProperty(objectProperty[1]);
-                        model.add(rootClass,objProperty,subClass)
+                        model.add(rootClass,objProperty,subClass);
                     } else {
-                        OntClass rootClass = model.createClass(source.get("classURI"));
-                        OntClass subClass = model.createClass(destiny.get("classURI"));
+                        Resource rootClass = model.createResource(source.get("classURI"));
+                        Resource subClass = model.createResource(destiny.get("classURI"));
                         model.add(rootClass, RDFS.subClassOf, subClass);
                     }
                 }
                 ProgressBar.printProgressBar(100, "serializing the graph...");
-                System.out.println();
+                RequestManager.getInstance().serializeEquivalentClassesList(fileOutPath+"_equivalent_classes.txt");
                 model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
             }
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println("There was an error: "+e.getMessage());
         }
     }
