@@ -92,10 +92,11 @@ public class RequestManager {
                         subClasses = new HashSet<OWLClass>();
                         nodeSubclasses.each {node ->
                             if((!node.getRepresentativeElement().isOWLNothing())&&(!node.getRepresentativeElement().isOWLThing())) {
-                                if (!preComputedSubClasses.containsKey(node.getRepresentativeElement())){
+                                if (!preComputedSubClasses.containsKey(node.getRepresentativeElement().toString())){
                                     subClasses.add(node.getRepresentativeElement());
+                                    preComputedSubClasses.put(node.getRepresentativeElement().toString(),new HashSet());
                                 }else {
-                                    equivalentList.put(clazz.toString(),node.getRepresentativeElement());
+                                    equivalentList.put(clazz.toString(),node.getRepresentativeElement().toString());
                                 }
                             }
                         }
@@ -125,10 +126,11 @@ public class RequestManager {
                                     subClassesProperty = new HashSet<OWLClass>();
                                     nodeSubClassesProperty.each{ node ->
                                         if((!node.getRepresentativeElement().isOWLNothing())&&(!node.getRepresentativeElement().isOWLThing())) {
-                                            if (!preComputedSubClasses.containsKey(node.getRepresentativeElement())) {
+                                            if (!preComputedSubClasses.containsKey(node.getRepresentativeElement().toString())) {
+                                                preComputedSubClasses.put(node.getRepresentativeElement().toString(),new HashSet());
                                                 subClassesProperty.add(node.getRepresentativeElement());
                                             } else {
-                                                equivalentList.put(clazz.toString(), node.getRepresentativeElement());
+                                                equivalentList.put(clazz.toString(), node.getRepresentativeElement().toString());
                                             }
                                         }
                                     }
@@ -158,7 +160,7 @@ public class RequestManager {
                 output = new BufferedWriter(new FileWriter(fileOutPut));
                 equivalentList.keySet().each { key ->
                     String clazz = equivalentList.get(key);
-                    output.append("\t$key\t\t$clazz+\n");
+                    output.append("\t$key\t\t$clazz\n");
                 }
             } catch ( IOException e ) {
                 System.out.println("There was an error: "+e.getMessage());
