@@ -10,8 +10,6 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -43,20 +41,20 @@ public class RequestManager {
     /**
      * List of computed subclasses.
      */
-    private ConcurrentHashMap<String,HashSet> preComputedSubClasses = null;
+    private HashMap<String,HashSet> preComputedSubClasses = null;
 
     /**
      * List of equivalent classes that have not been included.
      *
      */
-    private ConcurrentHashMap<String,HashSet> equivalentList;
+    private HashMap<String,HashSet> equivalentList;
 
     /**
      * Private constructor
      */
     private RequestManager(){
-        preComputedSubClasses = new ConcurrentHashMap<String,HashSet>();
-        equivalentList = new ConcurrentHashMap<String,String>();
+        preComputedSubClasses = new HashMap<String,HashSet>();
+        equivalentList = new HashMap<String,String>();
     }
 
     /**
@@ -81,7 +79,7 @@ public class RequestManager {
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesIndex=0;
         int classesCounter = classes.size();
-        
+
         classes.each { clazz ->
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
             ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
