@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -48,7 +49,7 @@ public class RequestManager {
      * List of equivalent classes that have not been included.
      *
      */
-    private ConcurrentHashMap<String,String> equivalentList;
+    private ConcurrentHashMap<String,HashSet> equivalentList;
 
     /**
      * Private constructor
@@ -80,69 +81,61 @@ public class RequestManager {
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesIndex=0;
         int classesCounter = classes.size();
-        GParsPool.withPool {
+        
+        classes.each { clazz ->
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-            classes.eachParallel { clazz ->
-                ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
-                classesIndex++;
-                NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz,true);
-                if((nodeSubclasses!=null)&&(!nodeSubclasses.isEmpty())){
-                    HashSet<OWLClass> subClasses = null;
-                    if(!equivalentClasses){
-                        subClasses = new HashSet<OWLClass>();
-                        nodeSubclasses.each {node ->
-                            if((!node.getRepresentativeElement().isOWLNothing())&&(!node.getRepresentativeElement().isOWLThing())) {
-                                if (!preComputedSubClasses.containsKey(node.getRepresentativeElement().toString())){
-                                    subClasses.add(node.getRepresentativeElement());
-                                    preComputedSubClasses.put(node.getRepresentativeElement().toString(),new HashSet());
-                                }else {
-                                    equivalentList.put(clazz.toString(),node.getRepresentativeElement().toString());
-                                }
+            ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+            classesIndex++;
+            NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz,true);
+            if((nodeSubclasses!=null)&&(!nodeSubclasses.isEmpty())){
+                HashSet<OWLClass> subClasses = null;
+                if(!equivalentClasses){
+                    subClasses = new HashSet<OWLClass>();
+                    nodeSubclasses.each {node ->
+                        if(!node.getRepresentativeElement().isOWLNothing()) {
+                            if(!checkEquivalentClass(factory,node)){
+                                subClasses.add(node.getRepresentativeElement());
                             }
                         }
-                    }else {
-                        subClasses = nodeSubclasses.getFlattened();
                     }
+                }else {
+                    subClasses = nodeSubclasses.getFlattened();
+                }
 
-                    if(subClasses!=null) {
-                        subClasses.remove(factory.getOWLNothing());
-                        if(!subClasses.isEmpty()) {
-                            this.preComputedSubClasses.put(clazz.toString(), subClasses);
-                        }
+                if(subClasses!=null) {
+                    subClasses.remove(factory.getOWLNothing());
+                    if(!subClasses.isEmpty()) {
+                        preComputedSubClasses.put(clazz.toString(), subClasses);
                     }
                 }
-                if((properties!=null)&&(properties.size()>0)){
-                    String property;
-                    for (int i = 0; i < properties.length; i++) {
-                        property = properties[i];
-                        if (property != null) {
-                            OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
-                            OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
-
-                            NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
-                            if((nodeSubClassesProperty!=null)&&(!nodeSubClassesProperty.isEmpty())) {
-                                HashSet<OWLClass> subClassesProperty = null;
-                                if (!equivalentClasses) {
-                                    subClassesProperty = new HashSet<OWLClass>();
-                                    nodeSubClassesProperty.each{ node ->
-                                        if((!node.getRepresentativeElement().isOWLNothing())&&(!node.getRepresentativeElement().isOWLThing())) {
-                                            if (!preComputedSubClasses.containsKey(node.getRepresentativeElement().toString())) {
-                                                preComputedSubClasses.put(node.getRepresentativeElement().toString(),new HashSet());
-                                                subClassesProperty.add(node.getRepresentativeElement());
-                                            } else {
-                                                equivalentList.put(clazz.toString(), node.getRepresentativeElement().toString());
-                                            }
+            }
+            if((properties!=null)&&(properties.size()>0)){
+                String property;
+                for (int i = 0; i < properties.length; i++) {
+                    property = properties[i];
+                    if (property != null) {
+                        OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
+                        OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
+                        NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+                        if((nodeSubClassesProperty!=null)&&(!nodeSubClassesProperty.isEmpty())) {
+                            HashSet<OWLClass> subClassesProperty = null;
+                            if (!equivalentClasses) {
+                                subClassesProperty = new HashSet<OWLClass>();
+                                nodeSubClassesProperty.each{ node ->
+                                    if(!node.getRepresentativeElement().isOWLNothing()) {
+                                        if (!checkEquivalentClass(factory,node)) {
+                                            subClassesProperty.add(node.getRepresentativeElement());
                                         }
                                     }
-                                } else {
-                                    subClassesProperty = nodeSubClassesProperty.getFlattened();
                                 }
-                                if (subClassesProperty != null){
-                                    subClassesProperty.remove(factory.getOWLNothing());
-                                    subClassesProperty.remove(factory.getOWLThing());
-                                    if(!subClassesProperty.isEmpty()) {
-                                        this.preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
-                                    }
+                            } else {
+                                subClassesProperty = nodeSubClassesProperty.getFlattened();
+                            }
+                            if (subClassesProperty != null){
+                                subClassesProperty.remove(factory.getOWLNothing());
+                                subClassesProperty.remove(factory.getOWLThing());
+                                if(!subClassesProperty.isEmpty()) {
+                                    preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                                 }
                             }
                         }
@@ -152,6 +145,23 @@ public class RequestManager {
         }
     }
 
+    private checkEquivalentClass(OWLDataFactory factory, org.semanticweb.owlapi.reasoner.Node node){
+        if(equivalentList.keySet().contains(node.getRepresentativeElement().toString())){
+            return(true);
+        }
+        equivalentList.keySet().each { key ->
+            HashSet<OWLClass> entities = equivalentList.get(key);
+            if(entities.contains(node.getRepresentativeElement())){
+                return(true);
+            }
+        }
+        HashSet<OWLClass> entities = node.getEntities();
+        entities.remove(factory.getOWLNothing());
+        equivalentList.put(node.getRepresentativeElement().toString(),entities);
+
+        return(false);
+    }
+
     public void serializeEquivalentClassesList(String fileOutPut){
         if((equivalentList!=null)&&(!equivalentList.isEmpty())){
             System.out.println("Printing the equivalent classes...");
@@ -159,8 +169,12 @@ public class RequestManager {
             try{
                 output = new BufferedWriter(new FileWriter(fileOutPut));
                 equivalentList.keySet().each { key ->
-                    String clazz = equivalentList.get(key);
-                    output.append("\t$key\t\t$clazz\n");
+                    HashSet<OWLClass> eClasses = equivalentList.get(key);
+                    String line = key+"\t\t";
+                    eClasses.each{ clazz ->
+                        line+=clazz.toString()+"\t";
+                    }
+                    output.append(line+"\n");
                 }
             } catch ( IOException e ) {
                 System.out.println("There was an error: "+e.getMessage());
