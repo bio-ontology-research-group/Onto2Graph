@@ -91,7 +91,7 @@ public class RequestManager {
                     subClasses = new HashSet<OWLClass>();
                     nodeSubclasses.each { node ->
                         if (!node.getRepresentativeElement().isOWLNothing()) {
-                            if (!checkEquivalentClass(node)) {
+                            if (!equivalentList.containsKey(node.getRepresentativeElement().toString())) {
                                 subClasses.add(node.getRepresentativeElement());
                                 HashSet<OWLClass> entities = node.getEntities();
                                 entities.remove(nothing);
@@ -127,7 +127,7 @@ public class RequestManager {
                                 subClassesProperty = new HashSet<OWLClass>();
                                 nodeSubClassesProperty.each { node ->
                                     if (!node.getRepresentativeElement().isOWLNothing()) {
-                                        if (!checkEquivalentClass(node)) {
+                                        if (!equivalentList.containsKey(node.getRepresentativeElement().toString())) {
                                             subClassesProperty.add(node.getRepresentativeElement());
                                             HashSet<OWLClass> entities = node.getEntities();
                                             entities.remove(nothing);
@@ -151,19 +151,6 @@ public class RequestManager {
                 }
             }
         }
-    }
-
-    private checkEquivalentClass(org.semanticweb.owlapi.reasoner.Node node){
-        if(equivalentList.keySet().contains(node.getRepresentativeElement().toString())){
-            return(true);
-        }
-        equivalentList.keySet().each { key ->
-            HashSet<OWLClass> entities = equivalentList.get(key);
-            if(entities.contains(node.getRepresentativeElement())){
-                return(true);
-            }
-        }
-        return(false);
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){
