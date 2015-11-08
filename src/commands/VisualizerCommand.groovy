@@ -80,16 +80,16 @@ public class VisualizerCommand implements Command{
         while(it.hasNext()){
             formatterType = it.next();
             if (formatterType == FormatterType.RDFXML_FORMATTER) {
-                viewFormat = new RDFXMLFormatter(outpath);
+                viewFormat = new RDFXMLFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.GRAPHVIZ_FORMATTER) {
-                viewFormat = new GraphVizFormatter(outpath);
+                viewFormat = new GraphVizFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.GRAPHML_FORMATTER) {
-                viewFormat = new GraphMLFormatter(outpath);
+                viewFormat = new GraphMLFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.FLATFILE_FORMATTER) {
-                viewFormat = new FlatFileFormatter(outpath);
+                viewFormat = new FlatFileFormatter(outpath,equivalentClass);
             }
             if (viewFormat != null) {
-                viewFormat.parseOntology(ontology, reasoner, equivalentClass, properties);
+                viewFormat.parseOntology(ontology, reasoner, properties);
             }
         }
 

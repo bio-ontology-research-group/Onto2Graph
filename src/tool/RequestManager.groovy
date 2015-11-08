@@ -35,10 +35,6 @@ import show.ProgressBar
 public class RequestManager {
 
     /**
-     * The unique instance
-     */
-    public static RequestManager instance = null;
-    /**
      * List of computed subclasses.
      */
     private HashMap<String,HashSet> preComputedSubClasses = null;
@@ -50,22 +46,18 @@ public class RequestManager {
     private HashMap<String,String> equivalentList;
 
     /**
+     * This flag controls whether the graph will contain equivalent classes or not.
+     */
+    private boolean equivalentClasses=true;
+    /**
      * Private constructor
      */
-    private RequestManager(){
+    private RequestManager(boolean equivalentClasses){
         preComputedSubClasses = new HashMap<String,HashSet>();
-        equivalentList = new HashMap<String,String>();
-    }
-
-    /**
-     * Static method to access to the singleton instance.
-     * @return The singleton instance built.
-     */
-    public static RequestManager getInstance(){
-        if(instance==null){
-            instance = new RequestManager();
+        this.equivalentClasses = equivalentClasses;
+        if(!equivalentClasses){
+            equivalentList = new HashMap<String,String>();
         }
-        return(instance);
     }
 
     /**
@@ -74,12 +66,13 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSubClases(OWLOntology ontology,OWLReasoner reasoner,boolean equivalentClasses, String[] properties){
+    public void computedSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties){
 
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesCounter = classes.size();
         int classesIndex = 0;
         OWLClass nothing = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing();
+
 
         GParsPool.withPool {
             classes.each { clazz ->
@@ -96,7 +89,7 @@ public class RequestManager {
                         if ((!equivalentClasses)&&(entities.size()>1)) {//We do not want to have equivalent classes in the graph that is why we collect them
                             entities.each{ entity->
                                 if(entity!=node.getRepresentativeElement()){
-                                    equivalentList.put(entity.toString(),node.getRepresentativeElement().toString());
+                                    equivalentList.put(entity,node.getRepresentativeElement());
                                 }
                             }
                         }
@@ -123,7 +116,7 @@ public class RequestManager {
                                     if((!equivalentClasses)&&(entities.size()>1)){//We do not want to add equivalent classes in the graph that is why we collect them
                                         entities.each{ entity->
                                             if(entity!=node.getRepresentativeElement()){
-                                                equivalentList.put(entity.toString(),node.getRepresentativeElement().toString());
+                                                equivalentList.put(entity,node.getRepresentativeElement());
                                             }
                                         }
                                     }
@@ -136,7 +129,6 @@ public class RequestManager {
             }
         }
         }
-        System.out.println(equivalentList);
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){
@@ -145,15 +137,10 @@ public class RequestManager {
             BufferedWriter output;
             try{
                 output = new BufferedWriter(new FileWriter(fileOutPut));
+                output.append("Equivalent entity\t\tRepresentative entity\n");
                 equivalentList.keySet().each { key ->
-                    HashSet<OWLClass> eClasses = equivalentList.get(key);
-                    if(eClasses.size()>0) {
-                        String line = key + "\t\t";
-                        eClasses.each { clazz ->
-                            line += clazz.toString() + "\t";
-                        }
-                        output.append(line + "\n");
-                    }
+                    OWLClass eClass = equivalentList.get(key);
+                    output.append(key.toString() + "\t\t"+eClass.toString()+"\n");
                 }
             } catch ( IOException e ) {
                 System.out.println("There was an error: "+e.getMessage());
@@ -278,6 +265,11 @@ public class RequestManager {
      * @return A HasMap that contains information such as: URI, labels, reminder and so on.
      */
     public HashMap class2info(OWLClass c, OWLOntology o){
+        if(!equivalentClasses){
+            if(equivalentList.containsKey(c)){
+                c = equivalentList.get(c);
+            }
+        }
         def info = [
                 "owlClass": c.toString(),
                 "classURI": c.getIRI().toString(),

@@ -38,8 +38,8 @@ public class RDFXMLFormatter extends ViewFormat{
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public RDFXMLFormatter(String fileOutPath){
-        super(fileOutPath);
+    public RDFXMLFormatter(String fileOutPath,boolean equivalentClass){
+        super(fileOutPath,equivalentClass);
     }
 
     /**
@@ -74,7 +74,7 @@ public class RDFXMLFormatter extends ViewFormat{
                     }
                 }
                 ProgressBar.printProgressBar(100, "serializing the graph...");
-                RequestManager.getInstance().serializeEquivalentClassesList(fileOutPath+"_equivalent_classes.txt");
+                requestManager.serializeEquivalentClassesList(fileOutPath+"_equivalent_classes.txt");
                 model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
             }
         }catch(Exception e){

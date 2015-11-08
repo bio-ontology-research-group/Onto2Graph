@@ -33,8 +33,8 @@ public class FlatFileFormatter extends ViewFormat {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public FlatFileFormatter(String fileOutPath){
-        super(fileOutPath);
+    public FlatFileFormatter(String fileOutPath,boolean equivalentClass){
+        super(fileOutPath,equivalentClass);
     }
 
     /**

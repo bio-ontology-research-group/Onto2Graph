@@ -44,8 +44,8 @@ public class GraphVizFormatter extends ViewFormat{
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public GraphVizFormatter(String fileOutPath){
-        super(fileOutPath);
+    public GraphVizFormatter(String fileOutPath,boolean equivalentClass){
+        super(fileOutPath,equivalentClass);
     }
 
     /**

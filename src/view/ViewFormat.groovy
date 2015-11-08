@@ -40,11 +40,17 @@ public abstract class ViewFormat {
     protected String fileOutPath;
 
     /**
+     * It provides the subclasses
+     */
+    protected RequestManager requestManager = null;
+
+    /**
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public ViewFormat(String fileOutPath){
+    public ViewFormat(String fileOutPath,boolean equivalentClass){
         this.fileOutPath = fileOutPath;
+        requestManager = new RequestManager(equivalentClass);
     }
 
     /**
@@ -57,10 +63,10 @@ public abstract class ViewFormat {
      * @param fileOutPath The output file path.
      *
      */
-    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner,boolean equivalentClass, String[] properties) {
+    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
         if((ontology!=null)&&(reasoner!=null)) {
             properties = checkObjectProperties(ontology,properties);
-            RequestManager.getInstance().computedSubClases(ontology,reasoner,equivalentClass,properties);
+            requestManager.computedSubClasses(ontology,reasoner,properties);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
         }
@@ -74,10 +80,10 @@ public abstract class ViewFormat {
      */
     protected String[] checkObjectProperties(ontology,String[] properties){
         if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
-            HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
+            HashSet<String> objectProperties = requestManager.getObjectProperties(ontology);
             properties = objectProperties.toArray(new String[objectProperties.size()]);
         }else if((properties!=null)&&(properties.length>0)){
-            HashSet<String> objectProperties = RequestManager.getInstance().getObjectProperties(ontology);
+            HashSet<String> objectProperties = requestManager.getObjectProperties(ontology);
             properties.each{objectProperty->
                 boolean isContained = false;
                 objectProperties.each{ op->
@@ -110,10 +116,10 @@ public abstract class ViewFormat {
         classes.each { clazz ->
             ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
             classesIndex++;
-            HashMap root = RequestManager.getInstance().class2info(clazz,ontology)
+            HashMap root = requestManager.class2info(clazz,ontology)
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
-                Set<HashMap> subClasses = RequestManager.getInstance().subClassesQuery(root.get("owlClass"), ontology);
+                Set<HashMap> subClasses = requestManager.subClassesQuery(root.get("owlClass"), ontology);
                 RelationshipEdge edge = null;
                 if(subClasses!=null){
                     subClasses.each { subClass ->
@@ -130,7 +136,7 @@ public abstract class ViewFormat {
                     for (int i = 0; i < properties.length; i++) {
                         objectProperty = properties[i];
                         if (objectProperty != null) {
-                            Set<HashMap> result = RequestManager.getInstance().relationQuery(objectProperty, root.get("owlClass").toString(), ontology);
+                            Set<HashMap> result = requestManager.relationQuery(objectProperty, root.get("owlClass").toString(), ontology);
                             if(result!=null){
                                 result.each { objectPropertyClass ->
                                     graph.addVertex(objectPropertyClass);
@@ -145,7 +151,7 @@ public abstract class ViewFormat {
                 }
             }
         }
-        ProgressBar.printProgressBar(100, "building the graph...");
+        ProgressBar.printProgressBar(100, "building the graph...\n");
         return(graph);
     }
 
