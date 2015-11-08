@@ -47,7 +47,7 @@ public class RequestManager {
      * List of equivalent classes that have not been included.
      *
      */
-    private HashMap<String,HashSet> equivalentList;
+    private HashMap<String,String> equivalentList;
 
     /**
      * Private constructor
@@ -81,36 +81,28 @@ public class RequestManager {
         int classesIndex = 0;
         OWLClass nothing = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing();
 
-        classes.each { clazz ->
+        GParsPool.withPool {
+            classes.each { clazz ->
             ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
             classesIndex++;
             NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
             if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
-                HashSet<OWLClass> subClasses = null;
-                if (!equivalentClasses) {
-                    subClasses = new HashSet<OWLClass>();
-                    nodeSubclasses.each { node ->
-                        if (!node.getRepresentativeElement().isOWLNothing()) {
-                            if (!equivalentList.containsKey(node.getRepresentativeElement().toString())) {
-                                subClasses.add(node.getRepresentativeElement());
-                                HashSet<OWLClass> entities = node.getEntities();
-                                entities.remove(nothing);
-                                String representativeElement = node.getRepresentativeElement().toString();
-                                entities.remove(node.getRepresentativeElement());
-                                equivalentList.put(representativeElement,entities);
+                HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
+                nodeSubclasses.each { node ->
+                    if (!node.getRepresentativeElement().isOWLNothing()){
+                        HashSet<OWLClass> entities = node.getEntities();
+                        entities.remove(nothing);
+                        subClasses.addAll(entities);
+                        if ((!equivalentClasses)&&(entities.size()>1)) {//We do not want to have equivalent classes in the graph that is why we collect them
+                            entities.each{ entity->
+                                if(entity!=node.getRepresentativeElement()){
+                                    equivalentList.put(entity.toString(),node.getRepresentativeElement().toString());
+                                }
                             }
                         }
                     }
-                } else {
-                    subClasses = nodeSubclasses.getFlattened();
                 }
-
-                if (subClasses != null) {
-                    subClasses.remove(nothing);
-                    if (!subClasses.isEmpty()) {
-                        preComputedSubClasses.put(clazz.toString(), subClasses);
-                    }
-                }
+                preComputedSubClasses.put(clazz.toString(),subClasses);
             }
             if ((properties != null) && (properties.size() > 0)) {
                 String property;
@@ -122,35 +114,29 @@ public class RequestManager {
                         OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
                         NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
                         if ((nodeSubClassesProperty != null) && (!nodeSubClassesProperty.isEmpty())) {
-                            HashSet<OWLClass> subClassesProperty = null;
-                            if (!equivalentClasses) {
-                                subClassesProperty = new HashSet<OWLClass>();
-                                nodeSubClassesProperty.each { node ->
-                                    if (!node.getRepresentativeElement().isOWLNothing()) {
-                                        if (!equivalentList.containsKey(node.getRepresentativeElement().toString())) {
-                                            subClassesProperty.add(node.getRepresentativeElement());
-                                            HashSet<OWLClass> entities = node.getEntities();
-                                            entities.remove(nothing);
-                                            String representativeElement = node.getRepresentativeElement().toString();
-                                            entities.remove(node.getRepresentativeElement());
-                                            equivalentList.put(representativeElement,entities);
+                            HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
+                            nodeSubClassesProperty.each{ node ->
+                                if(!node.getRepresentativeElement().isOWLNothing()){
+                                    HashSet<OWLClass> entities = node.getEntities();
+                                    entities.remove(nothing);
+                                    subClassesProperty.addAll(entities);
+                                    if((!equivalentClasses)&&(entities.size()>1)){//We do not want to add equivalent classes in the graph that is why we collect them
+                                        entities.each{ entity->
+                                            if(entity!=node.getRepresentativeElement()){
+                                                equivalentList.put(entity.toString(),node.getRepresentativeElement().toString());
+                                            }
                                         }
                                     }
                                 }
-                            } else {
-                                subClassesProperty = nodeSubClassesProperty.getFlattened();
                             }
-                            if (subClassesProperty != null) {
-                                subClassesProperty.remove(nothing);
-                                if (!subClassesProperty.isEmpty()) {
-                                    preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
-                                }
-                            }
+                            preComputedSubClasses.put(clazz.toString() + property,subClassesProperty);
                         }
                     }
                 }
             }
         }
+        }
+        System.out.println(equivalentList);
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){
