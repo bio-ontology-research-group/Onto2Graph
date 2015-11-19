@@ -124,9 +124,9 @@ public abstract class ViewFormat {
                 if(subClasses!=null){
                     subClasses.each { subClass ->
                         graph.addVertex(subClass);
-                        edge = new RelationshipEdge<HashMap>(subClass,root,root.get("classURI") + subClass.get("classURI"));
+                        edge = new RelationshipEdge<HashMap>(root,subClass,root.get("classURI") + subClass.get("classURI"));
                         if(!graph.containsEdge(edge)) {
-                            graph.addEdge(subClass, root, edge);
+                            graph.addEdge(root, subClass, edge);
                         }
                     }
                 }
@@ -140,7 +140,7 @@ public abstract class ViewFormat {
                             if(result!=null){
                                 result.each { objectPropertyClass ->
                                     graph.addVertex(objectPropertyClass);
-                                    edgeProperty = new RelationshipEdge<HashMap>(objectPropertyClass,root,root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty);
+                                    edgeProperty = new RelationshipEdge<HashMap>(root,objectPropertyClass,root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty);
                                     if(!graph.containsEdge(edgeProperty)) {
                                         graph.addEdge(objectPropertyClass, root, edgeProperty);
                                     }

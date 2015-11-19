@@ -54,23 +54,23 @@ public class RDFXMLFormatter extends ViewFormat{
                 int edgesIndex = 0;
                 Iterator its = graph.edgeSet().iterator();
                 Object edge;
-                HashMap source, destiny;
+                HashMap rootEdge, subEdge;
                 while (its.hasNext()) {
                     edge = its.next();
                     edgesIndex++;
-                    source = graph.getEdgeSource(edge);
-                    destiny = graph.getEdgeTarget(edge);
+                    rootEdge = graph.getEdgeSource(edge);
+                    subEdge = graph.getEdgeTarget(edge);
                     ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
                     if (objectProperty.length == 2) {
-                        Resource rootClass = model.createResource(source.get("classURI"));
-                        Resource subClass = model.createResource(destiny.get("classURI"));
+                        Resource rootClass = model.createResource(rootEdge.get("classURI"));
+                        Resource subClass = model.createResource(subEdge.get("classURI"));
                         Property objProperty = model.createProperty(objectProperty[1]);
-                        model.add(rootClass,objProperty,subClass);
+                        model.add(subClass,objProperty,rootClass);
                     } else {
-                        Resource rootClass = model.createResource(source.get("classURI"));
-                        Resource subClass = model.createResource(destiny.get("classURI"));
-                        model.add(rootClass, RDFS.subClassOf, subClass);
+                        Resource rootClass = model.createResource(rootEdge.get("classURI"));
+                        Resource subClass = model.createResource(subEdge.get("classURI"));
+                        model.add(subClass, RDFS.subClassOf, rootClass);
                     }
                 }
                 ProgressBar.printProgressBar(100, "serializing the graph...");

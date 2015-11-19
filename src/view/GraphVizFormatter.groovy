@@ -31,14 +31,6 @@ import view.provider.VertexLabelProvider
  * @version 1.0
  */
 public class GraphVizFormatter extends ViewFormat{
-    /**
-     * Node's color
-     */
-    protected String color="#BDBDBD";
-    /**
-     * Object properties' color
-     */
-    protected String propertyColor = "#5FB404";
 
     /**
      * Constructor of the class

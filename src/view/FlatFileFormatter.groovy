@@ -49,20 +49,20 @@ public class FlatFileFormatter extends ViewFormat {
                 int edgesIndex = 0;
                 Iterator its = graph.edgeSet().iterator();
                 Object edge;
-                HashMap source, destiny;
+                HashMap rootEdge, subEdge;
                 output = new BufferedWriter(new FileWriter(fileOutPath+".flatfile"));
                 output.append("\tNodes\t\t\t\tEdges+\n");
                 while (its.hasNext()) {
                     edge = its.next();
                     edgesIndex++;
-                    source = graph.getEdgeSource(edge);
-                    destiny = graph.getEdgeTarget(edge);
+                    rootEdge = graph.getEdgeSource(edge);
+                    subEdge = graph.getEdgeTarget(edge);
                     ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
                     if (objectProperty.length == 2) {
-                        output.append("\t"+source.get("remainder")+",\t"+destiny.get("remainder")+"\t\t"+objectProperty[1]+"\n");
+                        output.append("\t"+rootEdge.get("remainder")+",\t"+subEdge.get("remainder")+"\t\t"+objectProperty[1]+"\n");
                     } else {
-                        output.append("\t"+source.get("remainder")+",\t"+destiny.get("remainder")+"\t\tsubClassOf\n");
+                        output.append("\t"+rootEdge.get("remainder")+",\t"+subEdge.get("remainder")+"\t\tsubClassOf\n");
 
                     }
                 }
