@@ -127,6 +127,7 @@ public abstract class ViewFormat {
                         edge = new RelationshipEdge<HashMap>(root,subClass,root.get("classURI") + subClass.get("classURI"));
                         if(!graph.containsEdge(edge)) {
                             graph.addEdge(root, subClass, edge);
+                            System.out.println(edge.toString());
                         }
                     }
                 }
@@ -142,7 +143,7 @@ public abstract class ViewFormat {
                                     graph.addVertex(objectPropertyClass);
                                     edgeProperty = new RelationshipEdge<HashMap>(root,objectPropertyClass,root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty);
                                     if(!graph.containsEdge(edgeProperty)) {
-                                        graph.addEdge(objectPropertyClass, root, edgeProperty);
+                                        graph.addEdge(root,objectPropertyClass, edgeProperty);
                                     }
                                 }
                             }
