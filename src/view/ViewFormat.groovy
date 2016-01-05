@@ -54,21 +54,37 @@ public abstract class ViewFormat {
     }
 
     /**
-     * This method is responsible of parsing the ontology. Basically, it call other methods to transform the ontology given into
+     * This method is responsible of parsing the ontology using the reasoner to obtain the related classes. Basically, it call other methods to transform the ontology given into
      * the formatter provided.
      *
      * @param ontology The ontology that will be parsed
      * @param reasoner The reasoner that will be used to go across the ontology.
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
-     * @param fileOutPath The output file path.
      *
      */
     public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
         if((ontology!=null)&&(reasoner!=null)) {
             properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSubClasses(ontology,reasoner,properties);
+            requestManager.computedSemanticSubClasses(ontology,reasoner,properties);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
+        }
+    }
+
+    /**
+     * This method is responsible of parsing the ontology using the axioms to obtain the related classes. Basically, it call other methods to transform the ontology given into
+     * the formatter provided.
+     *
+     * @param ontology The ontology that will be parsed
+     * @param properties The object properties that belongs to the ontology and they will be used to compute.
+     *
+     */
+    public void parseOntology(OWLOntology ontology, String[] properties){
+        if((ontology!=null)){
+            properties = checkObjectProperties(ontology,properties);
+            requestManager.computedSyntacticSubClasses(ontology,properties);
+            Graph graph = this.buildGraph(ontology,properties);
+            this.serializeGraph(graph)
         }
     }
 
@@ -127,7 +143,6 @@ public abstract class ViewFormat {
                         edge = new RelationshipEdge<HashMap>(root,subClass,root.get("classURI") + subClass.get("classURI"));
                         if(!graph.containsEdge(edge)) {
                             graph.addEdge(root, subClass, edge);
-                            System.out.println(edge.toString());
                         }
                     }
                 }

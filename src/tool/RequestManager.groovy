@@ -1,6 +1,7 @@
 package tool
 
 import groovyx.gpars.GParsPool
+import org.codehaus.groovy.ast.expr.ClassExpression
 import org.semanticweb.owlapi.model.*
 import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.NodeSet
@@ -66,69 +67,123 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties){
+    public void computedSemanticSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties){
 
         HashSet<OWLClass> classes = ontology.getClassesInSignature(true);
         int classesCounter = classes.size();
         int classesIndex = 0;
         OWLClass nothing = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing();
 
-
         GParsPool.withPool {
             classes.each { clazz ->
-            ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
-            classesIndex++;
-            NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
-            if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
-                HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
-                nodeSubclasses.each { node ->
-                    if (!node.getRepresentativeElement().isOWLNothing()){
-                        HashSet<OWLClass> entities = node.getEntities();
-                        entities.remove(nothing);
-                        subClasses.addAll(entities);
-                        if ((!equivalentClasses)&&(entities.size()>1)) {//We do not want to have equivalent classes in the graph that is why we collect them
-                            entities.each{ entity->
-                                if(entity!=node.getRepresentativeElement()){
-                                    equivalentList.put(entity,node.getRepresentativeElement());
+                ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+                classesIndex++;
+                NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
+                if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
+                    HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
+                    nodeSubclasses.each { node ->
+                        if (!node.getRepresentativeElement().isOWLNothing()){
+                            HashSet<OWLClass> entities = node.getEntities();
+                            entities.remove(nothing);
+                            subClasses.addAll(entities);
+                            if ((!equivalentClasses)&&(entities.size()>1)) {//We do not want to have equivalent classes in the graph that is why we collect them
+                                entities.each{ entity->
+                                    if(entity!=node.getRepresentativeElement()){
+                                        equivalentList.put(entity,node.getRepresentativeElement());
+                                    }
                                 }
                             }
                         }
                     }
+                    preComputedSubClasses.put(clazz.toString(),subClasses);
                 }
-                preComputedSubClasses.put(clazz.toString(),subClasses);
-            }
-            if ((properties != null) && (properties.size() > 0)) {
-                String property;
-                for (int i = 0; i < properties.length; i++) {
-                    property = properties[i];
-                    if (property != null) {
-                        OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-                        OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
-                        OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
-                        NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
-                        if ((nodeSubClassesProperty != null) && (!nodeSubClassesProperty.isEmpty())) {
-                            HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
-                            nodeSubClassesProperty.each{ node ->
-                                if(!node.getRepresentativeElement().isOWLNothing()){
-                                    HashSet<OWLClass> entities = node.getEntities();
-                                    entities.remove(nothing);
-                                    subClassesProperty.addAll(entities);
-                                    if((!equivalentClasses)&&(entities.size()>1)){//We do not want to add equivalent classes in the graph that is why we collect them
-                                        entities.each{ entity->
-                                            if(entity!=node.getRepresentativeElement()){
-                                                equivalentList.put(entity,node.getRepresentativeElement());
+                if ((properties != null) && (properties.size() > 0)) {
+                    String property;
+                    for (int i = 0; i < properties.length; i++) {
+                        property = properties[i];
+                        if (property != null) {
+                            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+                            OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
+                            OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
+                            NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+
+                            if ((nodeSubClassesProperty != null)&&(!nodeSubClassesProperty.isEmpty())) {
+                                HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
+                                nodeSubClassesProperty.each { node ->
+                                    if (!node.getRepresentativeElement().isOWLNothing()) {
+                                        HashSet<OWLClass> entities = node.getEntities();
+                                        entities.remove(nothing);
+                                        subClassesProperty.addAll(entities);
+                                        if ((!equivalentClasses) && (entities.size() > 1)) {
+    //We do not want to add equivalent classes in the graph that is why we collect them
+                                            entities.each { entity ->
+                                                if (entity != node.getRepresentativeElement()) {
+                                                    equivalentList.put(entity, node.getRepresentativeElement());
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                             }
-                            preComputedSubClasses.put(clazz.toString() + property,subClassesProperty);
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * It computes the subclases using the axioms of the ontology given.
+     * @param ontology The ontology used by the reasoner to compute the subclases.
+     * @param properties The object properties of the ontology that will be used during the compute process.
+     */
+    public void computedSyntacticSubClasses(OWLOntology ontology,String[] properties){
+        ontology.getAxioms().each {OWLAxiom axiom ->
+
+            /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
+                System.out.println(axiom.toString());
+            }*/
+
+            if(axiom.getAxiomType()==AxiomType.SUBCLASS_OF){
+                OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom)axiom;
+                OWLClass superClass=null;
+                OWLClass subClass=null;
+                if(subAxiom.getSubClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS){
+                    subClass = (OWLClass)subAxiom.getSubClass();
+                }
+                if(subAxiom.getSuperClass().getClassExpressionType()== ClassExpressionType.OWL_CLASS){
+                    superClass = (OWLClass) subAxiom.getSuperClass();
+                    if(preComputedSubClasses.get(superClass.toString())!=null){
+                        Set<OWLClass> set = preComputedSubClasses.get(superClass.toString());
+                        set.add(subClass);
+                        preComputedSubClasses.put(superClass.toString(),set);
+
+                    }else{
+                        HashSet<OWLClass> set = new HashSet<OWLClass>();
+                        set.add(subClass);
+                        preComputedSubClasses.put(superClass.toString(),set);
+                    }
+                }else if(subAxiom.getSuperClass().getClassExpressionType()==ClassExpressionType.OBJECT_SOME_VALUES_FROM){
+                    OWLObjectSomeValuesFrom someAxiom = (OWLObjectSomeValuesFrom)subAxiom.getSuperClass();
+                    superClass = someAxiom.getFiller();
+                    properties.each {property->
+                        if(property==someAxiom.getProperty().getNamedProperty().getIRI().toString()){
+                            if(preComputedSubClasses.get(superClass.toString()+property)!=null){
+                                HashSet<OWLClass> set = preComputedSubClasses.get(superClass.toString()+property);
+                                set.add(subClass);
+                                preComputedSubClasses.put(superClass.toString()+property,set);
+                            }else {
+                                HashSet<OWLClass> set = new HashSet<OWLClass>();
+                                set.add(subClass)
+                                preComputedSubClasses.put(superClass.toString()+property,set);
+                            }
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){

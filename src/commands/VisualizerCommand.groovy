@@ -2,6 +2,7 @@ package commands
 
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.OWLReasoner
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import view.*
 
 /*
@@ -89,7 +90,11 @@ public class VisualizerCommand implements Command{
                 viewFormat = new FlatFileFormatter(outpath,equivalentClass);
             }
             if (viewFormat != null) {
-                viewFormat.parseOntology(ontology, reasoner, properties);
+                if(reasoner == null){//SYNTACTIC REASONER
+                    viewFormat.parseOntology(ontology,properties);
+                }else{
+                    viewFormat.parseOntology(ontology, reasoner, properties);
+                }
             }
         }
 
