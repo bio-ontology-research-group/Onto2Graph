@@ -146,6 +146,7 @@ public class RequestManager {
             }*/
 
             if(axiom.getAxiomType()==AxiomType.SUBCLASS_OF){
+                System.out.println(axiom);
                 OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom)axiom;
                 OWLClass superClass=null;
                 OWLClass subClass=null;
