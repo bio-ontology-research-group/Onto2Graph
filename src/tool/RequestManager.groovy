@@ -2,6 +2,7 @@ package tool
 
 import groovyx.gpars.GParsPool
 import org.codehaus.groovy.ast.expr.ClassExpression
+import org.semanticweb.owlapi.debugging.OWLDebugger
 import org.semanticweb.owlapi.model.*
 import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.NodeSet
@@ -139,14 +140,18 @@ public class RequestManager {
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
     public void computedSyntacticSubClasses(OWLOntology ontology,String[] properties){
+        //NOTE THAT THE DEPRECATED CLASSES ARE NOT INLCLUDED.
         ontology.getAxioms().each {OWLAxiom axiom ->
-
             /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
                 System.out.println(axiom.toString());
             }*/
-
+            /*if(axiom.getAxiomType()==AxiomType.DECLARATION){
+                OWLDeclarationAxiom decAxiom = (OWLDeclarationAxiom)axiom;
+                if(decAxiom.getEntity().isOWLClass()){
+                    counter++;
+                }
+            }*/
             if(axiom.getAxiomType()==AxiomType.SUBCLASS_OF){
-                System.out.println(axiom);
                 OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom)axiom;
                 OWLClass superClass=null;
                 OWLClass subClass=null;
@@ -184,7 +189,6 @@ public class RequestManager {
                 }
             }
         }
-
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){

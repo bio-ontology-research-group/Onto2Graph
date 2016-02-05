@@ -1,5 +1,6 @@
 import commands.VisualizerCommand
 import org.apache.commons.cli.*
+import org.apache.jena.query.ResultSetFormatter
 import org.semanticweb.HermiT.Reasoner
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
 import org.semanticweb.owlapi.apibinding.OWLManager
@@ -81,6 +82,12 @@ public class GraphicGeneratorTool {
      */
     public static void runGraphGenerator(OWLReasoner reasoner, OWLOntology ontology, Set<FormatterType> setFormatterType,
                                          String outputPath,boolean equivalentClasses,String[] objectProperties){
+        System.out.println("PARAMETERS:");
+        if(reasoner!=null) {
+            System.out.println("Reasoner:" + reasoner.toString());
+        }
+        System.out.println("Formatter:"+setFormatterType);
+        System.out.println("Object properties:"+objectProperties.toString());
         VisualizerCommand command = new VisualizerCommand(reasoner,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties);
         command.executeCommand();
     }
@@ -128,12 +135,16 @@ public class GraphicGeneratorTool {
                 case "GRAPHML":
                             setFormatterType.add(FormatterType.GRAPHML_FORMATTER);
                             return(setFormatterType);
+                case "ONTOFUNC":
+                            setFormatterType.add(FormatterType.ONTOFUNC_FORMATTER);
+                            return(setFormatterType);
                 case "*": setFormatterType.add(FormatterType.RDFXML_FORMATTER);
                           setFormatterType.add(FormatterType.GRAPHVIZ_FORMATTER);
                           setFormatterType.add(FormatterType.FLATFILE_FORMATTER);
-                          setFormatterType.add(FormatterType.GRAPHML_FORMATTER)
-                          return(setFormatterType);
-                default: return(FormatterType.GRAPHVIZ_FORMATTER);
+                          setFormatterType.add(FormatterType.GRAPHML_FORMATTER);
+                          setFormatterType.add(FormatterType.ONTOFUNC_FORMATTER);
+                    return(setFormatterType);
+                default: return(setFormatterType.add(FormatterType.GRAPHVIZ_FORMATTER));
             }
         }
         return(null);

@@ -197,8 +197,8 @@ public abstract class ViewFormat {
 
         /**
          * Constructor of the class.
-         * @param v1 Source vertex
-         * @param v2 Destiny vertex
+         * @param v1 Source vertex.
+         * @param v2 Destiny vertex.
          * @param label Label of the edge.
          */
         public RelationshipEdge(V v1, V v2, String label) {
