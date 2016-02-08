@@ -45,7 +45,7 @@ public class OboFlatFileFormatter extends ViewFormat {
         BufferedWriter output;
         try{
             if ((graph != null)&&(fileOutPath!=null)) {
-                output = new BufferedWriter(new FileWriter(fileOutPath+".flatfile"));
+                output = new BufferedWriter(new FileWriter(fileOutPath+".obo"));
                 output.append("format-version: 1.2\n");
                 output.append("data-version: releases/2016-02-04\n");
                 output.append("date: 03:02:2016 07:51\n");
