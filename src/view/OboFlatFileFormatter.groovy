@@ -1,10 +1,8 @@
 package view
 
 import org.jgrapht.Graph
-import show.ProgressBar
 
-
-/* 
+/*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,7 +59,7 @@ public class OboFlatFileFormatter extends ViewFormat {
                     vertex = vIt.next()
                     Set edges = graph.edgesOf(vertex);
                     index++;
-                    ProgressBar.printProgressBar((int) Math.round((index * 100) / (counter)), "serializing the graph...");
+                    progressBar.printProgressBar((int) Math.round((index * 100) / (counter)), "serializing the graph...");
                     output.println("[Term]");
                     output.println("id: "+vertex.get("remainder").replace("_",":"));
                     output.println("name: "+vertex.get("label"));
@@ -93,7 +91,7 @@ public class OboFlatFileFormatter extends ViewFormat {
                     output.println(relation)
                 }
 
-                ProgressBar.printProgressBar(100, "serializing the graph...");
+                progressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
             }
         } catch ( IOException e ) {

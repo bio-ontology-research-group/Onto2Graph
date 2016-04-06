@@ -1,6 +1,5 @@
 import commands.VisualizerCommand
 import org.apache.commons.cli.*
-import org.apache.jena.query.ResultSetFormatter
 import org.semanticweb.HermiT.Reasoner
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
 import org.semanticweb.owlapi.apibinding.OWLManager
@@ -9,20 +8,13 @@ import org.semanticweb.owlapi.model.MissingImportHandlingStrategy
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration
 import org.semanticweb.owlapi.model.OWLOntologyManager
-import org.semanticweb.owlapi.reasoner.BufferingMode
-import org.semanticweb.owlapi.reasoner.ConsoleProgressMonitor
-import org.semanticweb.owlapi.reasoner.InferenceType
 import org.semanticweb.owlapi.reasoner.OWLReasoner
-import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory
-import org.semanticweb.owlapi.reasoner.SimpleConfiguration
-import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory
 import view.FormatterType
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -81,14 +73,14 @@ public class GraphicGeneratorTool {
      * @param objectProperties A set of objects properties that will be used during the parse process.
      */
     public static void runGraphGenerator(OWLReasoner reasoner, OWLOntology ontology, Set<FormatterType> setFormatterType,
-                                         String outputPath,boolean equivalentClasses,String[] objectProperties){
+                                         String outputPath,boolean equivalentClasses,String[] objectProperties,int nThreads){
         System.out.println("PARAMETERS:");
         if(reasoner!=null) {
             System.out.println("Reasoner:" + reasoner.toString());
         }
         System.out.println("Formatter:"+setFormatterType);
         System.out.println("Object properties:"+objectProperties.toString());
-        VisualizerCommand command = new VisualizerCommand(reasoner,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties);
+        VisualizerCommand command = new VisualizerCommand(reasoner,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties,nThreads);
         command.executeCommand();
     }
 
@@ -104,7 +96,7 @@ public class GraphicGeneratorTool {
             if(owlFile.exists()) {
                 OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
                 OWLOntologyLoaderConfiguration config = new OWLOntologyLoaderConfiguration();
-                config.setMissingImportHandlingStrategy(MissingImportHandlingStrategy.SILENT);
+                config = config.setMissingImportHandlingStrategy(MissingImportHandlingStrategy.SILENT);
                 FileDocumentSource fSource = new FileDocumentSource(owlFile);
                 ontology = manager.loadOntologyFromOntologyDocument(fSource, config);
             }
@@ -249,6 +241,14 @@ public class GraphicGeneratorTool {
                 .withDescription(objectPropertiesDescription)
                 .create(objectProperties);
 
+        String nThreads = "nt";
+        String nThreadsDescription = "This parameter represents the number of the threads that the application is going to use (4[Default]) (Optional).";
+        Option nThreadsOption = OptionBuilder
+                .hasArg(true)
+                .isRequired(false)
+                .withDescription(nThreadsDescription)
+                .create(nThreads);
+
         Options options = new Options();
         options.addOption(ontoFileOption);
         options.addOption(outputOption);
@@ -256,6 +256,7 @@ public class GraphicGeneratorTool {
         options.addOption(formatOption);
         options.addOption(equivalentClassesOption);
         options.addOption(objectPropertiesOption);
+        options.addOption(nThreadsOption)
 
         return(options);
     }
@@ -275,6 +276,7 @@ public class GraphicGeneratorTool {
         info+="-op This parameter will contain the list of object properties labels that will be used to visualized the ontology (Optional). \n";
         info+="The object properties should be formatted as array, here you can see an example: [\"first_label\",\"second_label\",\"third_label\"]. \n";
         info+="\tIn order to include all object properties from an ontology given just provide: [\"*\"]. \n";
+        info+="-nt This parameter represents the number of the threads that the application is going to use (4[Default]) (Optional). \n";
         return(info);
     }
 
@@ -292,6 +294,7 @@ public class GraphicGeneratorTool {
             Set<FormatterType> setFormatterType = null;
             String[] properties = null;
             boolean equivalentClasses = false;
+            int nThreads =0;
             CommandLineParser parser = new GnuParser();
             CommandLine commandLine = parser.parse(buildCommandLineOptions(),args);
             if(commandLine.hasOption("ont")){
@@ -347,10 +350,23 @@ public class GraphicGeneratorTool {
                     }
                 }
             }
-            if((ontology!=null)&&(outputPath!=null)&&(setFormatterType!=null)) {
-                runGraphGenerator(reasoner,ontology, setFormatterType,outputPath,equivalentClasses, properties);
+            if(commandLine.hasOption("nt")){
+                nThreads = Integer.parseInt(commandLine.getOptionValue("nt"));
             }else{
-                System.out.println("Error providing the parameters");
+                nThreads = 4;
+            }
+            if((ontology!=null)&&(outputPath!=null)&&(setFormatterType!=null)) {
+                runGraphGenerator(reasoner,ontology, setFormatterType,outputPath,equivalentClasses, properties,nThreads);
+            }else{
+                if(ontology==null){
+                    System.out.println("The ontology was not given");
+                }
+                if(outputPath==null){
+                    System.out.println("The outpath was not given");
+                }
+                if(setFormatterType==null){
+                    System.out.println("The format was not given")
+                }
                 System.out.println(getManual());
             }
         }catch(Exception e){

@@ -50,6 +50,12 @@ public class VisualizerCommand implements Command{
      * The outpath of the file
      */
     protected String outpath = null;
+
+    /**
+     * The number of the threads that the application is going to use.
+     */
+    protected int nThreads;
+
     /**
      * Constructor of the class.
      * @param reasoner The reasoner that will be used to infer the subclasses.
@@ -60,13 +66,14 @@ public class VisualizerCommand implements Command{
      * @param properties The list of Object Properties that will be used during the transformation.
      */
     public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath,
-                             boolean equivalentClasses, String[] properties){
+                             boolean equivalentClasses, String[] properties, int nThreads){
         this.reasoner = reasoner;
         this.ontology = ontology;
         this.setFormatterType = setFormatterType;
         this.equivalentClass = equivalentClasses;
         this.outpath = outpath;
         this.properties = properties;
+        this.nThreads = nThreads;
     }
 
     /**
@@ -92,9 +99,9 @@ public class VisualizerCommand implements Command{
             }
             if (viewFormat != null) {
                 if(reasoner == null){//SYNTACTIC REASONER
-                    viewFormat.parseOntology(ontology,properties);
+                    viewFormat.parseOntology(ontology,properties,nThreads);
                 }else{
-                    viewFormat.parseOntology(ontology, reasoner, properties);
+                    viewFormat.parseOntology(ontology, reasoner, properties,nThreads);
                 }
             }
         }

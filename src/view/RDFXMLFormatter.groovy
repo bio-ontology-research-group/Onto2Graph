@@ -1,13 +1,8 @@
 package view
 
-import org.apache.jena.rdf.model.Model
-import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.rdf.model.Property
-import org.apache.jena.rdf.model.Resource
+import org.apache.jena.rdf.model.*
 import org.apache.jena.vocabulary.RDFS
 import org.jgrapht.Graph
-import show.ProgressBar
-import tool.RequestManager
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -55,25 +50,56 @@ public class RDFXMLFormatter extends ViewFormat{
                 Iterator its = graph.edgeSet().iterator();
                 Object edge;
                 HashMap rootEdge, subEdge;
+                Resource rootClass,subClass;
                 while (its.hasNext()) {
                     edge = its.next();
                     edgesIndex++;
                     rootEdge = graph.getEdgeSource(edge);
                     subEdge = graph.getEdgeTarget(edge);
-                    ProgressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    progressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
                     String[] objectProperty = edge.toString().split("&&");
+                    Property objProperty = null
                     if (objectProperty.length == 2) {
-                        Resource rootClass = model.createResource(rootEdge.get("classURI"));
-                        Resource subClass = model.createResource(subEdge.get("classURI"));
-                        Property objProperty = model.createProperty(objectProperty[1]);
-                        model.add(subClass,objProperty,rootClass);
+                        rootClass = model.createResource(rootEdge.get("classURI"));
+                        subClass = model.createResource(subEdge.get("classURI"));
+                        objProperty = model.createProperty(objectProperty[1]);
                     } else {
-                        Resource rootClass = model.createResource(rootEdge.get("classURI"));
-                        Resource subClass = model.createResource(subEdge.get("classURI"));
-                        model.add(subClass, RDFS.subClassOf, rootClass);
+                        rootClass = model.createResource(rootEdge.get("classURI"));
+                        subClass = model.createResource(subEdge.get("classURI"));
+                        objProperty = RDFS.subClassOf;
                     }
+                    Literal rootLabel = model.createLiteral(rootEdge.get("label"), "en" );
+                    Literal subLabel = model.createLiteral(subEdge.get("label"), "en" );
+                    rootClass.addLiteral(RDFS.label,rootLabel)
+                    subClass.addLiteral(RDFS.label,subLabel)
+
+                    rootEdge.get("annotations").each { annotation ->
+                        Property annProperty = model.createProperty(annotation[0])
+                        Literal literal;
+                        if(annotation[1].contains("@")){
+                            String[] props = annotation[1].split("@");
+                            literal = model.createLiteral(props[0],props[1])
+                        }else{
+                            literal = model.createLiteral(annotation[1])
+                        }
+                        rootClass.addLiteral(annProperty,literal);
+                    }
+                    subEdge.get("annotations").each{ annotation->
+                        Property annProperty = model.createProperty(annotation[0])
+                        Literal literal;
+                        if(annotation[1].contains("@")){
+                            String[] props = annotation[1].split("@");
+                            literal = model.createLiteral(props[0],props[1])
+                        }else{
+                            literal = model.createLiteral(annotation[1])
+                        }
+                        subClass.addLiteral(annProperty,literal)
+                    }
+
+                    model.add(subClass, objProperty, rootClass);
+
                 }
-                ProgressBar.printProgressBar(100, "serializing the graph...");
+                progressBar.printProgressBar(100, "serializing the graph...");
                 requestManager.serializeEquivalentClassesList(fileOutPath+"_equivalent_classes.txt");
                 model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
             }

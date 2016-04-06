@@ -3,7 +3,6 @@ package view
 import org.jgrapht.Graph
 import org.jgrapht.ext.DOTExporter
 import org.jgrapht.ext.IntegerNameProvider
-import show.ProgressBar
 import view.provider.EdgeLabelProvider
 import view.provider.VertexLabelProvider
 
@@ -46,7 +45,7 @@ public class GraphVizFormatter extends ViewFormat{
      */
     public void serializeGraph(Graph graph){
         if ((graph != null)&&(fileOutPath!=null)) {
-            ProgressBar.printProgressBar(100, "serializing the graph...");
+            progressBar.printProgressBar(100, "serializing the graph...");
             System.out.println();
             DOTExporter<HashMap, RelationshipEdge> exporter = new DOTExporter<HashMap, RelationshipEdge>(
                     new IntegerNameProvider(),new VertexLabelProvider(),new EdgeLabelProvider());

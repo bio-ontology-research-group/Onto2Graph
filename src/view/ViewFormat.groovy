@@ -5,7 +5,10 @@ import org.jgrapht.Graph
 import org.jgrapht.graph.ClassBasedEdgeFactory
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.DirectedMultigraph
+import org.jgrapht.graph.DirectedPseudograph
+import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLClass
+import org.semanticweb.owlapi.model.OWLDataFactory
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.reasoner.OWLReasoner
 import show.ProgressBar
@@ -45,12 +48,18 @@ public abstract class ViewFormat {
     protected RequestManager requestManager = null;
 
     /**
+     * The progressBar
+     */
+    protected ProgressBar progressBar;
+
+    /**
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public ViewFormat(String fileOutPath,boolean equivalentClass){
         this.fileOutPath = fileOutPath;
         requestManager = new RequestManager(equivalentClass);
+        progressBar = new ProgressBar();
     }
 
     /**
@@ -62,10 +71,10 @@ public abstract class ViewFormat {
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
      *
      */
-    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties) {
+    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties,int nThreads) {
         if((ontology!=null)&&(reasoner!=null)) {
             properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSemanticSubClasses(ontology,reasoner,properties);
+            requestManager.computedSemanticSubClasses(ontology,reasoner,properties,nThreads);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
         }
@@ -79,10 +88,10 @@ public abstract class ViewFormat {
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
      *
      */
-    public void parseOntology(OWLOntology ontology, String[] properties){
+    public void parseOntology(OWLOntology ontology, String[] properties,int nThreads){
         if((ontology!=null)){
             properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSyntacticSubClasses(ontology,properties);
+            requestManager.computedSyntacticSubClasses(ontology,properties,nThreads);
             Graph graph = this.buildGraph(ontology,properties);
             this.serializeGraph(graph)
         }
@@ -124,13 +133,17 @@ public abstract class ViewFormat {
      * @return Graph is built.
      */
     protected Graph buildGraph(OWLOntology ontology,String[] properties) {
-        DirectedGraph<String, RelationshipEdge> graph = new DirectedMultigraph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
+        DirectedPseudograph<String, RelationshipEdge> graph = new DirectedPseudograph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
         Set<OWLClass> classes = ontology.getClassesInSignature(true);
+        //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
+        // axiom has been included.
+        OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+        classes.add(thing);
+        int classesCounter = classes.size();
         int classesIndex = 0;
-        int classesCounter = ontology.getClassesInSignature(true).size();
-        classes.remove(ontology.getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
         classes.each { clazz ->
-            ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
+            progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
             classesIndex++;
             HashMap root = requestManager.class2info(clazz,ontology)
             if((root!=null)&&(!root.isEmpty())) {
@@ -167,7 +180,7 @@ public abstract class ViewFormat {
                 }
             }
         }
-        ProgressBar.printProgressBar(100, "building the graph...\n");
+        progressBar.printProgressBar(100, "building the graph...\n");
         return(graph);
     }
 

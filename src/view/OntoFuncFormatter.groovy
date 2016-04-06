@@ -1,10 +1,8 @@
 package view
 
 import org.jgrapht.Graph
-import show.ProgressBar
 
-
-/* 
+/*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +48,6 @@ public class OntoFuncFormatter extends ViewFormat {
                 graphPathOutput = new BufferedWriter(new FileWriter(fileOutPath+"_graph_graph.txt"));
                 term2termOutput = new BufferedWriter(new FileWriter(fileOutPath+"_term2term.txt"));
                 termOutput = new BufferedWriter(new FileWriter(fileOutPath+"_term.txt"));
-                System.out.println(graph.vertexSet().size());
                 int counter = graph.vertexSet().size();
                 int index =0;
                 Iterator vIt = graph.vertexSet().iterator();
@@ -61,7 +58,7 @@ public class OntoFuncFormatter extends ViewFormat {
                     vertex = vIt.next()
                     Set edges = graph.edgesOf(vertex);
                     index++;
-                    ProgressBar.printProgressBar((int) Math.round((index * 100) / (counter)), "serializing the graph...");
+                    progressBar.printProgressBar((int) Math.round((index * 100) / (counter)), "serializing the graph...");
                     String relation;
                     for(Object edge : edges){
                         String[] objectProperty = edge.toString().split("&&");
@@ -83,7 +80,7 @@ public class OntoFuncFormatter extends ViewFormat {
                     }
                 }
 
-                ProgressBar.printProgressBar(100, "serializing the graph...");
+                progressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
             }
         } catch ( IOException e ) {

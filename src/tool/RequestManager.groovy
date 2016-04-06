@@ -1,9 +1,6 @@
 package tool
 
 import groovyx.gpars.GParsPool
-import org.apache.jena.base.Sys
-import org.codehaus.groovy.ast.expr.ClassExpression
-import org.semanticweb.owlapi.debugging.OWLDebugger
 import org.semanticweb.owlapi.model.*
 import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.NodeSet
@@ -11,9 +8,9 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher
-import org.semanticweb.owlapi.util.SimpleRootClassChecker
 import show.ProgressBar
 
+import java.util.concurrent.ConcurrentHashMap
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -41,22 +38,28 @@ public class RequestManager {
     /**
      * List of computed subclasses.
      */
-    private HashMap<String,HashSet> preComputedSubClasses = null;
+    private ConcurrentHashMap<String,HashSet> preComputedSubClasses = null;
 
     /**
      * List of equivalent classes that have not been included.
      *
      */
-    private HashMap<String,String> equivalentList;
+    private ConcurrentHashMap<String,String> equivalentList;
 
     /**
      * This flag controls whether the graph will contain equivalent classes or not.
      */
     private boolean equivalentClasses=true;
+
+    /*
+     * An instance of ProgressBar to show the progress of the execution.
+     */
+    private ProgressBar progressBar;
     /**
      * Private constructor
      */
     private RequestManager(boolean equivalentClasses){
+        progressBar = new ProgressBar();
         preComputedSubClasses = new HashMap<String,HashSet>();
         this.equivalentClasses = equivalentClasses;
         if(!equivalentClasses){
@@ -70,19 +73,17 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSemanticSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties){
+    public void computedSemanticSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties,int nThreads){
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
         int classesCounter = classes.size();
-        int classesIndex = 0;
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
         OWLClass nothing = factory.getOWLNothing();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().getFragment()+"owl:Thing"))
-        GParsPool.withPool {
-            classes.each { clazz ->
-                ProgressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
-                classesIndex++;
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+        GParsPool.withPool(nThreads) {
+            classes.eachWithIndexParallel { clazz,classesIndex ->
+                progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
                 //we check if is a top class
                 HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
                 if((superClasses.size()==1)&&(superClasses.contains(factory.getOWLThing()))){
@@ -91,6 +92,7 @@ public class RequestManager {
                         subClasses = preComputedSubClasses.get(thing.toString());
                     }else{
                         subClasses = new HashSet<OWLClass>()
+                        //subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
                     }
                     subClasses.add(clazz);
                     preComputedSubClasses.put(thing.toString(),subClasses)
@@ -98,6 +100,7 @@ public class RequestManager {
                 NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
                 if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
                     HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
+                    //HashSet<OWLClass> subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
                     nodeSubclasses.each { node ->
                         if (!node.getRepresentativeElement().isOWLNothing()) {
                             HashSet<OWLClass> entities = node.getEntities();
@@ -126,6 +129,7 @@ public class RequestManager {
 
                             if ((nodeSubClassesProperty != null) && (!nodeSubClassesProperty.isEmpty())) {
                                 HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
+                                //HashSet<OWLClass> subClassesProperty = Collections.synchronizedSet(new HashSet<OWLClass>());
                                 nodeSubClassesProperty.each { node ->
                                     if (!node.getRepresentativeElement().isOWLNothing()) {
                                         HashSet<OWLClass> entities = node.getEntities();
@@ -155,74 +159,79 @@ public class RequestManager {
      * @param ontology The ontology used by the reasoner to compute the subclases.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSyntacticSubClasses(OWLOntology ontology,String[] properties){
+    public void computedSyntacticSubClasses(OWLOntology ontology,String[] properties,int nThreads){
         //NOTE THAT THE DEPRECATED CLASSES ARE NOT INLCLUDED.
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         Set axioms = ontology.getAxioms();
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().getFragment()+"owl:Thing"))
-        axioms.each {OWLAxiom axiom ->
-            /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
-                System.out.println(axiom.toString());
-            }*/
-            /*if(axiom.getAxiomType()==AxiomType.DECLARATION){
-                OWLDeclarationAxiom decAxiom = (OWLDeclarationAxiom)axiom;
-                if(decAxiom.getEntity().isOWLClass()){
-                    counter++;
-                }
-            }*/
-            if(axiom.getAxiomType()==AxiomType.SUBCLASS_OF){
-                OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom)axiom;
-                OWLClass superClass=null;
-                OWLClass subClass=null;
-                if(subAxiom.getSubClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS){
-                    subClass = (OWLClass)subAxiom.getSubClass();
-                }
-                if(subAxiom.getSuperClass().getClassExpressionType()== ClassExpressionType.OWL_CLASS){
-                    superClass = (OWLClass) subAxiom.getSuperClass();
-                    if(preComputedSubClasses.get(superClass.toString())!=null){
-                        Set<OWLClass> set = preComputedSubClasses.get(superClass.toString());
-                        set.add(subClass);
-                        preComputedSubClasses.put(superClass.toString(),set);
-
-                    }else{
-                        HashSet<OWLClass> set = new HashSet<OWLClass>();
-                        set.add(subClass);
-                        preComputedSubClasses.put(superClass.toString(),set);
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+        int axiomsCounter = axioms.size();
+        GParsPool.withPool(nThreads) {
+            axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
+                /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
+                    System.out.println(axiom.toString());
+                }*/
+                /*if(axiom.getAxiomType()==AxiomType.DECLARATION){
+                    OWLDeclarationAxiom decAxiom = (OWLDeclarationAxiom)axiom;
+                    if(decAxiom.getEntity().isOWLClass()){
+                        counter++;
                     }
-                }else if(subAxiom.getSuperClass().getClassExpressionType()==ClassExpressionType.OBJECT_SOME_VALUES_FROM){
-                    OWLObjectSomeValuesFrom someAxiom = (OWLObjectSomeValuesFrom)subAxiom.getSuperClass();
-                    superClass = someAxiom.getFiller();
-                    properties.each {property->
-                        if(property==someAxiom.getProperty().getNamedProperty().getIRI().toString()){
-                            if(preComputedSubClasses.get(superClass.toString()+property)!=null){
-                                HashSet<OWLClass> set = preComputedSubClasses.get(superClass.toString()+property);
-                                set.add(subClass);
-                                preComputedSubClasses.put(superClass.toString()+property,set);
-                            }else {
-                                HashSet<OWLClass> set = new HashSet<OWLClass>();
-                                set.add(subClass)
-                                preComputedSubClasses.put(superClass.toString()+property,set);
+                }*/
+                progressBar.printProgressBar((int) Math.round((axiomsIndex * 100) / (axiomsCounter)), "precomputing axioms...");
+                if (axiom.getAxiomType() == AxiomType.SUBCLASS_OF) {
+                    OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom) axiom;
+                    OWLClass superClass = null;
+                    OWLClass subClass = null;
+                    if (subAxiom.getSubClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS) {
+                        subClass = (OWLClass) subAxiom.getSubClass();
+                    }
+                    if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS) {
+                        superClass = (OWLClass) subAxiom.getSuperClass();
+                        Set<OWLClass> set;
+                        if (preComputedSubClasses.get(superClass.toString()) != null) {
+                            set = preComputedSubClasses.get(superClass.toString());
+                        } else {
+                            set = new HashSet<OWLClass>();
+                            //set = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        }
+                        set.add(subClass);
+                        preComputedSubClasses.put(superClass.toString(), set);
+
+                    } else if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
+                        OWLObjectSomeValuesFrom someAxiom = (OWLObjectSomeValuesFrom) subAxiom.getSuperClass();
+                        //We avoid OWLObjectUnionOf, OWLObjectIntersection and OWLObjectEnumeration
+                        if(someAxiom.getFiller() instanceof OWLClass) {
+                            superClass = someAxiom.getFiller();
+                            properties.each { property ->
+                                if (property == someAxiom.getProperty().getNamedProperty().getIRI().toString()) {
+                                    HashSet<OWLClass> set;
+                                    if (preComputedSubClasses.get(superClass.toString() + property) != null) {
+                                        set = preComputedSubClasses.get(superClass.toString() + property);
+                                    } else {
+                                        set = new HashSet<OWLClass>();
+                                        //set = Collections.synchronizedSet(new HashSet<OWLClass>());
+                                    }
+                                    set.add(subClass);
+                                    preComputedSubClasses.put(superClass.toString() + property, set);
+                                }
                             }
                         }
                     }
-                }
-                //We included the the classes of the root thing.
-                if(superClass.getSuperClasses(ontology).isEmpty()){
-                    HashSet<OWLClass> subClasses;
-                    if(preComputedSubClasses.containsKey(thing.toString())){
-                        subClasses = preComputedSubClasses.get(thing.toString());
-                    }else{
-                        subClasses = new HashSet<OWLClass>()
+                    if ((superClass!=null)&&(superClass.getSuperClasses(ontology).isEmpty())) {
+                        HashSet<OWLClass> subClasses;
+                        if (preComputedSubClasses.containsKey(thing.toString())) {
+                            subClasses = preComputedSubClasses.get(thing.toString());
+                        } else {
+                            subClasses = new HashSet<OWLClass>()
+                            //subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        }
+                        subClasses.add(superClass);
+                        preComputedSubClasses.put(thing.toString(), subClasses);
                     }
-                    subClasses.add(superClass);
-                    preComputedSubClasses.put(thing.toString(),subClasses);
                 }
             }
         }
-        System.out.println(preComputedSubClasses.get(thing.toString()))
-
     }
 
     public void serializeEquivalentClassesList(String fileOutPut){
@@ -370,6 +379,7 @@ public class RequestManager {
                 "ontologyURI": o.getOntologyID().getOntologyIRI().toString(),
                 "remainder": c.getIRI().getFragment(),
                 "label": null,
+                "annotations" :[],
                 "definition": null,
                 "deprecated": false
         ];
@@ -378,13 +388,30 @@ public class RequestManager {
             if(annotation.isDeprecatedIRIAnnotation()) {
                 info['deprecated'] = true;
             }
-            if(annotation.getProperty().isLabel()){
+            if(annotation.getValue() instanceof IRI){
+                IRI propIri = annotation.getProperty().getIRI();
+                IRI iri = (IRI)annotation.getValue();
+                info['annotations'].add([propIri.toString(),iri.toString()])
+            }else if(annotation.getValue() instanceof OWLLiteral) {
                 OWLLiteral val = (OWLLiteral) annotation.getValue();
-                info['label'] = val.getLiteral();
+                if(annotation.getProperty().isLabel()){
+                    info['label'] = val.getLiteral();
+                }
+                IRI propIri = annotation.getProperty().getIRI();
+                if (val.getLang().isEmpty()){
+                    info['annotations'].add([propIri.toString(), val.getLiteral()]);
+                } else {
+                    info['annotations'].add([propIri.toString(), val.getLiteral()+"@"+val.getLang()]);
+                }
             }
         }
         if (!info['deprecated']) {
             if (info['label'] != null) {
+                return(info);
+            }
+            //To include the owlThing node in the graph.
+            if(info["remainder"] == "owl:Thing"){
+                info['label'] = "owl:Thing";
                 return(info);
             }
         }

@@ -29,7 +29,7 @@ public class ProgressBar {
      * @param percentage Percentage of the process performed.
      * @param message Message to show.
      */
-    public static void printProgressBar(int percentage,String message){
+    public void printProgressBar(int percentage,String message){
         StringBuilder bar = new StringBuilder("[");
 
         for(int i = 0; i < 50; i++){

@@ -4,7 +4,6 @@ import org.jgrapht.Graph
 import org.jgrapht.ext.GraphMLExporter
 import org.jgrapht.ext.IntegerEdgeNameProvider
 import org.jgrapht.ext.IntegerNameProvider
-import show.ProgressBar
 import view.provider.EdgeLabelProvider
 import view.provider.VertexLabelProvider
 
@@ -48,7 +47,7 @@ public class GraphMLFormatter extends ViewFormat {
     public void serializeGraph(Graph graph){
         try{
             if ((graph != null)&&(fileOutPath!=null)) {
-                ProgressBar.printProgressBar(100, "serializing the graph...");
+                progressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
                 GraphMLExporter<HashMap, RelationshipEdge> exporter = new GraphMLExporter<HashMap, RelationshipEdge>(
                         new IntegerNameProvider(),new VertexLabelProvider(),new IntegerEdgeNameProvider(),new EdgeLabelProvider());
