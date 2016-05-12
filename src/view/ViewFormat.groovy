@@ -67,14 +67,14 @@ public abstract class ViewFormat {
      * the formatter provided.
      *
      * @param ontology The ontology that will be parsed
-     * @param reasoner The reasoner that will be used to go across the ontology.
+     * @param reasoners The list of reasoners that will be used to go across the ontology.
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
      *
      */
-    public void parseOntology(OWLOntology ontology,OWLReasoner reasoner, String[] properties,int nThreads) {
-        if((ontology!=null)&&(reasoner!=null)) {
+    public void parseOntology(OWLOntology ontology,List<OWLReasoner> reasoners, String[] properties,int nThreads) {
+        if((ontology!=null)&&(reasoners!=null)&&(!reasoners.isEmpty())) {
             properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSemanticSubClasses(ontology,reasoner,properties,nThreads);
+            requestManager.computedSemanticSubClasses(ontology,reasoners,properties,nThreads);
             Graph graph = this.buildGraph(ontology, properties);
             this.serializeGraph(graph);
         }

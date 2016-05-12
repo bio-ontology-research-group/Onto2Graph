@@ -1,6 +1,7 @@
 package tool
 
 import groovyx.gpars.GParsPool
+import org.apache.jena.riot.web.LangTag
 import org.semanticweb.owlapi.model.*
 import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.NodeSet
@@ -73,7 +74,7 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSemanticSubClasses(OWLOntology ontology,OWLReasoner reasoner, String[] properties,int nThreads){
+    public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, String[] properties,int nThreads){
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
@@ -85,22 +86,24 @@ public class RequestManager {
             classes.eachWithIndexParallel { clazz,classesIndex ->
                 progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
                 //we check if is a top class
-                HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
+                //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
+                HashSet<OWLClass> superClasses = reasoners.get(classesIndex%nThreads).getSuperClasses(clazz,true).getFlattened()
                 if((superClasses.size()==1)&&(superClasses.contains(factory.getOWLThing()))){
                     HashSet<OWLClass> subClasses;
                     if(preComputedSubClasses.containsKey(thing.toString())){
                         subClasses = preComputedSubClasses.get(thing.toString());
                     }else{
-                        subClasses = new HashSet<OWLClass>()
-                        //subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        //subClasses = new HashSet<OWLClass>()
+                        subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
                     }
                     subClasses.add(clazz);
                     preComputedSubClasses.put(thing.toString(),subClasses)
                 }
-                NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
+                //NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
+                NodeSet<OWLClass> nodeSubclasses = reasoners.get(classesIndex%nThreads).getSubClasses(clazz, true);
                 if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
-                    HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
-                    //HashSet<OWLClass> subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                    //HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
+                    HashSet<OWLClass> subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
                     nodeSubclasses.each { node ->
                         if (!node.getRepresentativeElement().isOWLNothing()) {
                             HashSet<OWLClass> entities = node.getEntities();
@@ -125,11 +128,13 @@ public class RequestManager {
                         if (property != null) {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
-                            NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+
+                            //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+                            NodeSet<OWLClass> nodeSubClassesProperty = reasoners.get(classesIndex%nThreads).getSubClasses(query, true);
 
                             if ((nodeSubClassesProperty != null) && (!nodeSubClassesProperty.isEmpty())) {
-                                HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
-                                //HashSet<OWLClass> subClassesProperty = Collections.synchronizedSet(new HashSet<OWLClass>());
+                                //HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
+                                HashSet<OWLClass> subClassesProperty = Collections.synchronizedSet(new HashSet<OWLClass>());
                                 nodeSubClassesProperty.each { node ->
                                     if (!node.getRepresentativeElement().isOWLNothing()) {
                                         HashSet<OWLClass> entities = node.getEntities();
@@ -169,6 +174,7 @@ public class RequestManager {
         int axiomsCounter = axioms.size();
         GParsPool.withPool(nThreads) {
             axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
+            //axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
                 /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
                     System.out.println(axiom.toString());
                 }*/
@@ -183,37 +189,40 @@ public class RequestManager {
                     OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom) axiom;
                     OWLClass superClass = null;
                     OWLClass subClass = null;
+                    //We avoid OWLObjectUnionOf, OWLObjectIntersection and OWLObjectEnumeration axioms.
                     if (subAxiom.getSubClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS) {
                         subClass = (OWLClass) subAxiom.getSubClass();
                     }
-                    if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS) {
-                        superClass = (OWLClass) subAxiom.getSuperClass();
-                        Set<OWLClass> set;
-                        if (preComputedSubClasses.get(superClass.toString()) != null) {
-                            set = preComputedSubClasses.get(superClass.toString());
-                        } else {
-                            set = new HashSet<OWLClass>();
-                            //set = Collections.synchronizedSet(new HashSet<OWLClass>());
-                        }
-                        set.add(subClass);
-                        preComputedSubClasses.put(superClass.toString(), set);
+                    if(subClass!=null) {
+                        if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OWL_CLASS) {
+                            superClass = (OWLClass) subAxiom.getSuperClass();
+                            Set<OWLClass> set;
+                            if (preComputedSubClasses.get(superClass.toString()) != null) {
+                                set = preComputedSubClasses.get(superClass.toString());
+                            } else {
+                                //set = new HashSet<OWLClass>();
+                                set = Collections.synchronizedSet(new HashSet<OWLClass>());
+                            }
+                            set.add(subClass);
+                            preComputedSubClasses.put(superClass.toString(), set);
 
-                    } else if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
-                        OWLObjectSomeValuesFrom someAxiom = (OWLObjectSomeValuesFrom) subAxiom.getSuperClass();
-                        //We avoid OWLObjectUnionOf, OWLObjectIntersection and OWLObjectEnumeration
-                        if(someAxiom.getFiller() instanceof OWLClass) {
-                            superClass = someAxiom.getFiller();
-                            properties.each { property ->
-                                if (property == someAxiom.getProperty().getNamedProperty().getIRI().toString()) {
-                                    HashSet<OWLClass> set;
-                                    if (preComputedSubClasses.get(superClass.toString() + property) != null) {
-                                        set = preComputedSubClasses.get(superClass.toString() + property);
-                                    } else {
-                                        set = new HashSet<OWLClass>();
-                                        //set = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        } else if (subAxiom.getSuperClass().getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
+                            OWLObjectSomeValuesFrom someAxiom = (OWLObjectSomeValuesFrom) subAxiom.getSuperClass();
+                            //We avoid OWLObjectUnionOf, OWLObjectIntersection and OWLObjectEnumeration
+                            if (someAxiom.getFiller() instanceof OWLClass) {
+                                superClass = someAxiom.getFiller();
+                                properties.each { property ->
+                                    if (property == someAxiom.getProperty().getNamedProperty().getIRI().toString()) {
+                                        HashSet<OWLClass> set;
+                                        if (preComputedSubClasses.get(superClass.toString() + property) != null) {
+                                            set = preComputedSubClasses.get(superClass.toString() + property);
+                                        } else {
+                                            //set = new HashSet<OWLClass>();
+                                            set = Collections.synchronizedSet(new HashSet<OWLClass>());
+                                        }
+                                        set.add(subClass);
+                                        preComputedSubClasses.put(superClass.toString() + property, set);
                                     }
-                                    set.add(subClass);
-                                    preComputedSubClasses.put(superClass.toString() + property, set);
                                 }
                             }
                         }
@@ -223,8 +232,8 @@ public class RequestManager {
                         if (preComputedSubClasses.containsKey(thing.toString())) {
                             subClasses = preComputedSubClasses.get(thing.toString());
                         } else {
-                            subClasses = new HashSet<OWLClass>()
-                            //subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                            //subClasses = new HashSet<OWLClass>()
+                            subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
                         }
                         subClasses.add(superClass);
                         preComputedSubClasses.put(thing.toString(), subClasses);
@@ -398,10 +407,11 @@ public class RequestManager {
                     info['label'] = val.getLiteral();
                 }
                 IRI propIri = annotation.getProperty().getIRI();
-                if (val.getLang().isEmpty()){
-                    info['annotations'].add([propIri.toString(), val.getLiteral()]);
-                } else {
+                //we control the misdefined languages.
+                if ((!val.getLang().isEmpty())&&(LangTag.parse(val.getLang())!=null)){
                     info['annotations'].add([propIri.toString(), val.getLiteral()+"@"+val.getLang()]);
+                } else {
+                    info['annotations'].add([propIri.toString(), val.getLiteral()]);
                 }
             }
         }

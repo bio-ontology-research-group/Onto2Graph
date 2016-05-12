@@ -1,6 +1,7 @@
 package view
 
 import org.apache.jena.rdf.model.*
+import org.apache.jena.riot.web.LangTag
 import org.apache.jena.vocabulary.RDFS
 import org.jgrapht.Graph
 
@@ -35,6 +36,22 @@ public class RDFXMLFormatter extends ViewFormat{
      */
     public RDFXMLFormatter(String fileOutPath,boolean equivalentClass){
         super(fileOutPath,equivalentClass);
+    }
+
+    private Literal createLiteral(Model model, String literal){
+        Literal literal1 = null;
+        if(literal.contains("@")){
+            String[] props = literal.split("@");
+            //We control the misdefined languages.
+            if((props.length==2)&&(!props[1].isEmpty())&&(LangTag.parse(props[1]))) {
+                literal1 = model.createLiteral(props[0], props[1])
+            }else{
+                literal1 = model.createLiteral(literal)
+            }
+        }else{
+            literal1 = model.createLiteral(literal)
+        }
+        return(literal1);
     }
 
     /**
@@ -73,27 +90,19 @@ public class RDFXMLFormatter extends ViewFormat{
                     rootClass.addLiteral(RDFS.label,rootLabel)
                     subClass.addLiteral(RDFS.label,subLabel)
 
-                    rootEdge.get("annotations").each { annotation ->
-                        Property annProperty = model.createProperty(annotation[0])
-                        Literal literal;
-                        if(annotation[1].contains("@")){
-                            String[] props = annotation[1].split("@");
-                            literal = model.createLiteral(props[0],props[1])
-                        }else{
-                            literal = model.createLiteral(annotation[1])
+                    rootEdge.get("annotations").each { ArrayList<String> annotation ->
+                        if(annotation.size()==2) {
+                            Property annProperty = model.createProperty(annotation[0])
+                            Literal literal = createLiteral(model,annotation[1])
+                            rootClass.addLiteral(annProperty, literal);
                         }
-                        rootClass.addLiteral(annProperty,literal);
                     }
-                    subEdge.get("annotations").each{ annotation->
-                        Property annProperty = model.createProperty(annotation[0])
-                        Literal literal;
-                        if(annotation[1].contains("@")){
-                            String[] props = annotation[1].split("@");
-                            literal = model.createLiteral(props[0],props[1])
-                        }else{
-                            literal = model.createLiteral(annotation[1])
+                    subEdge.get("annotations").each{ ArrayList<String> annotation->
+                        if(annotation.size()==2) {
+                            Property annProperty = model.createProperty(annotation[0])
+                            Literal literal = createLiteral(model,annotation[1])
+                            subClass.addLiteral(annProperty, literal)
                         }
-                        subClass.addLiteral(annProperty,literal)
                     }
 
                     model.add(subClass, objProperty, rootClass);

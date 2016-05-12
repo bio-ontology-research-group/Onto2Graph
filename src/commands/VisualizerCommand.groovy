@@ -29,7 +29,7 @@ public class VisualizerCommand implements Command{
     /**
      * The reasoner that is used to infer the subclasses.
      */
-    protected OWLReasoner reasoner = null;
+    protected List<OWLReasoner> reasoners = null;
     /**
      * The ontology that will be parsed in a specific format.
      */
@@ -58,16 +58,16 @@ public class VisualizerCommand implements Command{
 
     /**
      * Constructor of the class.
-     * @param reasoner The reasoner that will be used to infer the subclasses.
+     * @param reasoners The list of reasoners that will be used to infer the subclasses.
      * @param ontology the ontology that will be parsed in a specific format.
      * @param setFormatterType The list of formatters that will be used to transform the ontology.
      * @param outpath The outpath of file.
      * @param equivalentClass Flag that contols whether (TRUE) or not (FALSE) the equivalent classes are going to be merged as unique node.
      * @param properties The list of Object Properties that will be used during the transformation.
      */
-    public VisualizerCommand(OWLReasoner reasoner,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath,
+    public VisualizerCommand(List<OWLReasoner> reasoners,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath,
                              boolean equivalentClasses, String[] properties, int nThreads){
-        this.reasoner = reasoner;
+        this.reasoners = reasoners;
         this.ontology = ontology;
         this.setFormatterType = setFormatterType;
         this.equivalentClass = equivalentClasses;
@@ -98,10 +98,11 @@ public class VisualizerCommand implements Command{
                 viewFormat = new OntoFuncFormatter(outpath, equivalentClass);
             }
             if (viewFormat != null) {
-                if(reasoner == null){//SYNTACTIC REASONER
+                //if(reasoner == null){//SYNTACTIC REASONER
+                if(reasoners.isEmpty()){
                     viewFormat.parseOntology(ontology,properties,nThreads);
                 }else{
-                    viewFormat.parseOntology(ontology, reasoner, properties,nThreads);
+                    viewFormat.parseOntology(ontology, reasoners, properties,nThreads);
                 }
             }
         }

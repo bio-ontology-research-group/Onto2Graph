@@ -72,15 +72,16 @@ public class GraphicGeneratorTool {
      * @param outputPath File path where the graph will be serialized.
      * @param objectProperties A set of objects properties that will be used during the parse process.
      */
-    public static void runGraphGenerator(OWLReasoner reasoner, OWLOntology ontology, Set<FormatterType> setFormatterType,
+    public static void runGraphGenerator(List<OWLReasoner> reasoners, OWLOntology ontology, Set<FormatterType> setFormatterType,
                                          String outputPath,boolean equivalentClasses,String[] objectProperties,int nThreads){
         System.out.println("PARAMETERS:");
-        if(reasoner!=null) {
-            System.out.println("Reasoner:" + reasoner.toString());
+        //if(reasoner!=null) {
+        if(!reasoners.isEmpty()){
+            System.out.println("Reasoner:" + reasoners.get(0).toString());
         }
         System.out.println("Formatter:"+setFormatterType);
         System.out.println("Object properties:"+objectProperties.toString());
-        VisualizerCommand command = new VisualizerCommand(reasoner,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties,nThreads);
+        VisualizerCommand command = new VisualizerCommand(reasoners,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties,nThreads);
         command.executeCommand();
     }
 
@@ -290,6 +291,7 @@ public class GraphicGeneratorTool {
         try{
             OWLOntology ontology = null;
             OWLReasoner reasoner = null;
+            List<OWLReasoner> reasoners = Collections.synchronizedList(new ArrayList<OWLReasoner>());
             String outputPath = null;
             Set<FormatterType> setFormatterType = null;
             String[] properties = null;
@@ -309,11 +311,28 @@ public class GraphicGeneratorTool {
                     outputPath = System.getProperty("user.dir")+System.getProperty("file.separator")+"graph";
                 }
             }
-            if(commandLine.hasOption("r")){
-                String sReasoner = commandLine.getOptionValue("r");
-                reasoner = getReasoner(sReasoner,ontology);
+
+            //First we need to know how many threads are going to be used, then we create an array of reasoners in order
+            // to enable the paralelization of the subclasses precomputation.
+            if(commandLine.hasOption("nt")){
+                nThreads = Integer.parseInt(commandLine.getOptionValue("nt"));
             }else{
-                reasoner = getReasoner("DEFAULT",ontology);
+                nThreads = 4;
+            }
+
+            String sReasoner=null;
+            if(commandLine.hasOption("r")){
+                sReasoner = commandLine.getOptionValue("r");
+                //getReasoner(sReasoner, ontology);
+            }else{
+                sReasoner = "DEFAULT"
+                //reasoner = getReasoner("DEFAULT",ontology);
+            }
+            for(int i=0;i<nThreads;i++) {
+                reasoner = getReasoner(sReasoner, ontology);
+                if(reasoner!=null) {
+                    reasoners.add(reasoner);
+                }
             }
 
             if(commandLine.hasOption("f")){
@@ -350,13 +369,8 @@ public class GraphicGeneratorTool {
                     }
                 }
             }
-            if(commandLine.hasOption("nt")){
-                nThreads = Integer.parseInt(commandLine.getOptionValue("nt"));
-            }else{
-                nThreads = 4;
-            }
             if((ontology!=null)&&(outputPath!=null)&&(setFormatterType!=null)) {
-                runGraphGenerator(reasoner,ontology, setFormatterType,outputPath,equivalentClasses, properties,nThreads);
+                runGraphGenerator(reasoners,ontology, setFormatterType,outputPath,equivalentClasses, properties,nThreads);
             }else{
                 if(ontology==null){
                     System.out.println("The ontology was not given");
