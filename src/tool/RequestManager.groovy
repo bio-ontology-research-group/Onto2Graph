@@ -39,7 +39,7 @@ public class RequestManager {
     /**
      * List of computed subclasses.
      */
-    private ConcurrentHashMap<String,HashSet> preComputedSubClasses = null;
+    private ConcurrentHashMap<String,Set> preComputedSubClasses = null;
 
     /**
      * List of equivalent classes that have not been included.
@@ -82,11 +82,13 @@ public class RequestManager {
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
         OWLClass nothing = factory.getOWLNothing();
         OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+
         GParsPool.withPool(nThreads) {
             classes.eachWithIndexParallel { clazz,classesIndex ->
                 progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
                 //we check if is a top class
                 //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
+                //We check if classes is related to owlThing to include this relationship.
                 HashSet<OWLClass> superClasses = reasoners.get(classesIndex%nThreads).getSuperClasses(clazz,true).getFlattened()
                 if((superClasses.size()==1)&&(superClasses.contains(factory.getOWLThing()))){
                     HashSet<OWLClass> subClasses;
@@ -100,25 +102,19 @@ public class RequestManager {
                     preComputedSubClasses.put(thing.toString(),subClasses)
                 }
                 //NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
-                NodeSet<OWLClass> nodeSubclasses = reasoners.get(classesIndex%nThreads).getSubClasses(clazz, true);
-                if ((nodeSubclasses != null) && (!nodeSubclasses.isEmpty())) {
-                    //HashSet<OWLClass> subClasses = new HashSet<OWLClass>();
-                    HashSet<OWLClass> subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
-                    nodeSubclasses.each { node ->
-                        if (!node.getRepresentativeElement().isOWLNothing()) {
-                            HashSet<OWLClass> entities = node.getEntities();
-                            entities.remove(nothing);
-                            subClasses.addAll(entities);
-                            if ((!equivalentClasses) && (entities.size() > 1)) {
-                            //We do not want to have equivalent classes in the graph that is why we collect them
-                                entities.each { entity ->
-                                    if (entity != node.getRepresentativeElement()) {
-                                        equivalentList.put(entity, node.getRepresentativeElement());
-                                    }
-                                }
-                            }
+                if(!equivalentClasses) {
+                    Set<OWLClass> equivalentEntities = reasoners.get(classesIndex % nThreads).getEquivalentClasses(clazz).getEntities();
+                    equivalentEntities.remove(nothing);
+                    equivalentEntities.each { entity ->
+                        if (entity != clazz) {
+                            equivalentList.put(entity, clazz);
                         }
                     }
+                }
+
+                Set<OWLClass> subClasses = reasoners.get(classesIndex%nThreads).getSubClasses(clazz, true).getFlattened();
+
+                if ((subClasses != null) && (!subClasses.isEmpty())) {
                     preComputedSubClasses.put(clazz.toString(), subClasses);
                 }
                 if ((properties != null) && (properties.size() > 0)) {
@@ -130,28 +126,19 @@ public class RequestManager {
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
 
                             //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
-                            NodeSet<OWLClass> nodeSubClassesProperty = reasoners.get(classesIndex%nThreads).getSubClasses(query, true);
-
-                            if ((nodeSubClassesProperty != null) && (!nodeSubClassesProperty.isEmpty())) {
-                                //HashSet<OWLClass> subClassesProperty = new HashSet<OWLClass>();
-                                HashSet<OWLClass> subClassesProperty = Collections.synchronizedSet(new HashSet<OWLClass>());
-                                nodeSubClassesProperty.each { node ->
-                                    if (!node.getRepresentativeElement().isOWLNothing()) {
-                                        HashSet<OWLClass> entities = node.getEntities();
-                                        entities.remove(nothing);
-                                        subClassesProperty.addAll(entities);
-                                        if ((!equivalentClasses) && (entities.size() > 1)) {
-                                            //We do not want to add equivalent classes in the graph that is why we collect them
-                                            entities.each { entity ->
-                                                if (entity != node.getRepresentativeElement()) {
-                                                    equivalentList.put(entity, node.getRepresentativeElement());
-                                                }
-                                            }
-                                        }
+                            if(!equivalentClasses) {
+                                Set<OWLClass> equivalentPropEntities = reasoners.get(classesIndex % nThreads).getEquivalentClasses(query).getEntities();
+                                equivalentPropEntities.remove(nothing);
+                                equivalentPropEntities.each { entity ->
+                                    if (entity != clazz) {
+                                        equivalentList.put(entity, clazz);
                                     }
                                 }
-                                preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                             }
+
+                            Set<OWLClass> subClassesProperty = reasoners.get(classesIndex%nThreads).getSubClasses(query, true).getFlattened();
+                            preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
+
                         }
                     }
                 }

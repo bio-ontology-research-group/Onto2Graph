@@ -109,7 +109,6 @@ public class RDFXMLFormatter extends ViewFormat{
 
                 }
                 progressBar.printProgressBar(100, "serializing the graph...");
-                requestManager.serializeEquivalentClassesList(fileOutPath+"_equivalent_classes.txt");
                 model.write(new FileOutputStream(fileOutPath+".rdfxml"), "RDF/XML");
             }
         }catch(Exception e){
