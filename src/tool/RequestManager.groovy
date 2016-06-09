@@ -89,19 +89,14 @@ public class RequestManager {
         reasoners = Collections.synchronizedList(reasoners);
 
         GParsPool.withPool(nThreads) {
-            classes.eachParallel { clazz ->
+            classes.eachWithIndexParallel { clazz, index ->
                 progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)), "precomputing classes...");
                 //we check if is a top class
                 //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
                 //We check if classes is related to owlThing to include this relationship.
-                OWLReasoner reasoner = null;
-                //To control the index of the circular array which contains the reasoners.
-                synchronized (reasonerIndex){
-                    reasoner = reasoners.get(reasonerIndex%nThreads);
-                    reasonerIndex++;
-                }
+                OWLReasoner reasoner = reasoners.get(index%nThreads);
                 synchronized (reasoner){
-                    //OWLReasoner reasoner = reasoners.get(reasonerIndex.get()%nThreads);
+                    System.out.println("IN REASONER:"+reasoner);
                     OWLDataFactory factory = reasoner.getRootOntology().getOWLOntologyManager().getOWLDataFactory();
                     OWLClass nothing = factory.getOWLNothing();
                     OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
@@ -159,6 +154,7 @@ public class RequestManager {
                             }
                         }
                     }
+                    System.out.println("OUT REASONER:"+reasoner);
                 }
             }
         }
