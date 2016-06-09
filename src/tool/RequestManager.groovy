@@ -85,8 +85,12 @@ public class RequestManager {
         AtomicInteger reasonerIndex = new AtomicInteger(0);
 
         //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
-        ArrayList<String> properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
-        reasoners = Collections.synchronizedList(reasoners);
+        if(arrayProperties!=null) {
+            ArrayList<String> properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
+        }
+        if(reasoners!=null) {
+            reasoners = Collections.synchronizedList(reasoners);
+        }
 
         GParsPool.withPool(nThreads) {
             classes.eachWithIndexParallel { clazz, index ->
