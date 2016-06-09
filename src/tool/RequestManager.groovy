@@ -12,6 +12,7 @@ import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -61,10 +62,10 @@ public class RequestManager {
      */
     private RequestManager(boolean equivalentClasses){
         progressBar = new ProgressBar();
-        preComputedSubClasses = new HashMap<String,HashSet>();
+        preComputedSubClasses = new ConcurrentHashMap<String,HashSet>();
         this.equivalentClasses = equivalentClasses;
         if(!equivalentClasses){
-            equivalentList = new HashMap<String,String>();
+            equivalentList = new ConcurrentHashMap<String,String>();
         }
     }
 
@@ -72,73 +73,90 @@ public class RequestManager {
      * It computes the subclases from an ontology given.
      * @param ontology The ontology used by the reasoner to compute the subclases.
      * @param reasoner The reasoner used to infer subclasses.
-     * @param properties The object properties of the ontology that will be used during the compute process.
+     * @param arrayProperties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, String[] properties,int nThreads){
+    public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, String[] arrayProperties,int nThreads){
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
         int classesCounter = classes.size();
-        OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-        OWLClass nothing = factory.getOWLNothing();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+
+        AtomicInteger classesIndex = new AtomicInteger(0);
+        Integer reasonerIndex = new Integer(0);
+
+        //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
+        ArrayList<String> properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
+        reasoners = Collections.synchronizedList(reasoners);
 
         GParsPool.withPool(nThreads) {
-            classes.eachWithIndexParallel { clazz,classesIndex ->
-                progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "precomputing classes...");
+            classes.eachParallel { clazz ->
+                progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)), "precomputing classes...");
                 //we check if is a top class
                 //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
                 //We check if classes is related to owlThing to include this relationship.
-                HashSet<OWLClass> superClasses = reasoners.get(classesIndex%nThreads).getSuperClasses(clazz,true).getFlattened()
-                if((superClasses.size()==1)&&(superClasses.contains(factory.getOWLThing()))){
-                    HashSet<OWLClass> subClasses;
-                    if(preComputedSubClasses.containsKey(thing.toString())){
-                        subClasses = preComputedSubClasses.get(thing.toString());
-                    }else{
-                        //subClasses = new HashSet<OWLClass>()
-                        subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
-                    }
-                    subClasses.add(clazz);
-                    preComputedSubClasses.put(thing.toString(),subClasses)
+                OWLReasoner reasoner = null;
+                //To control the index of the circular array which contains the reasoners.
+                synchronized (reasonerIndex){
+                    reasoner = reasoners.get(reasonerIndex%nThreads);
+                    reasonerIndex++;
                 }
-                //NodeSet<OWLClass> nodeSubclasses = reasoner.getSubClasses(clazz, true);
-                if(!equivalentClasses) {
-                    Set<OWLClass> equivalentEntities = reasoners.get(classesIndex % nThreads).getEquivalentClasses(clazz).getEntities();
-                    equivalentEntities.remove(nothing);
-                    equivalentEntities.each { entity ->
-                        if (entity != clazz) {
-                            equivalentList.put(entity, clazz);
+                synchronized (reasoner){
+                    //OWLReasoner reasoner = reasoners.get(reasonerIndex.get()%nThreads);
+                    OWLDataFactory factory = reasoner.getRootOntology().getOWLOntologyManager().getOWLDataFactory();
+                    OWLClass nothing = factory.getOWLNothing();
+                    OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+
+                    Set<OWLClass> superClasses = reasoner.getSuperClasses(clazz, true).getFlattened();
+
+                    if ((superClasses != null) && (superClasses.size() == 1) && (superClasses.contains(factory.getOWLThing()))) {
+                        HashSet<OWLClass> subClasses;
+                        if (preComputedSubClasses.containsKey(thing.toString())) {
+                            subClasses = preComputedSubClasses.get(thing.toString());
+                        } else {
+                            //subClasses = new HashSet<OWLClass>()
+                            subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        }
+                        subClasses.add(clazz);
+                        preComputedSubClasses.put(thing.toString(), subClasses)
+                    }
+
+                    if (!equivalentClasses) {
+                        Set<OWLClass> equivalentEntities = null;
+                        equivalentEntities = reasoner.getEquivalentClasses(clazz).getEntities();
+                        equivalentEntities.remove(nothing);
+                        equivalentEntities.each { entity ->
+                            if (entity != clazz) {
+                                equivalentList.put(entity.toString(), clazz);
+                            }
                         }
                     }
-                }
 
-                Set<OWLClass> subClasses = reasoners.get(classesIndex%nThreads).getSubClasses(clazz, true).getFlattened();
+                    Set<OWLClass> subClasses = reasoner.getSubClasses(clazz, true).getFlattened();
+                    if ((subClasses != null) && (!subClasses.isEmpty())) {
+                        preComputedSubClasses.put(clazz.toString(), subClasses);
+                    }
+                    if ((properties != null) && (!properties.isEmpty())) {
+                        for (String property : properties) {
+                            if (property != null) {
+                                OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
+                                OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
 
-                if ((subClasses != null) && (!subClasses.isEmpty())) {
-                    preComputedSubClasses.put(clazz.toString(), subClasses);
-                }
-                if ((properties != null) && (properties.size() > 0)) {
-                    String property;
-                    for (int i = 0; i < properties.length; i++) {
-                        property = properties[i];
-                        if (property != null) {
-                            OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
-                            OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
-
-                            //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
-                            if(!equivalentClasses) {
-                                Set<OWLClass> equivalentPropEntities = reasoners.get(classesIndex % nThreads).getEquivalentClasses(query).getEntities();
-                                equivalentPropEntities.remove(nothing);
-                                equivalentPropEntities.each { entity ->
-                                    if (entity != clazz) {
-                                        equivalentList.put(entity, clazz);
+                                //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+                                if (!equivalentClasses) {
+                                    Set<OWLClass> equivalentPropEntities = reasoner.getEquivalentClasses(query).getEntities();
+                                    equivalentPropEntities.remove(nothing);
+                                    equivalentPropEntities.each { entity ->
+                                        if (entity != clazz) {
+                                            equivalentList.put(entity.toString(), clazz);
+                                        }
                                     }
                                 }
+                                Set<OWLClass> subClassesProperty =null;
+                                subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
+                                if ((subClassesProperty != null) && (!subClassesProperty.isEmpty())) {
+                                    preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
+                                }
                             }
-
-                            Set<OWLClass> subClassesProperty = reasoners.get(classesIndex%nThreads).getSubClasses(query, true).getFlattened();
-                            preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
-
                         }
                     }
                 }

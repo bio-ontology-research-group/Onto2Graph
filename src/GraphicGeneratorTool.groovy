@@ -75,12 +75,12 @@ public class GraphicGeneratorTool {
     public static void runGraphGenerator(List<OWLReasoner> reasoners, OWLOntology ontology, Set<FormatterType> setFormatterType,
                                          String outputPath,boolean equivalentClasses,String[] objectProperties,int nThreads){
         System.out.println("PARAMETERS:");
-        //if(reasoner!=null) {
-        if(!reasoners.isEmpty()){
+        if((reasoners!=null)&&(!reasoners.isEmpty())) {
             System.out.println("Reasoner:" + reasoners.get(0).toString());
         }
         System.out.println("Formatter:"+setFormatterType);
         System.out.println("Object properties:"+objectProperties.toString());
+        System.out.println("Number of threads:"+nThreads);
         VisualizerCommand command = new VisualizerCommand(reasoners,ontology,setFormatterType,outputPath,equivalentClasses,objectProperties,nThreads);
         command.executeCommand();
     }
@@ -291,7 +291,7 @@ public class GraphicGeneratorTool {
         try{
             OWLOntology ontology = null;
             OWLReasoner reasoner = null;
-            List<OWLReasoner> reasoners = Collections.synchronizedList(new ArrayList<OWLReasoner>());
+            List<OWLReasoner> reasoners = new ArrayList<OWLReasoner>();
             String outputPath = null;
             Set<FormatterType> setFormatterType = null;
             String[] properties = null;
@@ -323,14 +323,15 @@ public class GraphicGeneratorTool {
             String sReasoner=null;
             if(commandLine.hasOption("r")){
                 sReasoner = commandLine.getOptionValue("r");
-                //getReasoner(sReasoner, ontology);
+                //reasoner = getReasoner(sReasoner, ontology);
             }else{
                 sReasoner = "DEFAULT"
                 //reasoner = getReasoner("DEFAULT",ontology);
             }
-            for(int i=0;i<nThreads;i++) {
-                reasoner = getReasoner(sReasoner, ontology);
-                if(reasoner!=null) {
+
+            for(int i=0;i<nThreads;i++){
+                reasoner = getReasoner(sReasoner,ontology);
+                if(reasoner!=null){
                     reasoners.add(reasoner);
                 }
             }

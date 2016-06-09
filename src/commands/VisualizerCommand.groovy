@@ -27,7 +27,7 @@ import view.*
  */
 public class VisualizerCommand implements Command{
     /**
-     * The reasoner that is used to infer the subclasses.
+     * The list of reasoners that is used to infer the subclasses.
      */
     protected List<OWLReasoner> reasoners = null;
     /**
@@ -98,8 +98,8 @@ public class VisualizerCommand implements Command{
                 viewFormat = new OntoFuncFormatter(outpath, equivalentClass);
             }
             if (viewFormat != null) {
-                //if(reasoner == null){//SYNTACTIC REASONER
-                if(reasoners.isEmpty()){
+                if((reasoners == null)||(reasoners.isEmpty())){
+                //if(reasoners == null){//SYNTACTIC REASONER
                     viewFormat.parseOntology(ontology,properties,nThreads);
                 }else{
                     viewFormat.parseOntology(ontology, reasoners, properties,nThreads);
