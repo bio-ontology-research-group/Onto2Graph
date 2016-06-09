@@ -174,6 +174,8 @@ public class RequestManager {
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
         OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
         int axiomsCounter = axioms.size();
+        AtomicInteger classesIndex = new AtomicInteger(0);
+
         GParsPool.withPool(nThreads) {
             axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
             //axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
@@ -186,7 +188,7 @@ public class RequestManager {
                         counter++;
                     }
                 }*/
-                progressBar.printProgressBar((int) Math.round((axiomsIndex * 100) / (axiomsCounter)), "precomputing axioms...");
+                progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (axiomsCounter)),"precomputing axioms...");
                 if (axiom.getAxiomType() == AxiomType.SUBCLASS_OF) {
                     OWLSubClassOfAxiom subAxiom = (OWLSubClassOfAxiom) axiom;
                     OWLClass superClass = null;
