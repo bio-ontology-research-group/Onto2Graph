@@ -79,29 +79,29 @@ public class RequestManager {
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
-        int classesCounter = classes.size();
-
-        AtomicInteger classesIndex = new AtomicInteger(0);
-        AtomicInteger reasonerIndex = new AtomicInteger(0);
 
         //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
         if(arrayProperties!=null) {
             ArrayList<String> properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
         }
-        if(reasoners!=null) {
-            reasoners = Collections.synchronizedList(reasoners);
-        }
+        reasoners = Collections.synchronizedList(reasoners);
 
         GParsPool.withPool(nThreads) {
-            classes.eachWithIndexParallel { clazz, index ->
+            int classesCounter = classes.size();
+            int reasonersCounter = reasoners.size();
+            AtomicInteger classesIndex = new AtomicInteger(0);
+            AtomicInteger reasonerIndex = new AtomicInteger(0);
+
+            classes.eachWithIndex { clazz, index ->
                 progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)),"precomputing classes...");
                 //we check if is a top class
                 //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
                 //We check if classes is related to owlThing to include this relationship.
-                OWLReasoner reasoner = reasoners.get(reasonerIndex.getAndIncrement()%nThreads);
+                OWLReasoner reasoner = reasoners.get(index % reasonersCounter);
+
                 OWLDataFactory factory = reasoner.getRootOntology().getOWLOntologyManager().getOWLDataFactory();
                 OWLClass nothing = factory.getOWLNothing();
-                OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+                OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI() + "/owl:Thing"))
 
                 Set<OWLClass> superClasses = reasoner.getSuperClasses(clazz, true).getFlattened();
 
@@ -129,6 +129,7 @@ public class RequestManager {
                 }
 
                 Set<OWLClass> subClasses = reasoner.getSubClasses(clazz, true).getFlattened();
+
                 if ((subClasses != null) && (!subClasses.isEmpty())) {
                     preComputedSubClasses.put(clazz.toString(), subClasses);
                 }
@@ -148,8 +149,8 @@ public class RequestManager {
                                     }
                                 }
                             }
-                            Set<OWLClass> subClassesProperty =null;
-                            subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
+
+                            Set<OWLClass> subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
                             if ((subClassesProperty != null) && (!subClassesProperty.isEmpty())) {
                                 preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                             }

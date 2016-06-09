@@ -329,7 +329,7 @@ public class GraphicGeneratorTool {
                 //reasoner = getReasoner("DEFAULT",ontology);
             }
 
-            for(int i=0;i<nThreads;i++){
+            for(int i=0;i<(nThreads*2);i++){
                 reasoner = getReasoner(sReasoner,ontology);
                 if(reasoner!=null){
                     reasoners.add(reasoner);
