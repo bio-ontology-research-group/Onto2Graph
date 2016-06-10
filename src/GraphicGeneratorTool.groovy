@@ -329,6 +329,7 @@ public class GraphicGeneratorTool {
                 //reasoner = getReasoner("DEFAULT",ontology);
             }
 
+            //We create an array of reasoners which will exactly contain the double number of reasoners than configured threads
             for(int i=0;i<(nThreads*2);i++){
                 reasoner = getReasoner(sReasoner,ontology);
                 if(reasoner!=null){

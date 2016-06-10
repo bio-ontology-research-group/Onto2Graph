@@ -79,10 +79,10 @@ public class RequestManager {
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
-
+        ArrayList<String> properties = null;
         //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
         if(arrayProperties!=null) {
-            ArrayList<String> properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
+            properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
         }
         reasoners = Collections.synchronizedList(reasoners);
 
@@ -90,7 +90,6 @@ public class RequestManager {
             int classesCounter = classes.size();
             int reasonersCounter = reasoners.size();
             AtomicInteger classesIndex = new AtomicInteger(0);
-            AtomicInteger reasonerIndex = new AtomicInteger(0);
 
             classes.eachWithIndex { clazz, index ->
                 progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)),"precomputing classes...");
@@ -176,8 +175,11 @@ public class RequestManager {
         int axiomsCounter = axioms.size();
         AtomicInteger classesIndex = new AtomicInteger(0);
 
+        nThreads=2;
+
         GParsPool.withPool(nThreads) {
-            axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
+            //axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
+            axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
             //axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
                 /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
                     System.out.println(axiom.toString());
@@ -238,6 +240,15 @@ public class RequestManager {
                         } else {
                             //subClasses = new HashSet<OWLClass>()
                             subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
+                        }
+                        for (OWLAnnotation annotation : EntitySearcher.getAnnotations(superClass, ontology)) {
+                            if(annotation.getValue() instanceof OWLLiteral) {
+                                OWLLiteral val = (OWLLiteral) annotation.getValue();
+                                if(annotation.getProperty().isLabel()){
+                                    System.out.println(val.getLiteral())
+                                    break;
+                                }
+                            }
                         }
                         subClasses.add(superClass);
                         preComputedSubClasses.put(thing.toString(), subClasses);
@@ -363,6 +374,7 @@ public class RequestManager {
     public Set classes2info(Set<OWLClass> classes, OWLOntology o) {
         ArrayList result = new ArrayList<HashMap>();
         HashMap info;
+
         for(def c : classes) {
             info = class2info(c,o);
             if(info!=null){
