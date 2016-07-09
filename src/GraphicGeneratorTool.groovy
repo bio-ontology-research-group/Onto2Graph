@@ -1,5 +1,7 @@
 import commands.VisualizerCommand
 import org.apache.commons.cli.*
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 import org.semanticweb.HermiT.Reasoner
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
 import org.semanticweb.owlapi.apibinding.OWLManager
@@ -13,6 +15,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory
 import view.FormatterType
 
+import java.util.logging.LogManager
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -289,6 +292,8 @@ public class GraphicGeneratorTool {
     public static void main (String[] args){
 
         try{
+            //we disable the logs.
+            Logger.getRootLogger().setLevel(Level.OFF);
             OWLOntology ontology = null;
             OWLReasoner reasoner = null;
             List<OWLReasoner> reasoners = new ArrayList<OWLReasoner>();

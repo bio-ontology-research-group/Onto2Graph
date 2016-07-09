@@ -7,6 +7,7 @@ import org.semanticweb.owlapi.reasoner.BufferingMode
 import org.semanticweb.owlapi.reasoner.NodeSet
 import org.semanticweb.owlapi.reasoner.OWLReasoner
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration
+import org.semanticweb.owlapi.reasoner.impl.OWLClassNodeSet
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
@@ -91,19 +92,21 @@ public class RequestManager {
             int reasonersCounter = reasoners.size();
             AtomicInteger classesIndex = new AtomicInteger(0);
 
-            classes.eachWithIndex { clazz, index ->
+            classes.eachWithIndexParallel { clazz, index ->
                 progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)),"precomputing classes...");
-                //we check if is a top class
-                //HashSet<OWLClass> superClasses = reasoner.getSuperClasses(clazz,true).getFlattened()
-                //We check if classes is related to owlThing to include this relationship.
+
                 OWLReasoner reasoner = reasoners.get(index % reasonersCounter);
 
                 OWLDataFactory factory = reasoner.getRootOntology().getOWLOntologyManager().getOWLDataFactory();
                 OWLClass nothing = factory.getOWLNothing();
                 OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI() + "/owl:Thing"))
 
-                Set<OWLClass> superClasses = reasoner.getSuperClasses(clazz, true).getFlattened();
-
+                //we check if is a top class
+                //We check if classes is related to owlThing to include this relationship.
+                Set<OWLClass> superClasses = null;
+                synchronized (reasoner) {
+                    superClasses = reasoner.getSuperClasses(clazz, true).getFlattened();
+                }
                 if ((superClasses != null) && (superClasses.size() == 1) && (superClasses.contains(factory.getOWLThing()))) {
                     HashSet<OWLClass> subClasses;
                     if (preComputedSubClasses.containsKey(thing.toString())) {
@@ -118,7 +121,9 @@ public class RequestManager {
 
                 if (!equivalentClasses) {
                     Set<OWLClass> equivalentEntities = null;
-                    equivalentEntities = reasoner.getEquivalentClasses(clazz).getEntities();
+                    synchronized (reasoner) {
+                        equivalentEntities = reasoner.getEquivalentClasses(clazz).getEntities();
+                    }
                     equivalentEntities.remove(nothing);
                     equivalentEntities.each { entity ->
                         if (entity != clazz) {
@@ -126,8 +131,10 @@ public class RequestManager {
                         }
                     }
                 }
-
-                Set<OWLClass> subClasses = reasoner.getSubClasses(clazz, true).getFlattened();
+                Set<OWLClass> subClasses=null;
+                synchronized (reasoner) {
+                    subClasses = reasoner.getSubClasses(clazz, true).getFlattened();
+                }
 
                 if ((subClasses != null) && (!subClasses.isEmpty())) {
                     preComputedSubClasses.put(clazz.toString(), subClasses);
@@ -140,7 +147,10 @@ public class RequestManager {
 
                             //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
                             if (!equivalentClasses) {
-                                Set<OWLClass> equivalentPropEntities = reasoner.getEquivalentClasses(query).getEntities();
+                                Set<OWLClass> equivalentPropEntities = null;
+                                synchronized (reasoner){
+                                    equivalentPropEntities = reasoner.getEquivalentClasses(query).getEntities();
+                                }
                                 equivalentPropEntities.remove(nothing);
                                 equivalentPropEntities.each { entity ->
                                     if (entity != clazz) {
@@ -149,13 +159,17 @@ public class RequestManager {
                                 }
                             }
 
-                            Set<OWLClass> subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
+                            Set<OWLClass> subClassesProperty =null;
+                            synchronized (reasoner) {
+                                subClassesProperty = reasoner.getSubClasses(query, true).getFlattened();
+                            }
                             if ((subClassesProperty != null) && (!subClassesProperty.isEmpty())) {
                                 preComputedSubClasses.put(clazz.toString() + property, subClassesProperty);
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -178,8 +192,7 @@ public class RequestManager {
         nThreads=2;
 
         GParsPool.withPool(nThreads) {
-            //axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
-            axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
+            axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
             //axioms.eachWithIndex{ OWLAxiom axiom,axiomsIndex ->
                 /*if(axiom.getAxiomType()==AxiomType.EQUIVALENT_CLASSES ){
                     System.out.println(axiom.toString());
@@ -240,15 +253,6 @@ public class RequestManager {
                         } else {
                             //subClasses = new HashSet<OWLClass>()
                             subClasses = Collections.synchronizedSet(new HashSet<OWLClass>());
-                        }
-                        for (OWLAnnotation annotation : EntitySearcher.getAnnotations(superClass, ontology)) {
-                            if(annotation.getValue() instanceof OWLLiteral) {
-                                OWLLiteral val = (OWLLiteral) annotation.getValue();
-                                if(annotation.getProperty().isLabel()){
-                                    System.out.println(val.getLiteral())
-                                    break;
-                                }
-                            }
                         }
                         subClasses.add(superClass);
                         preComputedSubClasses.put(thing.toString(), subClasses);

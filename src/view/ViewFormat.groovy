@@ -1,10 +1,8 @@
 package view
 
-import org.jgrapht.DirectedGraph
 import org.jgrapht.Graph
 import org.jgrapht.graph.ClassBasedEdgeFactory
 import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.graph.DirectedMultigraph
 import org.jgrapht.graph.DirectedPseudograph
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLClass
