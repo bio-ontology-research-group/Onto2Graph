@@ -3,14 +3,18 @@ import org.apache.commons.cli.*
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.semanticweb.HermiT.Reasoner
+import org.semanticweb.elk.owlapi.ElkReasonerConfiguration
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
+import org.semanticweb.elk.reasoner.config.ReasonerConfiguration
 import org.semanticweb.owlapi.apibinding.OWLManager
 import org.semanticweb.owlapi.io.FileDocumentSource
 import org.semanticweb.owlapi.model.MissingImportHandlingStrategy
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration
 import org.semanticweb.owlapi.model.OWLOntologyManager
+import org.semanticweb.owlapi.reasoner.NullReasonerProgressMonitor
 import org.semanticweb.owlapi.reasoner.OWLReasoner
+import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory
 import view.FormatterType
@@ -156,9 +160,6 @@ public class GraphicGeneratorTool {
         if ((typeReasoner != null) && (!typeReasoner.isEmpty())&&(ontology!=null)){
             typeReasoner = typeReasoner.trim().toUpperCase();
             switch(typeReasoner){
-                case ELK_REASONER:
-                    OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-                    return (reasonerFactory.createReasoner(ontology));
                 case HERMIT_REASONER:
                     Reasoner hermit = new Reasoner(ontology);
                     return (hermit);
@@ -170,8 +171,12 @@ public class GraphicGeneratorTool {
                 case SYNTACTIC_REASONER:
                     return(null);
                 default:
+                    ReasonerConfiguration eConf = new ReasonerConfiguration().getConfiguration();
+                    eConf.setParameter(ReasonerConfiguration.NUM_OF_WORKING_THREADS,"8");
+                    eConf.setParameter(ReasonerConfiguration.INCREMENTAL_MODE_ALLOWED,"true");
+                    OWLReasonerConfiguration rConf = new ElkReasonerConfiguration(ElkReasonerConfiguration.getDefaultOwlReasonerConfiguration(new NullReasonerProgressMonitor()),eConf)
                     OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-                    return (reasonerFactory.createReasoner(ontology));
+                    return (reasonerFactory.createReasoner(ontology,rConf));
             }
         }
         return(null);
