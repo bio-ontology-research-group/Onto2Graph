@@ -143,7 +143,7 @@ public abstract class ViewFormat {
         classes.each { clazz ->
             progressBar.printProgressBar((int) Math.round((classesIndex * 100) / (classesCounter)), "building the graph...");
             classesIndex++;
-            HashMap root = requestManager.class2info(clazz,ontology)
+            HashMap root = requestManager.class2info(clazz,ontology,null)
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
                 Set<HashMap> subClasses = requestManager.subClassesQuery(root.get("owlClass"), ontology);

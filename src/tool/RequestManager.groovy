@@ -154,7 +154,7 @@ public class RequestManager {
                                 equivalentPropEntities.remove(nothing);
                                 equivalentPropEntities.each { entity ->
                                     if (entity != clazz) {
-                                        equivalentList.put(entity.toString(), clazz);
+                                        equivalentList.put(entity.toString()+property, clazz);
                                     }
                                 }
                             }
@@ -329,7 +329,7 @@ public class RequestManager {
     public Set<HashMap> subClassesQuery(String sClazz,OWLOntology ontology) {
         Set result = new HashSet();
         Set classes = this.preComputedSubClasses.get(sClazz);
-        result.addAll(classes2info(classes, ontology))
+        result.addAll(classes2info(classes, ontology, null))
         return(result);
     }
 
@@ -361,7 +361,7 @@ public class RequestManager {
             }
             mainResult.remove(factory.getOWLNothing())
             mainResult.remove(factory.getOWLThing())
-            classes.addAll(classes2info(mainResult, ontology))
+            classes.addAll(classes2info(mainResult, ontology, relation))
         }
         return classes;
     }
@@ -371,16 +371,16 @@ public class RequestManager {
      * such as URI, lable, reminder and so on.
      *
      * @param classes A set of classes that will be transformed into HashMaps
-     * @param classes A set of classes that will be transformed into HashMaps
      * @param o The ontology that the set of classes belong to.
+     * @param relation The used relation.
      * @return Set of classes transformed
      */
-    public Set classes2info(Set<OWLClass> classes, OWLOntology o) {
+    public Set classes2info(Set<OWLClass> classes, OWLOntology o, String relation) {
         ArrayList result = new ArrayList<HashMap>();
         HashMap info;
 
         for(def c : classes) {
-            info = class2info(c,o);
+            info = class2info(c,o,relation);
             if(info!=null){
                 result.add(info);
             }
@@ -394,11 +394,16 @@ public class RequestManager {
      *
      * @param c The class that will be transformed.
      * @param o The ontology that the class belongs.
+     * @param o The used relation for checking equivalent classes
      * @return A HasMap that contains information such as: URI, labels, reminder and so on.
      */
-    public HashMap class2info(OWLClass c, OWLOntology o){
+    public HashMap class2info(OWLClass c, OWLOntology o, String relation){
         if(!equivalentClasses){
-            if(equivalentList.containsKey(c)){
+            if(relation!=null){
+                if(equivalentList.containsKey(c.toString()+relation)) {
+                    c = equivalentList.get(c.toString() + relation);
+                }
+            } else if(equivalentList.containsKey(c)){
                 c = equivalentList.get(c);
             }
         }
