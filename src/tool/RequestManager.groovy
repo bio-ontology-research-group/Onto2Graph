@@ -145,7 +145,7 @@ public class RequestManager {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
 
-                            //NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
+                            /*NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
                             if (!equivalentClasses) {
                                 Set<OWLClass> equivalentPropEntities = null;
                                 synchronized (reasoner){
@@ -154,10 +154,10 @@ public class RequestManager {
                                 equivalentPropEntities.remove(nothing);
                                 equivalentPropEntities.each { entity ->
                                     if (entity != clazz) {
-                                        equivalentList.put(entity.toString()+property, clazz);
+                                        equivalentList.put(entity.toString(), clazz);
                                     }
                                 }
-                            }
+                            }*/
 
                             Set<OWLClass> subClassesProperty =null;
                             synchronized (reasoner) {
@@ -329,7 +329,7 @@ public class RequestManager {
     public Set<HashMap> subClassesQuery(String sClazz,OWLOntology ontology) {
         Set result = new HashSet();
         Set classes = this.preComputedSubClasses.get(sClazz);
-        result.addAll(classes2info(classes, ontology, null))
+        result.addAll(classes2info(classes, ontology))
         return(result);
     }
 
@@ -361,7 +361,7 @@ public class RequestManager {
             }
             mainResult.remove(factory.getOWLNothing())
             mainResult.remove(factory.getOWLThing())
-            classes.addAll(classes2info(mainResult, ontology, relation))
+            classes.addAll(classes2info(mainResult, ontology))
         }
         return classes;
     }
@@ -375,12 +375,12 @@ public class RequestManager {
      * @param relation The used relation.
      * @return Set of classes transformed
      */
-    public Set classes2info(Set<OWLClass> classes, OWLOntology o, String relation) {
+    public Set classes2info(Set<OWLClass> classes, OWLOntology o) {
         ArrayList result = new ArrayList<HashMap>();
         HashMap info;
 
         for(def c : classes) {
-            info = class2info(c,o,relation);
+            info = class2info(c,o);
             if(info!=null){
                 result.add(info);
             }
@@ -397,13 +397,9 @@ public class RequestManager {
      * @param o The used relation for checking equivalent classes
      * @return A HasMap that contains information such as: URI, labels, reminder and so on.
      */
-    public HashMap class2info(OWLClass c, OWLOntology o, String relation){
+    public HashMap class2info(OWLClass c, OWLOntology o){
         if(!equivalentClasses){
-            if(relation!=null){
-                if(equivalentList.containsKey(c.toString()+relation)) {
-                    c = equivalentList.get(c.toString() + relation);
-                }
-            } else if(equivalentList.containsKey(c)){
+            if(equivalentList.containsKey(c)){
                 c = equivalentList.get(c);
             }
         }
