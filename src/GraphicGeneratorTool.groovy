@@ -3,23 +3,18 @@ import org.apache.commons.cli.*
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.semanticweb.HermiT.Reasoner
-import org.semanticweb.elk.owlapi.ElkReasonerConfiguration
 import org.semanticweb.elk.owlapi.ElkReasonerFactory
-import org.semanticweb.elk.reasoner.config.ReasonerConfiguration
 import org.semanticweb.owlapi.apibinding.OWLManager
 import org.semanticweb.owlapi.io.FileDocumentSource
 import org.semanticweb.owlapi.model.MissingImportHandlingStrategy
 import org.semanticweb.owlapi.model.OWLOntology
 import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration
 import org.semanticweb.owlapi.model.OWLOntologyManager
-import org.semanticweb.owlapi.reasoner.NullReasonerProgressMonitor
 import org.semanticweb.owlapi.reasoner.OWLReasoner
-import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory
 import view.FormatterType
 
-import java.util.logging.LogManager
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -115,7 +110,7 @@ public class GraphicGeneratorTool {
     /**
      * It creates a set of different Formatter type depending of the command line arguments given.
      * @param typeFormatter FormaterType reads from the command line arguments. This arguments have different values assigned:
-     * RDFXML, GRAPHVIZ, FLATFILE, GRAPHML, and "*". The "*" represents all format type.
+     * RDFXML, GRAPHVIZ, OBOFLATFILE, GRAPHML, and "*". The "*" represents all format type.
      * @return Set of different formatter type
      */
     public static Set<FormatterType> getVisualizationFormatter(String typeFormatter){
@@ -123,14 +118,17 @@ public class GraphicGeneratorTool {
             typeFormatter = typeFormatter.trim().toUpperCase();
             Set<FormatterType> setFormatterType = new HashSet<FormatterType>();
             switch(typeFormatter){
+                case "JSONLD":
+                            setFormatterType.add(FormatterType.JSONLD_FORMATTER);
+                            return(setFormatterType);
                 case "RDFXML":
                             setFormatterType.add(FormatterType.RDFXML_FORMATTER);
                             return(setFormatterType);
                 case "GRAPHVIZ":
                             setFormatterType.add(FormatterType.GRAPHVIZ_FORMATTER);
                             return(setFormatterType);
-                case "FLATFILE":
-                            setFormatterType.add(FormatterType.FLATFILE_FORMATTER);
+                case "OBOFLATFILE":
+                            setFormatterType.add(FormatterType.OBOFLATFILE_FORMATTER);
                             return(setFormatterType);
                 case "GRAPHML":
                             setFormatterType.add(FormatterType.GRAPHML_FORMATTER);
@@ -138,9 +136,11 @@ public class GraphicGeneratorTool {
                 case "ONTOFUNC":
                             setFormatterType.add(FormatterType.ONTOFUNC_FORMATTER);
                             return(setFormatterType);
-                case "*": setFormatterType.add(FormatterType.RDFXML_FORMATTER);
+                case "*":
+                          setFormatterType.add(FormatterType.JSONLD_FORMATTER);
+                          setFormatterType.add(FormatterType.RDFXML_FORMATTER);
                           setFormatterType.add(FormatterType.GRAPHVIZ_FORMATTER);
-                          setFormatterType.add(FormatterType.FLATFILE_FORMATTER);
+                          setFormatterType.add(FormatterType.OBOFLATFILE_FORMATTER);
                           setFormatterType.add(FormatterType.GRAPHML_FORMATTER);
                           setFormatterType.add(FormatterType.ONTOFUNC_FORMATTER);
                     return(setFormatterType);
@@ -171,12 +171,8 @@ public class GraphicGeneratorTool {
                 case SYNTACTIC_REASONER:
                     return(null);
                 default:
-                    ReasonerConfiguration eConf = new ReasonerConfiguration().getConfiguration();
-                    eConf.setParameter(ReasonerConfiguration.NUM_OF_WORKING_THREADS,"8");
-                    eConf.setParameter(ReasonerConfiguration.INCREMENTAL_MODE_ALLOWED,"true");
-                    OWLReasonerConfiguration rConf = new ElkReasonerConfiguration(ElkReasonerConfiguration.getDefaultOwlReasonerConfiguration(new NullReasonerProgressMonitor()),eConf)
                     OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-                    return (reasonerFactory.createReasoner(ontology,rConf));
+                    return(reasonerFactory.createReasoner(ontology));
             }
         }
         return(null);
@@ -195,7 +191,7 @@ public class GraphicGeneratorTool {
         //args[0] The ontology file
         //args[1] Output path
         //args[2] Reasoners to use (ELK, HERMIT, STRUCTURAL_REASONER, SYNTACTIC_REASONER)
-        //args[3] Visualization formatter (RDFXML, GRAPHVIZ[DEFAULT], FLATFILE,GRAPHML)
+        //args[3] Visualization formatter (RDFXML, GRAPHVIZ[DEFAULT], OBOFLATFILE,GRAPHML)
         //args[4] List of properties to visualize should be on the format ["first_label", "second_label", "third_label"]
 
         String ontoFile = "ont";
@@ -223,7 +219,7 @@ public class GraphicGeneratorTool {
                 .create(reasoner);
 
         String format = "f";
-        String formatDescription = "The different visualization formats available (RDFXML, GRAPHVIZ[DEFAULT], FLATFILE,GRAPHML) (Optional).\n"+
+        String formatDescription = "The different visualization formats available (RDFXML, GRAPHVIZ[DEFAULT], OBOFLATFILE,GRAPHML) (Optional).\n"+
                                     "In order to generate all formats available just provide : \"*\". \n";
         Option formatOption = OptionBuilder
                 .hasArg(true)
@@ -279,9 +275,9 @@ public class GraphicGeneratorTool {
         info+="-ont This parameter should contain the ontology file or at least the path where the ontology is located. \n";
         info+="-out This parameter represents the output path where the files generated by the tool will be saved (Optional). \n";
         info+="-r The reasoner will be used (ELK[DEFAULT],HERMIT,STRUCTURAL_REASONER, SYNTACTIC_REASONER). \n";
-        info+="-f The different visualization formats available (RDFXML, GRAPHVIZ[DEFAULT], FLATFILE,GRAPHML) (Optional). \n";
+        info+="-f The different visualization formats available (JSONLD, RDFXML, GRAPHVIZ[DEFAULT], OBOFLATFILE,GRAPHML) (Optional). \n";
+        info+="\tIn order to generate all formats available just provide "*". \n";
         info+="-eq This parameter should contain a boolean (TRUE,FALSE[DEFAULT]) in order to include the equivalent classes to the graph or not";
-        info+="\tIn order to generate all formats available just provide \"*\". \n";
         info+="-op This parameter will contain the list of object properties labels that will be used to visualized the ontology (Optional). \n";
         info+="The object properties should be formatted as array, here you can see an example: [\"first_label\",\"second_label\",\"third_label\"]. \n";
         info+="\tIn order to include all object properties from an ontology given just provide: [\"*\"]. \n";

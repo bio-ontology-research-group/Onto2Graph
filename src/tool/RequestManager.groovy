@@ -4,10 +4,8 @@ import groovyx.gpars.GParsPool
 import org.apache.jena.riot.web.LangTag
 import org.semanticweb.owlapi.model.*
 import org.semanticweb.owlapi.reasoner.BufferingMode
-import org.semanticweb.owlapi.reasoner.NodeSet
 import org.semanticweb.owlapi.reasoner.OWLReasoner
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration
-import org.semanticweb.owlapi.reasoner.impl.OWLClassNodeSet
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner
 import org.semanticweb.owlapi.search.EntitySearcher
 import show.ProgressBar
@@ -76,14 +74,14 @@ public class RequestManager {
      * @param reasoner The reasoner used to infer subclasses.
      * @param arrayProperties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, String[] arrayProperties,int nThreads){
+    public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, Set<String> arrayProperties,int nThreads){
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
-        ArrayList<String> properties = null;
-        //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
+        Set<String> properties = null;
+        //We convert the two list in synchronizedset for being accessible for different threads at the same time.
         if(arrayProperties!=null) {
-            properties = Collections.synchronizedList(new ArrayList<String>(arrayProperties.toList()));
+            properties = Collections.synchronizedSet(arrayProperties);
         }
         reasoners = Collections.synchronizedList(reasoners);
 
@@ -97,7 +95,7 @@ public class RequestManager {
 
                 OWLReasoner reasoner = reasoners.get(index % reasonersCounter);
 
-                OWLDataFactory factory = reasoner.getRootOntology().getOWLOntologyManager().getOWLDataFactory();
+                OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
                 OWLClass nothing = factory.getOWLNothing();
                 OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI() + "/owl:Thing"))
 
@@ -140,7 +138,7 @@ public class RequestManager {
                     preComputedSubClasses.put(clazz.toString(), subClasses);
                 }
                 if ((properties != null) && (!properties.isEmpty())) {
-                    for (String property : properties) {
+                    properties.each { property ->
                         if (property != null) {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
@@ -179,7 +177,7 @@ public class RequestManager {
      * @param ontology The ontology used by the reasoner to compute the subclases.
      * @param properties The object properties of the ontology that will be used during the compute process.
      */
-    public void computedSyntacticSubClasses(OWLOntology ontology,String[] properties,int nThreads){
+    public void computedSyntacticSubClasses(OWLOntology ontology,Set<String> arrayProperties,int nThreads){
         //NOTE THAT THE DEPRECATED CLASSES ARE NOT INLCLUDED.
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
@@ -188,8 +186,12 @@ public class RequestManager {
         OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
         int axiomsCounter = axioms.size();
         AtomicInteger classesIndex = new AtomicInteger(0);
+        Set<String> properties = null;
 
-        nThreads=2;
+        //We convert the two list in synchronizedlist for being accessible for different threads at the same time.
+        if(arrayProperties!=null) {
+            properties = Collections.synchronizedSet(arrayProperties);
+        }
 
         GParsPool.withPool(nThreads) {
             axioms.eachWithIndexParallel { OWLAxiom axiom,axiomsIndex ->
@@ -288,8 +290,8 @@ public class RequestManager {
      * @param ontology The ontology from where the object properties are obtained.
      * @return A set of objects properties.
      */
-    public Set<String> getObjectProperties(OWLOntology ontology){
-        HashSet<String> objectProperties = new HashSet<String>();
+    public HashMap<String,String> getObjectProperties(OWLOntology ontology){
+        HashMap<String,String> objectProperties = new HashMap<String,String>();
         if(ontology!=null) {
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
             StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
@@ -304,7 +306,7 @@ public class RequestManager {
      * @param rootObjectProperty The root of the object property that will be expanded.
      * @param reasoner The reasoner used to go across the ontology.
      */
-    private void getRecursiveObjectProperties(HashSet objectProperties,OWLObjectProperty rootObjectProperty, OWLReasoner reasoner){
+    private void getRecursiveObjectProperties(HashMap<String,HashMap> objectProperties,OWLObjectProperty rootObjectProperty, OWLReasoner reasoner){
         Set<OWLObjectPropertyExpression> properties = reasoner.getSubObjectProperties(rootObjectProperty,true).getFlattened();
 
         if(properties.empty){
@@ -313,7 +315,36 @@ public class RequestManager {
         for(OWLObjectPropertyExpression expression : properties) {
             if((expression instanceof OWLObjectProperty)&&(!expression.isAnonymous())&&
                     (!expression.isOWLTopObjectProperty())&&(!expression.isOWLBottomObjectProperty())) {
-                objectProperties.add(expression.getNamedProperty().getIRI().toString());
+                def info = [
+                        "label"      : null,
+                        "annotations": [],
+                        "deprecated" : false
+                ]
+                for (OWLAnnotation annotation : EntitySearcher.getAnnotations(expression, reasoner.getRootOntology())) {
+                    if(annotation.isDeprecatedIRIAnnotation()){
+                        info["deprecated"] = true;
+                    }
+                    if(annotation.getValue() instanceof IRI){
+                        IRI propIri = annotation.getProperty().getIRI();
+                        IRI iri = (IRI)annotation.getValue();
+                        info['annotations'].add([propIri.toString(),iri.toString()])
+                    } else if(annotation.getValue() instanceof OWLLiteral) {
+                        OWLLiteral val = (OWLLiteral) annotation.getValue();
+                        if(annotation.getProperty().isLabel()){
+                            info['label'] = val.getLiteral();
+                        }
+                        IRI propIri = annotation.getProperty().getIRI();
+                        //we control the misdefined languages.
+                        if ((!val.getLang().isEmpty())&&(LangTag.parse(val.getLang())!= null)){
+                            info['annotations'].add([propIri.toString(), val.getLiteral() + "@"+val.getLang()]);
+                        } else {
+                            info['annotations'].add([propIri.toString(), val.getLiteral()]);
+                        }
+                    }
+                }
+                if((!info["deprecated"])&&(info["label"]!=null)){
+                    objectProperties.put(expression.getNamedProperty().getIRI().toString(),info);
+                }
                 getRecursiveObjectProperties(objectProperties, expression.getNamedProperty(), reasoner);
             }
         }

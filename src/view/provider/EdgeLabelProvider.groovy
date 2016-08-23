@@ -38,10 +38,6 @@ public class EdgeLabelProvider implements EdgeNameProvider
      */
     public String getEdgeName(Object edge)
     {
-        String[] objectProperty = edge.toString().split("&&");
-        if(objectProperty.length==2){
-            return(objectProperty[1]);
-        }
-        return "subClassOf";
+        return edge.toString();
     }
 }

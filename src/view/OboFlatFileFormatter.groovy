@@ -1,6 +1,11 @@
 package view
 
+import graph.RelationshipEdge
+import org.apache.jena.vocabulary.RDFS
+import org.coode.owlapi.obo.parser.OBOOntologyFormat
 import org.jgrapht.Graph
+import org.semanticweb.owlapi.apibinding.OWLManager
+import org.semanticweb.owlapi.model.*
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -39,60 +44,69 @@ public class OboFlatFileFormatter extends ViewFormat {
      * It serializes the graph in a Flat File Format file.
      * @param graph The graph that will be saved.
      */
-    public void serializeGraph(Graph graph){
+    public void serializeGraph(Graph graph,HashMap<String,HashMap> properties){
         BufferedWriter output;
         try{
             if ((graph != null)&&(fileOutPath!=null)) {
-                output = new BufferedWriter(new FileWriter(fileOutPath+".obo"));
-                output.append("format-version: 1.2\n");
-                output.append("data-version: releases/2016-02-04\n");
-                output.append("date: 03:02:2016 07:51\n");
-                output.append("saved-by: bc\n");
-                output.append("auto-generated-by: Onto2Graph 1.0\n");
-                int counter = graph.vertexSet().size();
-                int index =0;
-                Iterator vIt = graph.vertexSet().iterator();
-                Object vertex;
-                Object rootEdge, subEdge;
+                OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+                OWLDataFactory factory = manager.getOWLDataFactory();
+                OWLOntology ontology = null;
+                int edgesIndex =0;
+                int edgesCount = graph.edgeSet().size();
+                Iterator eIt = graph.edgeSet().iterator();
+                RelationshipEdge edge;
+                HashMap rootEdge, subEdge;
                 HashSet<String> relations = new HashMap<String>();
-                while(vIt.hasNext()){
-                    vertex = vIt.next()
-                    Set edges = graph.edgesOf(vertex);
-                    index++;
-                    progressBar.printProgressBar((int) Math.round((index * 100) / (counter)), "serializing the graph...");
-                    output.println("[Term]");
-                    output.println("id: "+vertex.get("remainder").replace("_",":"));
-                    output.println("name: "+vertex.get("label"));
-                    //output.println("def: ");
-                    //output.println("synonym:")
-                    String relation="";
-                    for(Object edge : edges){
-                        relation="";
-                        String[] objectProperty = edge.toString().split("&&");
-                        rootEdge = graph.getEdgeSource(edge);
-                        subEdge = graph.getEdgeTarget(edge);
-                        if (objectProperty.length == 2) {
-                            output.println(objectProperty[1]+": "+subEdge.get("remainder").replace("_",":")+" ! "+objectProperty[1]);
-                            relation="[Typedef]\n";
-                            relation+="id: "+objectProperty+"\n";
-                            relation+="name: "+objectProperty+"\n";
-                        } else {
-                            output.println("subClassOf: "+subEdge.get("remainder").replace("_",":")+" ! "+subEdge.get("label"));
-                            relation="[Typedef]\n";
-                            relation+="id: subClassOf\n";
-                            relation+="name: subClassOf\n";
-                        }
-                        relations.add(relation);
+                while(eIt.hasNext()){
+                    edge = eIt.next()
+                    edgesIndex++;
+                    rootEdge = graph.getEdgeSource(edge);
+                    subEdge = graph.getEdgeTarget(edge);
+                    if(ontology==null){
+                        ontology = manager.createOntology(IRI.create(rootEdge.get("ontologyURI")));
                     }
-                    output.println();
-                }
+                    progressBar.printProgressBar((int) Math.round((edgesIndex * 100) / (edgesCount)), "serializing the graph...");
+                    OWLClass sourceClass = factory.getOWLClass(IRI.create(rootEdge.get("classURI")));
+                    OWLClass destClass = factory.getOWLClass(IRI.create(subEdge.get("classURI")));
 
-                for(String relation : relations){
-                    output.println(relation)
-                }
+                    manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(sourceClass));
+                    manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(destClass));
 
-                progressBar.printProgressBar(100, "serializing the graph...");
-                System.out.println();
+                    rootEdge.get("annotations").each { ArrayList<String> annotation ->
+                        if(annotation.size()==2) {
+                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
+                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
+                            manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(annProperty,sourceClass.getIRI(),annValue));
+                        }
+                    }
+                    subEdge.get("annotations").each{ ArrayList<String> annotation->
+                        if(annotation.size()==2) {
+                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
+                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
+                            manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(annProperty,destClass.getIRI(),annValue));
+                        }
+                    }
+
+                    if(edge.getURI().compareTo(RDFS.subClassOf.getURI())==0){
+                        OWLAxiom subClassOf = factory.getOWLSubClassOfAxiom(destClass,sourceClass);
+                        manager.addAxiom(ontology,subClassOf);
+                    }else{
+                        OWLProperty property = factory.getOWLObjectProperty(IRI.create(edge.getURI()));
+                        OWLObjectSomeValuesFrom someValuesFrom = factory.getOWLObjectSomeValuesFrom(property,sourceClass)
+                        manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(property));
+                        manager.addAxiom(ontology,factory.getOWLSubClassOfAxiom(destClass,someValuesFrom));
+                        HashMap value = properties.get(edge.getURI());
+                        value.get("annotations").each { ArrayList<String> annotation ->
+                            if(annotation.size()==2) {
+                                OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
+                                OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
+                                manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(annProperty,property.getIRI(),annValue));
+                            }
+                        }
+                    }
+
+                }
+                manager.saveOntology(ontology,new OBOOntologyFormat(),IRI.create(new File(fileOutPath+".obo")));
             }
         } catch ( IOException e ) {
             System.out.println("There was an error: "+e.getMessage());

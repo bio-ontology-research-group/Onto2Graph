@@ -1,13 +1,6 @@
 package view
 
-
-import graph.RelationshipEdge
 import org.jgrapht.Graph
-import org.jgrapht.ext.GraphMLExporter
-import org.jgrapht.ext.IntegerEdgeNameProvider
-import org.jgrapht.ext.IntegerNameProvider
-import view.provider.EdgeLabelProvider
-import view.provider.VertexLabelProvider
 
 /*
  * Copyright 2014 Miguel Ángel Rodríguez-García (miguel.rodriguezgarcia@kaust.edu.sa).
@@ -27,18 +20,18 @@ import view.provider.VertexLabelProvider
 
 /**
  * Formatter responsible for building a file that contains the representation of an ontology given
- * in GraphML format.
+ * in JSONLD format.
  *
  * @author Miguel Angel Rodríguez-García
  * @version 1.0
  */
-public class GraphMLFormatter extends ViewFormat {
+public class JSONLDFormatter extends RDFXMLFormatter {
 
     /**
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public GraphMLFormatter(String fileOutPath,equivalentClass){
+    public JSONLDFormatter(String fileOutPath,equivalentClass){
         super(fileOutPath,equivalentClass);
     }
 
@@ -47,15 +40,9 @@ public class GraphMLFormatter extends ViewFormat {
      * @param graph The graph that will be saved.
      */
     public void serializeGraph(Graph graph,HashMap<String,HashMap> properties){
-        try{
-            if ((graph != null)&&(fileOutPath!=null)) {
-                progressBar.printProgressBar(100, "serializing the graph...");
-                System.out.println();
-                GraphMLExporter<HashMap, RelationshipEdge> exporter = new GraphMLExporter<HashMap, RelationshipEdge>(
-                        new IntegerNameProvider(),new VertexLabelProvider(),new IntegerEdgeNameProvider(),new EdgeLabelProvider());
-
-                FileWriter writer = new FileWriter(fileOutPath+".graphml");
-                exporter.export(writer, graph);
+        try {
+            if ((graph != null) && (fileOutPath != null)) {
+                serializeRDFModel(graph,properties,"json", "JSON-LD");
             }
         } catch (IOException e) {
             System.out.println("There was an error: "+e.getMessage());

@@ -86,13 +86,15 @@ public class VisualizerCommand implements Command{
         FormatterType formatterType;
         while(it.hasNext()){
             formatterType = it.next();
-            if (formatterType == FormatterType.RDFXML_FORMATTER) {
+            if (formatterType == FormatterType.JSONLD_FORMATTER) {
+                viewFormat = new JSONLDFormatter(outpath,equivalentClass);
+            } else if (formatterType == FormatterType.RDFXML_FORMATTER) {
                 viewFormat = new RDFXMLFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.GRAPHVIZ_FORMATTER) {
                 viewFormat = new GraphVizFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.GRAPHML_FORMATTER) {
                 viewFormat = new GraphMLFormatter(outpath,equivalentClass);
-            } else if (formatterType == FormatterType.FLATFILE_FORMATTER) {
+            } else if (formatterType == FormatterType.OBOFLATFILE_FORMATTER) {
                 viewFormat = new OboFlatFileFormatter(outpath,equivalentClass);
             } else if (formatterType == FormatterType.ONTOFUNC_FORMATTER){
                 viewFormat = new OntoFuncFormatter(outpath, equivalentClass);

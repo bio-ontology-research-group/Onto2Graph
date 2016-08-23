@@ -1,8 +1,10 @@
 package view
 
+
+import graph.RelationshipEdge
+import org.apache.jena.vocabulary.RDFS
 import org.jgrapht.Graph
 import org.jgrapht.graph.ClassBasedEdgeFactory
-import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.DirectedPseudograph
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLClass
@@ -71,10 +73,11 @@ public abstract class ViewFormat {
      */
     public void parseOntology(OWLOntology ontology,List<OWLReasoner> reasoners, String[] properties,int nThreads) {
         if((ontology!=null)&&(reasoners!=null)&&(!reasoners.isEmpty())) {
-            properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSemanticSubClasses(ontology,reasoners,properties,nThreads);
-            Graph graph = this.buildGraph(ontology, properties);
-            this.serializeGraph(graph);
+            HashMap<String,HashMap> objectProperties = checkObjectProperties(ontology,properties);
+            //we just need the ids of the object properties.
+            requestManager.computedSemanticSubClasses(ontology,reasoners,objectProperties.keySet(),nThreads);
+            Graph graph = this.buildGraph(ontology, objectProperties);
+            this.serializeGraph(graph,objectProperties);
         }
     }
 
@@ -88,10 +91,11 @@ public abstract class ViewFormat {
      */
     public void parseOntology(OWLOntology ontology, String[] properties,int nThreads){
         if((ontology!=null)){
-            properties = checkObjectProperties(ontology,properties);
-            requestManager.computedSyntacticSubClasses(ontology,properties,nThreads);
-            Graph graph = this.buildGraph(ontology,properties);
-            this.serializeGraph(graph)
+            HashMap<String,HashMap> objectProperties = checkObjectProperties(ontology,properties);
+            //we just need the ids of the object properties.
+            requestManager.computedSyntacticSubClasses(ontology,objectProperties.keySet(),nThreads);
+            Graph graph = this.buildGraph(ontology,objectProperties);
+            this.serializeGraph(graph,objectProperties)
         }
     }
 
@@ -101,27 +105,36 @@ public abstract class ViewFormat {
      * @param properties The objects properties that will be checked.
      * @return The list of Objects properties checked.
      */
-    protected String[] checkObjectProperties(ontology,String[] properties){
+    protected HashMap<String,HashMap> checkObjectProperties(ontology,String[] properties){
+        HashMap<String,HashMap> objectProperties =null;
         if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
-            HashSet<String> objectProperties = requestManager.getObjectProperties(ontology);
-            properties = objectProperties.toArray(new String[objectProperties.size()]);
+            objectProperties = requestManager.getObjectProperties(ontology);
         }else if((properties!=null)&&(properties.length>0)){
-            HashSet<String> objectProperties = requestManager.getObjectProperties(ontology);
-            properties.each{objectProperty->
-                boolean isContained = false;
-                objectProperties.each{ op->
-                    if(op.compareTo(objectProperty)==0){
-                        isContained = true;
+            ArrayList<String> listProperties = Arrays.asList(properties);
+            objectProperties = requestManager.getObjectProperties(ontology);
+            ArrayList<String> keysRemove = new ArrayList<String>();
+            objectProperties.each {key, value ->
+                if((!listProperties.contains(key))&&(!listProperties.contains(value.get("label")))){
+                    keysRemove.add(key);
+                }else{
+                    if(listProperties.contains(key)) {
+                        listProperties.remove(key)
+                    }else if(listProperties.contains(value.get("label"))){
+                        listProperties.remove(value.get("label"))
                     }
                 }
-                if(!isContained){
-                    System.out.println("The Object Property: "+objectProperty+" is not defined in the ontology");
-                    System.exit(-1);
-                }
             }
-
+            //we remove the object properties which are not needed.
+            keysRemove.each {String key ->
+                objectProperties.remove(key);
+            }
+            if(!listProperties.isEmpty()){
+                System.out.println("Object properties not founded:");
+                System.out.println(listProperties.toString())
+                System.exit(-1);
+            }
         }
-        return(properties);
+        return(objectProperties);
     }
 
     /**
@@ -130,7 +143,7 @@ public abstract class ViewFormat {
      * @param properties Object Properties that belong to ontology and they are using to create the graph.
      * @return Graph is built.
      */
-    protected Graph buildGraph(OWLOntology ontology,String[] properties) {
+    protected Graph buildGraph(OWLOntology ontology,HashMap<String,HashMap> properties) {
         DirectedPseudograph<String, RelationshipEdge> graph = new DirectedPseudograph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
         Set<OWLClass> classes = ontology.getClassesInSignature(true);
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
@@ -151,26 +164,22 @@ public abstract class ViewFormat {
                 if(subClasses!=null){
                     subClasses.each { subClass ->
                         graph.addVertex(subClass);
-                        edge = new RelationshipEdge<HashMap>(root,subClass,root.get("classURI") + subClass.get("classURI"));
+                        edge = new RelationshipEdge<HashMap>(root,subClass,RDFS.subClassOf.getURI(),RDFS.subClassOf.getLocalName());
                         if(!graph.containsEdge(edge)) {
                             graph.addEdge(root, subClass, edge);
                         }
                     }
                 }
-                if ((properties != null) && (properties.length > 0)) {
-                    String objectProperty;
+                if ((properties != null) && (properties.size() > 0)) {
                     RelationshipEdge edgeProperty;
-                    for (int i = 0; i < properties.length; i++) {
-                        objectProperty = properties[i];
-                        if (objectProperty != null) {
-                            Set<HashMap> result = requestManager.relationQuery(objectProperty, root.get("owlClass").toString(), ontology);
-                            if(result!=null){
-                                result.each { objectPropertyClass ->
-                                    graph.addVertex(objectPropertyClass);
-                                    edgeProperty = new RelationshipEdge<HashMap>(root,objectPropertyClass,root.get("classURI") + objectPropertyClass.get("classURI") + "&&" + objectProperty);
-                                    if(!graph.containsEdge(edgeProperty)) {
-                                        graph.addEdge(root,objectPropertyClass, edgeProperty);
-                                    }
+                    properties.each {String idProperty, HashMap value ->
+                        Set<HashMap> result = requestManager.relationQuery(idProperty, root.get("owlClass").toString(), ontology);
+                        if(result!=null){
+                            result.each { objectPropertyClass ->
+                                graph.addVertex(objectPropertyClass);
+                                edgeProperty = new RelationshipEdge<HashMap>(root,objectPropertyClass,idProperty,value.get("label"));
+                                if(!graph.containsEdge(edgeProperty)) {
+                                    graph.addEdge(root,objectPropertyClass, edgeProperty);
                                 }
                             }
                         }
@@ -186,61 +195,5 @@ public abstract class ViewFormat {
      * It serializes the built graph in a file.
      * @param graph The graph built that it will be serialised in a file.
      */
-    public abstract void serializeGraph(Graph graph);
-
-    /**
-     * Internal class that represents a new kind of edge that includes labels
-     * @param < V >
-     */
-    public static class RelationshipEdge<V> extends DefaultEdge {
-        /**
-         * First vertex.
-         */
-        private V v1;
-        /**
-         * Second vertex.
-         */
-        private V v2;
-        /**
-         * Label given.
-         */
-        private String label;
-
-        /**
-         * Constructor of the class.
-         * @param v1 Source vertex.
-         * @param v2 Destiny vertex.
-         * @param label Label of the edge.
-         */
-        public RelationshipEdge(V v1, V v2, String label) {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.label = label;
-        }
-
-        /**
-         * It retrieves the source vertex.
-         * @return Source vertex.
-         */
-        public V getV1() {
-            return v1;
-        }
-
-        /**
-         * It retrieves the destiny vertex
-         * @return Destiny vertex
-         */
-        public V getV2() {
-            return v2;
-        }
-
-        /**
-         * It retrieves the label of the vertex.
-         * @return Label of the vertex.
-         */
-        public String toString() {
-            return label;
-        }
-    }
-
+    public abstract void serializeGraph(Graph graph, HashMap<String,HashMap> properties);
 }

@@ -39,7 +39,7 @@ public class OntoFuncFormatter extends ViewFormat {
      * It serializes the graph in a Flat File Format file.
      * @param graph The graph that will be saved.
      */
-    public void serializeGraph(Graph graph){
+    public void serializeGraph(Graph graph,HashMap<String,HashMap> properties){
         BufferedWriter graphPathOutput;
         BufferedWriter term2termOutput;
         BufferedWriter termOutput
@@ -81,7 +81,9 @@ public class OntoFuncFormatter extends ViewFormat {
                 }
 
                 progressBar.printProgressBar(100, "serializing the graph...");
-                System.out.println();
+                graphPathOutput.close();
+                term2termOutput.close();
+                termOutput.close();
             }
         } catch ( IOException e ) {
             System.out.println("There was an error: "+e.getMessage());

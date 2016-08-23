@@ -1,5 +1,7 @@
 package view
 
+
+import graph.RelationshipEdge
 import org.jgrapht.Graph
 import org.jgrapht.ext.DOTExporter
 import org.jgrapht.ext.IntegerNameProvider
@@ -43,7 +45,7 @@ public class GraphVizFormatter extends ViewFormat{
      * It serializes the graph in a GraphViz File Format file.
      * @param graph The graph that will be saved.
      */
-    public void serializeGraph(Graph graph){
+    public void serializeGraph(Graph graph,HashMap<String,HashMap> properties){
         if ((graph != null)&&(fileOutPath!=null)) {
             progressBar.printProgressBar(100, "serializing the graph...");
             System.out.println();
