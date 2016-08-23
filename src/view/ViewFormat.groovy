@@ -106,7 +106,7 @@ public abstract class ViewFormat {
      * @return The list of Objects properties checked.
      */
     protected HashMap<String,HashMap> checkObjectProperties(ontology,String[] properties){
-        HashMap<String,HashMap> objectProperties =null;
+        HashMap<String,HashMap> objectProperties = new HashMap<String,HashMap>();
         if((properties!=null)&&(properties.length==1)&&(properties[0]=="*")){
             objectProperties = requestManager.getObjectProperties(ontology);
         }else if((properties!=null)&&(properties.length>0)){
