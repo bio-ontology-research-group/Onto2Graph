@@ -149,7 +149,7 @@ public abstract class ViewFormat {
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().toString()+"/owl:Thing"))
         classes.add(thing);
         int classesCounter = classes.size();
         int classesIndex = 0;

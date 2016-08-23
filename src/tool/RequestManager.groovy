@@ -77,7 +77,7 @@ public class RequestManager {
     public void computedSemanticSubClasses(OWLOntology ontology,List<OWLReasoner> reasoners, Set<String> arrayProperties,int nThreads){
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
-        HashSet<OWLClass> classes = ontology.getClassesInSignature(false);
+        HashSet<OWLClass> classes = ontology.getClassesInSignature();
         Set<String> properties = null;
         //We convert the two list in synchronizedset for being accessible for different threads at the same time.
         if(arrayProperties!=null) {
@@ -89,15 +89,15 @@ public class RequestManager {
             int classesCounter = classes.size();
             int reasonersCounter = reasoners.size();
             AtomicInteger classesIndex = new AtomicInteger(0);
+            OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
+            OWLClass nothing = factory.getOWLNothing();
+            OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().toString() + "/owl:Thing"))
+
 
             classes.eachWithIndexParallel { clazz, index ->
                 progressBar.printProgressBar((int) Math.round((classesIndex.getAndIncrement() * 100) / (classesCounter)),"precomputing classes...");
 
                 OWLReasoner reasoner = reasoners.get(index % reasonersCounter);
-
-                OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-                OWLClass nothing = factory.getOWLNothing();
-                OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI() + "/owl:Thing"))
 
                 //we check if is a top class
                 //We check if classes is related to owlThing to include this relationship.
@@ -183,7 +183,7 @@ public class RequestManager {
         // axiom has been included.
         Set axioms = ontology.getAxioms();
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI()+"/owl:Thing"))
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().toString()+"/owl:Thing"))
         int axiomsCounter = axioms.size();
         AtomicInteger classesIndex = new AtomicInteger(0);
         Set<String> properties = null;
