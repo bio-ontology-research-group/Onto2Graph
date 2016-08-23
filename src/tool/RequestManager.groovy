@@ -248,7 +248,7 @@ public class RequestManager {
                             }
                         }
                     }
-                    if ((superClass!=null)&&(superClass.getSuperClasses(ontology).isEmpty())) {
+                    if ((superClass!=null)&&(EntitySearcher.getSuperClasses(superClass, ontology))) {
                         HashSet<OWLClass> subClasses;
                         if (preComputedSubClasses.containsKey(thing.toString())) {
                             subClasses = preComputedSubClasses.get(thing.toString());
@@ -290,8 +290,8 @@ public class RequestManager {
      * @param ontology The ontology from where the object properties are obtained.
      * @return A set of objects properties.
      */
-    public HashMap<String,String> getObjectProperties(OWLOntology ontology){
-        HashMap<String,String> objectProperties = new HashMap<String,String>();
+    public HashMap<String,HashMap> getObjectProperties(OWLOntology ontology){
+        HashMap<String,HashMap> objectProperties = new HashMap<String,HashMap>();
         if(ontology!=null) {
             OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
             StructuralReasoner structuralReasoner = new StructuralReasoner(ontology,new SimpleConfiguration(), BufferingMode.NON_BUFFERING);
@@ -438,7 +438,7 @@ public class RequestManager {
                 "owlClass": c.toString(),
                 "classURI": c.getIRI().toString(),
                 "ontologyURI": o.getOntologyID().getOntologyIRI().toString(),
-                "remainder": c.getIRI().getFragment(),
+                "remainder": c.getIRI().getRemainder(),
                 "label": null,
                 "annotations" :[],
                 "definition": null,

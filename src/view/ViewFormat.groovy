@@ -145,7 +145,7 @@ public abstract class ViewFormat {
      */
     protected Graph buildGraph(OWLOntology ontology,HashMap<String,HashMap> properties) {
         DirectedPseudograph<String, RelationshipEdge> graph = new DirectedPseudograph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
-        Set<OWLClass> classes = ontology.getClassesInSignature(true);
+        Set<OWLClass> classes = ontology.getClassesInSignature();
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
