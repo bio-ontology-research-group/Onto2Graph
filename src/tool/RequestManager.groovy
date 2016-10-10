@@ -395,8 +395,7 @@ public class RequestManager {
                 OWLObjectProperty property = factory.getOWLObjectProperty(IRI.create(relation));
                 if(EntitySearcher.isTransitive(property,ontology)) {
                     //we filter main results
-                    Set<OWLClass> firstResult = new HashSet<OWLClass>(mainResult);
-                    firstResult.each { subClass ->
+                    mainResult.each { subClass ->
                         if (preComputedSubClasses.containsKey(subClass.getIRI().toURI().toString() + relation)) {
                             def subResult = new HashSet(preComputedSubClasses.get(subClass.getIRI().toURI().toString() + relation));
                             mainResult = mainResult - subResult;
