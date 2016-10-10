@@ -43,6 +43,10 @@ public class VisualizerCommand implements Command{
      */
     protected String[] properties = null;
     /**
+     * Transitive flag
+     */
+    protected boolean transitiveFlag;
+    /**
      * The list of formatters that will be used to transform the ontology.
      */
     protected Set<FormatterType> setFormatterType = null;
@@ -63,16 +67,18 @@ public class VisualizerCommand implements Command{
      * @param setFormatterType The list of formatters that will be used to transform the ontology.
      * @param outpath The outpath of file.
      * @param equivalentClass Flag that contols whether (TRUE) or not (FALSE) the equivalent classes are going to be merged as unique node.
+     * @param transitiveFlag that controls whether (TRUE) or not (FALSE) which version of the algorithm will be used to infer the transitive object properties.
      * @param properties The list of Object Properties that will be used during the transformation.
      */
     public VisualizerCommand(List<OWLReasoner> reasoners,OWLOntology ontology,Set<FormatterType> setFormatterType,String outpath,
-                             boolean equivalentClasses, String[] properties, int nThreads){
+                             boolean equivalentClasses, String[] properties, boolean transitiveFlag, int nThreads){
         this.reasoners = reasoners;
         this.ontology = ontology;
         this.setFormatterType = setFormatterType;
         this.equivalentClass = equivalentClasses;
         this.outpath = outpath;
         this.properties = properties;
+        this.transitiveFlag = transitiveFlag;
         this.nThreads = nThreads;
     }
 
@@ -87,17 +93,17 @@ public class VisualizerCommand implements Command{
         while(it.hasNext()){
             formatterType = it.next();
             if (formatterType == FormatterType.JSONLD_FORMATTER) {
-                viewFormat = new JSONLDFormatter(outpath,equivalentClass);
+                viewFormat = new JSONLDFormatter(outpath,equivalentClass,transitiveFlag);
             } else if (formatterType == FormatterType.RDFXML_FORMATTER) {
-                viewFormat = new RDFXMLFormatter(outpath,equivalentClass);
+                viewFormat = new RDFXMLFormatter(outpath,equivalentClass,transitiveFlag);
             } else if (formatterType == FormatterType.GRAPHVIZ_FORMATTER) {
-                viewFormat = new GraphVizFormatter(outpath,equivalentClass);
+                viewFormat = new GraphVizFormatter(outpath,equivalentClass,transitiveFlag);
             } else if (formatterType == FormatterType.GRAPHML_FORMATTER) {
-                viewFormat = new GraphMLFormatter(outpath,equivalentClass);
+                viewFormat = new GraphMLFormatter(outpath,equivalentClass,transitiveFlag);
             } else if (formatterType == FormatterType.OBOFLATFILE_FORMATTER) {
-                viewFormat = new OboFlatFileFormatter(outpath,equivalentClass);
+                viewFormat = new OboFlatFileFormatter(outpath,equivalentClass,transitiveFlag);
             } else if (formatterType == FormatterType.ONTOFUNC_FORMATTER){
-                viewFormat = new OntoFuncFormatter(outpath, equivalentClass);
+                viewFormat = new OntoFuncFormatter(outpath, equivalentClass,transitiveFlag);
             }
             if (viewFormat != null) {
                 if((reasoners == null)||(reasoners.isEmpty())){

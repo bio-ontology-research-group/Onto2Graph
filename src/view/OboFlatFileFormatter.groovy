@@ -36,8 +36,8 @@ public class OboFlatFileFormatter extends ViewFormat {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public OboFlatFileFormatter(String fileOutPath,boolean equivalentClass){
-        super(fileOutPath,equivalentClass);
+    public OboFlatFileFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+        super(fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**

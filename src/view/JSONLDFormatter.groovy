@@ -31,8 +31,8 @@ public class JSONLDFormatter extends RDFXMLFormatter {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public JSONLDFormatter(String fileOutPath,equivalentClass){
-        super(fileOutPath,equivalentClass);
+    public JSONLDFormatter(String fileOutPath,boolean equivalentClass, boolean transitiveFlag){
+        super(fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**

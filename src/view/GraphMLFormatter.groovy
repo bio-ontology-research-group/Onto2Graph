@@ -38,8 +38,8 @@ public class GraphMLFormatter extends ViewFormat {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public GraphMLFormatter(String fileOutPath,equivalentClass){
-        super(fileOutPath,equivalentClass);
+    public GraphMLFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+        super(fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**

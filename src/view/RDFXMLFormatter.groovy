@@ -36,8 +36,8 @@ public class RDFXMLFormatter extends ViewFormat{
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public RDFXMLFormatter(String fileOutPath,boolean equivalentClass){
-        super(fileOutPath,equivalentClass);
+    public RDFXMLFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+        super(fileOutPath,equivalentClass,transitiveFlag);
     }
 
     private Literal createLiteral(Model model, String literal){

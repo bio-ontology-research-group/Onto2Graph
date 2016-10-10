@@ -56,9 +56,9 @@ public abstract class ViewFormat {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public ViewFormat(String fileOutPath,boolean equivalentClass){
+    public ViewFormat(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
         this.fileOutPath = fileOutPath;
-        requestManager = new RequestManager(equivalentClass);
+        requestManager = new RequestManager(equivalentClass,transitiveFlag);
         progressBar = new ProgressBar();
     }
 
@@ -149,7 +149,7 @@ public abstract class ViewFormat {
         //The OWL:Thing class is contained in the OWL language itself, that is why we have to be sure that the
         // axiom has been included.
         OWLDataFactory factory = ontology.getOWLOntologyManager().getOWLDataFactory();
-        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().toString()+"/owl:Thing"))
+        OWLClass thing = factory.getOWLClass(IRI.create(ontology.getOntologyID().getOntologyIRI().get()+"/owl:Thing"))
         classes.add(thing);
         int classesCounter = classes.size();
         int classesIndex = 0;
@@ -159,7 +159,7 @@ public abstract class ViewFormat {
             HashMap root = requestManager.class2info(clazz,ontology)
             if((root!=null)&&(!root.isEmpty())) {
                 graph.addVertex(root);
-                Set<HashMap> subClasses = requestManager.subClassesQuery(root.get("owlClass"), ontology);
+                Set<HashMap> subClasses = requestManager.subClassesQuery(root.get("classURI"), ontology);
                 RelationshipEdge edge = null;
                 if(subClasses!=null){
                     subClasses.each { subClass ->
@@ -173,7 +173,7 @@ public abstract class ViewFormat {
                 if ((properties != null) && (properties.size() > 0)) {
                     RelationshipEdge edgeProperty;
                     properties.each {String idProperty, HashMap value ->
-                        Set<HashMap> result = requestManager.relationQuery(idProperty, root.get("owlClass").toString(), ontology);
+                        Set<HashMap> result = requestManager.relationQuery(idProperty, root.get("classURI").toString(), ontology);
                         if(result!=null){
                             result.each { objectPropertyClass ->
                                 graph.addVertex(objectPropertyClass);

@@ -31,8 +31,8 @@ public class OntoFuncFormatter extends ViewFormat {
      * Constructor of the class
      * @param fileOutPath The file path where the graph will be serialized.
      */
-    public OntoFuncFormatter(String fileOutPath,boolean equivalentClass){
-        super(fileOutPath,equivalentClass);
+    public OntoFuncFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+        super(fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**
