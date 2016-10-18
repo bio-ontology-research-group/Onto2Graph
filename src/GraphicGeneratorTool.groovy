@@ -40,6 +40,18 @@ import java.util.regex.Pattern
  * @version 1.0
  */
 
+@Grapes([
+        @Grab(group='log4j', module='log4j', version='1.2.17'),
+        @Grab(group='jgraph', module='jgraph', version='5.13.0.0'),
+        @Grab(group='org.apache.jena', module='apache-jena-libs', version='3.0.0'),
+        @Grab(group='org.apache.commons', module='commons-io', version='1.3.1'),
+        @Grab(group='com.hermit-reasoner', module='org.semanticweb.hermit', version='1.3.8.4'),
+        @Grab(group='commons-cli', module='commons-cli', version='1.3.1'),
+        @Grab(group='net.sourceforge.owlapi', module='owlapi-distribution', version='4.2.5'),
+        @Grab(group='org.semanticweb.elk', module='elk-reasoner', version='0.4.3')
+])
+
+
 public class GraphicGeneratorTool {
     /**
      * Constant that represent the ELK reasoner.
