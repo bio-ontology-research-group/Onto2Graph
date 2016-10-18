@@ -29,22 +29,26 @@ The application does not have a GUI, it is a command line application. These are
 	4.4 GRAPHML.
 	4.5 *: The "*" set that all formatters will be applied.
 5. -eq: This parameter is flag to control the equivalent classes. If the flag is true, then for each equivalent class a different node will be added to the graph, else if the flag is false then for each set of equivalent classes just one node will be created. 
-6. -op: It is an optional parameter and it represents a list of object properties that will be added to the graph. The list o		of object properties should be formatted as array, here you can see an example: ["first_label","second_label",
+6. -op: It is an optional parameter and it represents a list of object properties that will be added to the graph. The list of object properties should be formatted as array, here you can see an example: ["first_label","second_label",
 	   "third_label"]. In order to include all object properties from the ontology given it is just needed to provide: [*] and then all object properties from the ontology will be added.  
 
 An example of Onto2Graph execution without object properties would be:
 
-java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML
+java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML -t false -nt 4
+7. -t: This parameter should contain a boolean (TRUE,FALSE[DEFAULT]) in order to check the transitivity of the object properties");
+8. -nt: This parameter represents the number of the threads that the application is going to use (4[Default]) (Optional).";
 
 In this example we are using the following parameters:
 -ont: In order to indicate the path where the ontology is located.
 -out: The path where the graph will be serialized.
 -r: In this example we are going to use the STRUCTURAL_REASONER
 -f: The formatter that will be applied over the ontology file will be RDFXML. So, as a result the tool will provide a graph in RDFXML format.
+-t: In this example we are going to consider the transitivity of the properties, thus we set FALSE in order to execute the first version of the algorithm. 
+-nt: The number of threads to use will be 4. 
 
 An other example including all objects properties of the ontology would be:
 
-java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML -op [*]
+java -jar Onto2Graph.jar -ont ./tests/GO_21.obo -out ./outputs/structural_reasoner_rdfxml -r STRUCTURAL_REASONER -f RDFXML -op [*] -t false -nt 4
 
 Unlike the early example, as you can see, here we have object properties. So, in this case the parameters are: 
 -ont: The path of the ontology that will be transformed into a graph.
@@ -52,6 +56,8 @@ Unlike the early example, as you can see, here we have object properties. So, in
 -r: We are going to use the same reasoner that the example before shown.
 -f: The formatter that will be applied, in this example will be RDFXML
 -op: This parameter contains [*] which means all the object properties of the ontology will be included to the parse process of the ontology.
+-t: In this example we are going to consider the transitivity of the properties, thus we set FALSE in order to execute the first version of the algorithm. 
+-nt: The number of threads to use will be 4. 
  
 # License
 
