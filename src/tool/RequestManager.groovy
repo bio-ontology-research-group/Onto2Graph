@@ -405,8 +405,8 @@ public class RequestManager {
             }
 
             // Now remove all classes that are not specific to cl (i.e., there is a more specific class in which the R-edge can be created)
-            //old version of the algorithm
-            //we filter subclasses
+            // old version of the algorithm
+            // we filter subclasses
             subclasses.each { subClass ->
                 if(preComputedSubClasses.containsKey(subClass.getIRI().toURI().toString()+relation)) {
                     def subResult = new HashSet(preComputedSubClasses.get(subClass.getIRI().toURI().toString() + relation));

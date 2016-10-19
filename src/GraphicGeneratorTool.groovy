@@ -40,17 +40,6 @@ import java.util.regex.Pattern
  * @version 1.0
  */
 
-@Grapes([
-        @Grab(group='log4j', module='log4j', version='1.2.17'),
-        @Grab(group='jgraph', module='jgraph', version='5.13.0.0'),
-        @Grab(group='org.apache.jena', module='apache-jena-libs', version='3.0.0'),
-        @Grab(group='org.apache.commons', module='commons-io', version='1.3.1'),
-        @Grab(group='com.hermit-reasoner', module='org.semanticweb.hermit', version='1.3.8.4'),
-        @Grab(group='commons-cli', module='commons-cli', version='1.3.1'),
-        @Grab(group='net.sourceforge.owlapi', module='owlapi-distribution', version='4.2.5'),
-        @Grab(group='org.semanticweb.elk', module='elk-reasoner', version='0.4.3')
-])
-
 
 public class GraphicGeneratorTool {
     /**
@@ -307,9 +296,9 @@ public class GraphicGeneratorTool {
         builder.append("\tIn order to generate all formats available just provide \"*\". \n");
         builder.append("-eq This parameter should contain a boolean (TRUE,FALSE[DEFAULT]) in order to include the equivalent classes to the graph or not");
         builder.append("-op This parameter will contain the list of object properties labels that will be used to visualized the ontology (Optional). \n");
-        builder.append("-t This parameter should contain a boolean (TRUE,FALSE[DEFAULT]) in order to check the transitivity of the object properties");
         builder.append("The object properties should be formatted as array, here you can see an example: [\"first_label\",\"second_label\",\"third_label\"]. \n");
         builder.append("\tIn order to include all object properties from an ontology given just provide: [\"*\"]. \n");
+        builder.append("-t This parameter should contain a boolean (TRUE,FALSE[DEFAULT]) in order to check the transitivity of the object properties");
         builder.append("-nt This parameter represents the number of the threads that the application is going to use (4[Default]) (Optional). \n");
         return(builder.toString());
     }
