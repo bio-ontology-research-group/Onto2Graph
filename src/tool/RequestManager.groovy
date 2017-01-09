@@ -150,7 +150,6 @@ public class RequestManager {
                             OWLObjectProperty objectProperty = factory.getOWLObjectProperty(IRI.create(property));
                             OWLObjectSomeValuesFrom query = factory.getOWLObjectSomeValuesFrom(objectProperty, clazz);
 
-                            /*NodeSet<OWLClass> nodeSubClassesProperty = reasoner.getSubClasses(query, true);
                             if (!equivalentClasses) {
                                 Set<OWLClass> equivalentPropEntities = null;
                                 synchronized (reasoner){
@@ -162,7 +161,7 @@ public class RequestManager {
                                         equivalentList.put(entity.getIRI().toURI().toString(), clazz);
                                     }
                                 }
-                            }*/
+                            }
 
                             Set<OWLClass> subClassesProperty =null;
                             synchronized (reasoner) {

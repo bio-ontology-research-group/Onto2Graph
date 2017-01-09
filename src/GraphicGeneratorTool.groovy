@@ -165,7 +165,8 @@ public class GraphicGeneratorTool {
             typeReasoner = typeReasoner.trim().toUpperCase();
             switch(typeReasoner){
                 case HERMIT_REASONER:
-                    Reasoner hermit = new Reasoner(ontology);
+                    Reasoner.ReasonerFactory factory = new Reasoner.ReasonerFactory();
+                    OWLReasoner hermit = factory.createReasoner(ontology);
                     return (hermit);
                 case STRUCTURAL_REASONER:
                     OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
