@@ -82,9 +82,6 @@ public class RDFXMLFormatter extends ViewFormat{
             rootClass.addLiteral(RDFS.label,rootLabel);
             subClass.addLiteral(RDFS.label,subLabel);
 
-            //insert twice, problems GO-PLUS
-            model.add(subClass, objProperty, rootClass);
-
             rootEdge.get("annotations").each { ArrayList<String> annotation ->
                 if(annotation.size()==2) {
                     Property annProperty = model.createProperty(annotation[0])
