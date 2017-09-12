@@ -33,6 +33,7 @@ public class JSONLDFormatter extends RDFXMLFormatter {
      */
     public JSONLDFormatter(String fileOutPath,boolean equivalentClass, boolean transitiveFlag){
         super(fileOutPath,equivalentClass,transitiveFlag);
+        this.setFormatterName("JSONLD FORMATTER")
     }
 
     /**
@@ -44,7 +45,7 @@ public class JSONLDFormatter extends RDFXMLFormatter {
             if ((graph != null) && (fileOutPath != null)) {
                 serializeRDFModel(graph,properties,"json", "JSON-LD");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("There was an error: "+e.getMessage());
         }
     }

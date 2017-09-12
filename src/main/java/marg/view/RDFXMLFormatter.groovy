@@ -37,7 +37,7 @@ public class RDFXMLFormatter extends ViewFormat{
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public RDFXMLFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
-        super(fileOutPath,equivalentClass,transitiveFlag);
+        super("RDFXML Formatter",fileOutPath,equivalentClass,transitiveFlag);
     }
 
     private Literal createLiteral(Model model, String literal){
@@ -130,7 +130,6 @@ public class RDFXMLFormatter extends ViewFormat{
                 serializeRDFModel(graph,properties,"rdfxml", "RDF/XML");
             }
         }catch(Exception e){
-            e.printStackTrace();
             System.out.println("There was an error: "+e.getMessage());
         }
     }

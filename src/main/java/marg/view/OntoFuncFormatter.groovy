@@ -32,7 +32,7 @@ public class OntoFuncFormatter extends ViewFormat {
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public OntoFuncFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
-        super(fileOutPath,equivalentClass,transitiveFlag);
+        super("ONTOFUNC Formatter",fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**
@@ -85,7 +85,7 @@ public class OntoFuncFormatter extends ViewFormat {
                 term2termOutput.close();
                 termOutput.close();
             }
-        } catch ( IOException e ) {
+        } catch ( Exception e ) {
             System.out.println("There was an error: "+e.getMessage());
         } finally {
             if ( graphPathOutput != null ) {

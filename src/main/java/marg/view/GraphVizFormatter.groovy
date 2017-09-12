@@ -5,6 +5,7 @@ import marg.view.provider.EdgeLabelProvider
 import marg.view.provider.VertexLabelProvider
 import org.jgrapht.Graph
 import org.jgrapht.ext.DOTExporter
+import org.jgrapht.ext.IntegerComponentNameProvider
 import org.jgrapht.ext.IntegerNameProvider
 
 /*
@@ -37,7 +38,7 @@ public class GraphVizFormatter extends ViewFormat{
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public GraphVizFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
-        super(fileOutPath,equivalentClass,transitiveFlag);
+        super("GRAPHVIZ Formatter",fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**
@@ -45,14 +46,18 @@ public class GraphVizFormatter extends ViewFormat{
      * @param graph The graph that will be saved.
      */
     public void serializeGraph(Graph graph,HashMap<String,HashMap> properties){
-        if ((graph != null)&&(fileOutPath!=null)) {
-            progressBar.printProgressBar(100, "serializing the graph...");
-            System.out.println();
-            DOTExporter<HashMap, RelationshipEdge> exporter = new DOTExporter<HashMap, RelationshipEdge>(
-                    new IntegerNameProvider(),new VertexLabelProvider(),new EdgeLabelProvider());
+        try {
+            if ((graph != null) && (fileOutPath != null)) {
+                progressBar.printProgressBar(100, "serializing the graph...");
+                System.out.println();
+                DOTExporter<HashMap, RelationshipEdge> exporter = new DOTExporter<HashMap, RelationshipEdge>(
+                        new IntegerComponentNameProvider(), new VertexLabelProvider(), new EdgeLabelProvider());
 
-            FileWriter writer = new FileWriter(fileOutPath+".dot");
-            exporter.export(writer, graph);
+                FileWriter writer = new FileWriter(fileOutPath + ".dot");
+                exporter.exportGraph(graph, writer);
+            }
+        }catch (Exception e) {
+            System.out.println("There was an error: "+e.getMessage());
         }
     }
 

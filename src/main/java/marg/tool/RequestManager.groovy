@@ -468,7 +468,7 @@ public class RequestManager {
         }
         def info = [
                 "classURI": clazz.getIRI().toURI().toString(),
-                "ontologyURI": o.getOntologyID().getOntologyIRI().get(),
+                "ontologyURI": o.getOntologyID().getOntologyIRI().get().toString(),
                 "remainder": clazz.getIRI().getRemainder().get(),
                 "label": null,
                 "annotations" :[],

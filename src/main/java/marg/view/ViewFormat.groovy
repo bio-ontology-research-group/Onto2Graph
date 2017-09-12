@@ -52,10 +52,19 @@ public abstract class ViewFormat {
     protected ProgressBar progressBar;
 
     /**
-     * Constructor of the class
-     * @param fileOutPath The file path where the graph will be serialized.
+     * Name of the type of formatter
      */
-    public ViewFormat(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+    protected String formatterName
+
+    /**
+     * Constructor of the class
+     * @param formatterName The name of the type of formatter
+     * @param fileOutPath The file path where the graph will be serialized.
+     * @param equivalentClass Flag to filter equivalent classes
+     * @param transitiveFlag Flag to activate the transitive reduction.
+     */
+    public ViewFormat(String formatterName, String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
+        this.formatterName = formatterName;
         this.fileOutPath = fileOutPath;
         requestManager = new RequestManager(equivalentClass,transitiveFlag);
         progressBar = new ProgressBar();
@@ -68,6 +77,7 @@ public abstract class ViewFormat {
      * @param ontology The ontology that will be parsed
      * @param reasoners The list of reasoners that will be used to go across the ontology.
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
+     * @param nThreads Number of the threads that will be used for the transformation.
      *
      */
     public void parseOntology(OWLOntology ontology,List<OWLReasoner> reasoners, String[] properties,int nThreads) {
@@ -86,6 +96,7 @@ public abstract class ViewFormat {
      *
      * @param ontology The ontology that will be parsed
      * @param properties The object properties that belongs to the ontology and they will be used to compute.
+     * @param nThreads Number of the threads that will be used for the transformation.
      *
      */
     public void parseOntology(OWLOntology ontology, String[] properties,int nThreads){
@@ -140,7 +151,7 @@ public abstract class ViewFormat {
      * It builds the graph.
      * @param ontology Ontology used to build the graph.
      * @param properties Object Properties that belong to ontology and they are using to create the graph.
-     * @return Graph is built.
+     * @return Graph built.
      */
     protected Graph buildGraph(OWLOntology ontology,HashMap<String,HashMap> properties) {
         DirectedPseudograph<String, RelationshipEdge> graph = new DirectedPseudograph<HashMap, RelationshipEdge>(new ClassBasedEdgeFactory<HashMap, RelationshipEdge>(RelationshipEdge.class));
@@ -191,8 +202,25 @@ public abstract class ViewFormat {
     }
 
     /**
+     * It stores the name of the formatterName
+     * @param formatterName Formatter name used
+     */
+    public void setFormatterName(String formatterName){
+        this.formatterName = formatterName;
+    }
+
+    /**
+     * It provides the id of the current object
+     * @return Id of the object.
+     */
+    public String toString(){
+        return(this.formatterName);
+    }
+
+    /**
      * It serializes the built graph in a file.
      * @param graph The graph built that it will be serialised in a file.
      */
     public abstract void serializeGraph(Graph graph, HashMap<String,HashMap> properties);
+
 }

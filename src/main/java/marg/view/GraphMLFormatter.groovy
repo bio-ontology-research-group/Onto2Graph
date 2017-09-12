@@ -5,6 +5,7 @@ import marg.view.provider.EdgeLabelProvider
 import marg.view.provider.VertexLabelProvider
 import org.jgrapht.Graph
 import org.jgrapht.ext.GraphMLExporter
+import org.jgrapht.ext.IntegerComponentNameProvider
 import org.jgrapht.ext.IntegerEdgeNameProvider
 import org.jgrapht.ext.IntegerNameProvider
 
@@ -38,7 +39,7 @@ public class GraphMLFormatter extends ViewFormat {
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public GraphMLFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
-        super(fileOutPath,equivalentClass,transitiveFlag);
+        super("GRAPHML Formatter",fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**
@@ -51,15 +52,14 @@ public class GraphMLFormatter extends ViewFormat {
                 progressBar.printProgressBar(100, "serializing the graph...");
                 System.out.println();
                 GraphMLExporter<HashMap, RelationshipEdge> exporter = new GraphMLExporter<HashMap, RelationshipEdge>(
-                        new IntegerNameProvider(),new VertexLabelProvider(),new IntegerEdgeNameProvider(),new EdgeLabelProvider());
+                        new IntegerComponentNameProvider(),new VertexLabelProvider(),new IntegerEdgeNameProvider(),new EdgeLabelProvider());
 
                 FileWriter writer = new FileWriter(fileOutPath+".graphml");
-                exporter.export(writer, graph);
+                exporter.exportGraph(graph, writer);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("There was an error: "+e.getMessage());
         }
     }
-
 
 }

@@ -37,7 +37,7 @@ public class OboFlatFileFormatter extends ViewFormat {
      * @param fileOutPath The file path where the graph will be serialized.
      */
     public OboFlatFileFormatter(String fileOutPath,boolean equivalentClass,boolean transitiveFlag){
-        super(fileOutPath,equivalentClass,transitiveFlag);
+        super("OBOFLAT Formatter",fileOutPath,equivalentClass,transitiveFlag);
     }
 
     /**
@@ -72,19 +72,14 @@ public class OboFlatFileFormatter extends ViewFormat {
                     manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(sourceClass));
                     manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(destClass));
 
-                    rootEdge.get("annotations").each { ArrayList<String> annotation ->
-                        if(annotation.size()==2) {
-                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
-                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
-                            manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(annProperty,sourceClass.getIRI(),annValue));
-                        }
+                    if(rootEdge.get("label")!=null){
+                        OWLAnnotationValue annValue = factory.getOWLLiteral(rootEdge.get("label"));
+                        manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),sourceClass.getIRI(),annValue));
                     }
-                    subEdge.get("annotations").each{ ArrayList<String> annotation->
-                        if(annotation.size()==2) {
-                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
-                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
-                            manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(annProperty,destClass.getIRI(),annValue));
-                        }
+
+                    if(subEdge.get("label")!=null){
+                        OWLAnnotationValue annValue = factory.getOWLLiteral(subEdge.get("label"));
+                        manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),destClass.getIRI(),annValue));
                     }
 
                     if(edge.getURI().compareTo(RDFS.subClassOf.getURI())==0){
@@ -108,7 +103,7 @@ public class OboFlatFileFormatter extends ViewFormat {
                 }
                 manager.saveOntology(ontology,new OBOOntologyFormat(),IRI.create(new File(fileOutPath+".obo")));
             }
-        } catch ( IOException e ) {
+        } catch ( Exception e ) {
             System.out.println("There was an error: "+e.getMessage());
         } finally {
             if ( output != null ) {
