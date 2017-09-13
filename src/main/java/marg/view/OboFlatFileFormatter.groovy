@@ -72,14 +72,24 @@ public class OboFlatFileFormatter extends ViewFormat {
                     manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(sourceClass));
                     manager.addAxiom(ontology,factory.getOWLDeclarationAxiom(destClass));
 
-                    if(rootEdge.get("label")!=null){
-                        OWLAnnotationValue annValue = factory.getOWLLiteral(rootEdge.get("label"));
-                        manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),sourceClass.getIRI(),annValue));
+                    HashSet nameProperties = new HashSet<String>(); // To avoid exception for repeated names.
+                    rootEdge.get("annotations").each {ArrayList<String> annotation ->
+                        if((annotation.size()==2)&&(!nameProperties.contains(annotation[0]))) {
+                            nameProperties.add(annotation[0]);
+                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
+                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
+                            manager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(annProperty, sourceClass.getIRI(), annValue));
+                        }
                     }
 
-                    if(subEdge.get("label")!=null){
-                        OWLAnnotationValue annValue = factory.getOWLLiteral(subEdge.get("label"));
-                        manager.addAxiom(ontology,factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),destClass.getIRI(),annValue));
+                    nameProperties.clear(); // To avoid exception for repeated names
+                    subEdge.get("annotations").each {ArrayList<String> annotation ->
+                        if((annotation.size()==2)&&(!nameProperties.contains(annotation[0]))) {
+                            nameProperties.add(annotation[0]);
+                            OWLAnnotationProperty annProperty = factory.getOWLAnnotationProperty(IRI.create(annotation[0]));
+                            OWLAnnotationValue annValue = factory.getOWLLiteral(annotation[1]);
+                            manager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(annProperty, destClass.getIRI(), annValue));
+                        }
                     }
 
                     if(edge.getURI().compareTo(RDFS.subClassOf.getURI())==0){
