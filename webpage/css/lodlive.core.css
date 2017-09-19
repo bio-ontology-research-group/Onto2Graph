@@ -1,0 +1,752 @@
+* {
+	font-family: 'Open Sans', verdana;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	font-family: 'Open Sans', verdana;
+	font-size: 10px;
+	background: #ffffff;
+}
+
+.spriteLegenda {
+	background-image: url(../img/sprite-legenda.png);
+	background-repeat: no-repeat;
+	background-size: 20px 400px;
+}
+
+
+
+.logo {
+	background-image: url(../img/logo.jpg);
+	background-repeat: no-repeat;
+	background-size: 400px 100px;
+}
+
+
+.sprite {
+	background-image: url(../img/sprite-balls.png);
+	background-repeat: no-repeat;
+	background-size: 2210px 800px;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) , only screen and (min-resolution: 144dppx) {
+	.sprite {
+		background-image: url(../img/sprite-balls@2x.png);
+	}
+
+	.spriteLegenda {
+		background-image: url(../img/sprite-legenda@2x.png);
+	}
+}
+
+
+#lodlogo {
+	background-position: -785px -450px;
+	position: fixed;
+	z-index: 0;
+	left: 60px;
+	top: 29px;
+	width: 97px;
+	height: 23px;
+}
+
+#controlPanel {
+	position: absolute;
+	width: 30px;
+}
+
+#controlPanel .panel, #controlPanel .panel2 {
+	height: 40px;
+	width: 30px;
+	margin-top: 10px;
+}
+
+#controlPanel .panel.options {
+	background-position: -655px -400px;
+	cursor: pointer;
+}
+
+#panelContent ul.optionsList {
+	list-style: none;
+	margin: 0 0 20px 10px;
+	padding: 0;
+	font-size: 11px;
+	line-height: 20px;
+}
+
+#panelContent ul.optionsList li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-size: 11px;
+	line-height: 20px;
+	cursor: pointer;
+	display: block;
+	padding-left: 10px;
+}
+
+#panelContent ul.optionsList li span {
+	display: block;
+	float: left;
+	height: 10px;
+	margin-right: -10px;
+	margin-top: 6px;
+	width: 10px;
+	position: relative;
+	left: -20px;
+}
+
+#panelContent ul.optionsList.legend * {
+	cursor: auto
+}
+
+#panelContent ul.optionsList.legend li span {
+	display: block;
+	float: left;
+	height: 20px;
+	margin: 0;
+	width: 20px;
+	position: relative;
+	left: -7px;
+}
+
+#panelContent ul.optionsList li.reload span {
+	background-position: -1px -230px;
+}
+
+#panelContent ul.optionsList li.check span {
+	background-position: -1px -240px;
+}
+
+#panelContent ul.optionsList li.checked span {
+	background-position: -1px -250px;
+}
+
+#panelContent ul.optionsList li.reload:hover span {
+	background-position: -11px -230px;
+}
+
+#panelContent ul.optionsList li.check:hover span {
+	background-position: -11px -240px;
+}
+
+#panelContent ul.optionsList li.checked:hover span {
+	background-position: -11px -250px;
+}
+
+#controlPanel .panel.legend {
+	background-position: -700px -400px;
+	cursor: pointer;
+}
+
+#panelContent  ul.optionsList.legend {
+	margin: 0 0 20px -5px;
+}
+
+#controlPanel .panel2.images {
+	background-position: -610px -400px;
+	cursor: pointer;
+}
+
+#mapsCnt {
+	display: block;
+	width: 765px;
+	height: 370px;
+	margin: 0;
+	padding: 0
+}
+
+#controlPanel .panel2.maps {
+	background-position: -565px -400px;
+	cursor: pointer;
+}
+
+#controlPanel .panel.help {
+	background-position: -745px -400px;
+	cursor: pointer;
+}
+
+#panelContent .videoHelp {
+	display: block;
+	margin-left: 67px;
+	background-position: -781px -549px;
+	cursor: pointer;
+	width: 56px;
+	height: 28px;
+	background-position: -781px -549px;
+}
+
+#controlPanel .panel.close2 {
+	background-position: -565px -500px;
+	cursor: pointer;
+}
+
+#controlPanel .panel.close {
+	background-position: -655px -500px;
+	cursor: pointer;
+}
+
+#controlPanel div#panelContent {
+	width: 240px;
+	background: url(../img/pannelloBlackBackground.png);
+	color: #fff;
+	left: 0;
+	top: 10px;
+	position: absolute;
+	font-size: 11px;
+	line-height: 20px;
+}
+
+#controlPanel div#panel2Content {
+	height: 400px;
+	background: url(../img/pannelloBlueBackground.png);
+	background: url(../img/pannelloBlueBackground.png);
+	color: #fff;
+	left: 0;
+	top: 10px;
+	position: absolute;
+	font-size: 11px;
+	line-height: 20px;
+	overflow: hidden;
+	color: #fff;
+	left: 0;
+	top: 10px;
+	position: absolute;
+	font-size: 11px;
+	line-height: 20px;
+	overflow: hidden;
+}
+
+#imagePanel span#imgesCnt {
+	background: url(../img/thumbBlueNoFoto.png);
+	float: left;
+	width: 100%;
+	height: 375px;
+	display: block;
+}
+
+#imagePanel a.relatedImage {
+	background-position: -1825px -395px;
+	text-decoration: none;
+	color: #fff;
+	display: block;
+	float: left;
+	width: 113px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	overflow: hidden;
+	height: 113px;
+}
+
+#imagePanel a.relatedImage span {
+	display: block;
+	text-align: left;
+}
+
+#imagePanel a.relatedImage span.imgControls {
+	display: block;
+}
+
+#imagePanel a.relatedImage span.imgTitle {
+	cursor: auto;
+	margin: 30px 10px 10px 10px;
+	float: none;
+	line-height: 13px;
+}
+
+#imagePanel a.relatedImage span.imgControls span.imgControlCenter {
+	cursor: pointer;
+	margin: -25px 5px 0 2px;
+	float: right;
+	width: 13px;
+	height: 13px;
+}
+
+#imagePanel a.relatedImage span.imgControls span.imgControlZoom {
+	cursor: pointer;
+	margin: -25px 0 0 0;
+	float: right;
+	width: 13px;
+	height: 13px;
+	position: relative;
+	left: -20px;
+}
+
+.bullet {
+	margin-right: 5px;
+	width: 3px;
+	height: 5px;
+	display: block;
+	float: left;
+	position: relative;
+	left: -4px;
+	top: 8px;
+	padding-left: 10px;
+	background-position: -560px -400px;
+}
+
+ul.lista {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	text-indent: -13px;
+	padding-left: 8px;
+}
+
+#controlPanel div#panelContent div {
+	padding: 10px 10px 10px 20px;
+}
+
+#controlPanel div#panel2Content div#imagePanel {
+	padding: 15px 0 0 20px;
+}
+
+#controlPanel div#panel2Content div#mapPanel {
+	margin: 0;
+	padding: 0;
+	height: 400px;
+	width: 800px
+}
+
+#controlPanel div#panel2Content div span.amsg {
+	display: block;
+	cursor: auto;
+	margin: 30px 30px 10px 10px;
+	float: none;
+	line-height: 13px;
+}
+
+#controlPanel div#panelContent h2 {
+	padding: 0 0 20px 0;
+	color: #fff;
+	margin: 0;
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.boxWrapper {
+	width: 130px;
+	height: 130px;
+	position: absolute;
+	z-index: 97;
+}
+
+a.relatedImage {
+	display: block;
+	width: 80px;
+	height: 80px;
+	text-align: center;
+	float: left;
+	overflow: hidden
+}
+
+#aSpace {
+	width: 3000px;
+	height: 3000px;
+}
+
+#docInfo {
+	position: absolute;
+	width: 280px;
+	z-index: 99999;
+	color: #fff;
+	font-size: 11px;
+	line-height: 20px;
+	font-weight: normal;
+	margin-top: 10px;
+	margin-right: 20px
+} 
+#docInfo ul {
+	padding: 0;
+	margin: 0;
+}
+
+#docInfo ul li a {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #fff;
+	font-size: 11px;
+}
+
+#docInfo .topSection {
+	background-position: -264px -390px;
+	height: 20px;
+	line-height: 20px;
+}
+
+#docInfo .topSection span {
+	display: block;
+	float: right;
+	width: 12px;
+	height: 12px;
+	cursor: pointer;
+}
+
+#docInfo .section {
+	background: #000;
+	padding-left: 10px;
+	padding-right: 10px;
+	overflow-x: hidden;
+}
+
+#docInfo .separ {
+	background-position: -265px -460px;
+	height: 20px;
+}
+
+#docInfo .separLast {
+	height: 11px;
+	background: #c7c7c7;
+	position: relative;
+	top: -10px;
+}
+
+#docInfo label {
+	font-size: 11px;
+	line-height: 20px;
+	font-weight: 800;
+}
+
+.contents p {
+	display: block;
+	font-size: 12px;
+	margin: 5px 0 0 0;
+	padding: 0 15px 0 0;
+}
+
+div.box {
+	background-position: 0 -390px;
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 130px;
+	height: 130px;
+	z-index: 99;
+	text-align: center;
+	font-size: 11px;
+	line-height: 12px;
+	position: absolute;
+	cursor: move;
+}
+
+div.relatedBox {
+	background-position: -1052px -412px;
+	cursor: pointer;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 0;
+	z-index: 101;
+	text-align: center;
+}
+
+div.pagePrev {
+	background-position: -1414px -410px;
+	cursor: pointer;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 0;
+	z-index: 101;
+	text-align: center;
+}
+
+div.pagePrev:hover {
+	background-position: -1414px -430px;
+}
+
+div.pageNext {
+	background-position: -1390px -412px;
+	cursor: pointer;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 0;
+	z-index: 101;
+	text-align: center;
+}
+
+div.pageNext:hover {
+	background-position: -1390px -432px;
+}
+
+div#msg {
+	position: absolute;
+	color: #393939;
+	line-height: 20px;
+	width: 330px;
+	font-size: 11px
+}
+
+div#msg .endpoint {
+	padding: 0 0 0 10px;
+	background: #fff;
+	font-weight: bold;
+}
+
+div#msg .corner {
+	height: 10px;
+	background-position: -1030px -500px;
+}
+
+div#msg .from {
+	padding: 6px 10px 0 10px;
+	background: #fff
+}
+
+div#msg .from.upperline {
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+div#msg .separline {
+	height: 21px;
+	background-position: -1030px -520px;
+}
+
+div#msg .separ {
+	height: 21px;
+	background-position: -1030px -550px;
+	width: 330px;
+}
+
+div#msg .separ.inverse {
+	height: 21px;
+	background-position: -1030px -580px;
+	width: 330px;
+}
+
+.relatedBox.isSameAs {
+	background-position: -1032px -412px;
+}
+
+.groupedRelatedBox.isSameAs {
+	background-position: -1032px -432px;
+}
+.relatedBox.isType {
+	background-position: -1012px -412px;
+}
+
+.groupedRelatedBox.isType {
+	background-position: -1012px -432px;
+}
+
+.showGroupedRelated div.relatedBox {
+	position: static;
+	display: inline-block;
+}
+
+.showGroupedRelated span.relatedBox {
+	float: right;
+	font-size: 10px;
+	line-height: 16px;
+}
+
+.groupedRelatedBox {
+	background-position: -1052px -432px;
+	cursor: pointer;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	z-index: 101;
+	text-align: center;
+	height: 16px;
+}
+
+.relatedBox.inverse {
+	background-position: -1052px -452px;
+}
+
+.groupedRelatedBox.inverse {
+	background-position: -1052px -472px;
+}
+
+.showGroupedRelated {
+	width: 150px;
+	position: absolute;
+	display: none;
+	background: #fff;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	padding: 5px;
+	z-index: 101;
+}
+
+.actionBox {
+	cursor: pointer;
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border: 0;
+	z-index: 100;
+	text-align: center;
+	font-size: 11px;
+	line-height: 20px;
+}
+
+.actionBox.contents {
+	left: 97px;
+	top: 17px;
+}
+
+.toolBox .innerActionBox {
+	cursor: pointer;
+	display: block;
+	width: 15px;
+	height: 15px;
+	margin-right: 1px;
+	float: left;
+}
+
+.actionBox.tools {
+	left: 77px;
+	top: 3px;
+}
+
+.toolBox {
+	background-position: -135px -395px;
+	height: 23px;
+	width: 80px;
+	position: absolute;
+	z-index: 100;
+	background-repeat: no-repeat;
+}
+
+.box a {
+	font-size: 11px;
+	text-decoration: none;
+	color: #fff;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.box a:hover {
+	text-decoration: underline;
+}
+
+.boxTitle {
+	color: #fff;
+	margin-left: 15px;
+	line-height: 13px;
+	width: 100px;
+	overflow: hidden;
+}
+
+.boxTitle a span {
+	width: 10px;
+	height: 10px;
+	background-position: -7px -85px;
+	display: block;
+	float: left;
+}
+
+}
+#selectionBox input {
+	width: 300px;
+	display: inline;
+	border: 1px solid #ccc;
+}
+
+#selectionBox a {
+	font-size: 20px;
+	text-decoration: none;
+}
+
+.queryConsole {
+	position: fixed;
+	z-index: 999;
+	width: 630px;
+	left: 50%;
+	top: 70px;
+	margin-left: -315px
+}
+
+.queryConsole h3 {
+	width: 630px;
+	background-position: -10px -650px;
+	height: 42px;
+	margin: 0;
+	padding: 0;
+	font-size: 13px;
+}
+
+.queryConsole h3 span {
+	float: left;
+	padding: 12px 20px 0 20px
+}
+
+.queryConsole h3 a {
+	display: block;
+	width: 29px;
+	height: 40px;
+	cursor: pointer;
+	float: right;
+	background-position: -611px -650px;
+}
+
+.queryConsole div {
+	background-color: #fff;
+	display: none;
+	width: 598px;
+	margin-left: 1px;
+	position: relative;
+	top: -1px;
+}
+
+.queryConsole span {
+	display: block;
+	padding: 10px 20px 0 20px
+}
+
+.queryConsole div span {
+	padding: 10px 19px 30px 30px;
+}
+
+.queryConsole div span span.contentArea {
+	padding: 0;
+	width: 500px;
+}
+
+.queryConsole div span span.linkArea {
+	padding: 0;
+	float: right;
+	width: 10px;
+	height: 10px;
+	background-position: -610px -600px;
+	cursor: pointer;
+}
+
+.queryConsole strong {
+	font-weight: normal;
+}
+
+.queryConsole h4 {
+	width: 600px;
+	background-position: -680px -650px;
+	height: 40px;
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+.queryConsole h4 span {
+	padding: 12px 20px 0 20px
+}
+
+#docInfo .slimScrollDiv {
+	color: #fff;
+	border: 0;
+	background-color:#c7c7c7; 
+}
+
+/*.ellipsis_text {
+ max-height: 42px;
+ overflow: hidden;
+ display: block;
+ }*/
