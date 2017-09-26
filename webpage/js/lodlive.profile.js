@@ -27,7 +27,7 @@ $.jStorage.set('profile', {
 							  'FILTER ((langMatches(lang(?label),"en"))) .' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property LIMIT 100',
 			},
-			endpoint : 'http://www.cbrc.kaust.edu.sa/onto/sparql/',
+			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_FALSE',
 						 root: 'owl:Thing',
@@ -1320,7 +1320,7 @@ $.jStorage.set('profile', {
 							  'FILTER ((langMatches(lang(?label),"en"))) .' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property LIMIT 100',
 			},
-			endpoint : 'http://www.cbrc.kaust.edu.sa/onto/sparql/',
+			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_TRUE',
 						 root: 'owl:Thing',
@@ -2613,7 +2613,7 @@ $.jStorage.set('profile', {
 							  'FILTER ((langMatches(lang(?label),"en"))) .' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property LIMIT 100',
 			},
-			endpoint : 'http://www.cbrc.kaust.edu.sa/onto/sparql/',
+			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_FALSE',
 						 root: 'owl:Thing',
@@ -3906,7 +3906,7 @@ $.jStorage.set('profile', {
 							  'FILTER ((langMatches(lang(?label),"en"))) .' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property LIMIT 100',
 			},
-			endpoint : 'http://www.cbrc.kaust.edu.sa/onto/sparql/',
+			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/paper_goplus_sr_true',
 						 root: 'owl:Thing',
@@ -5193,7 +5193,7 @@ $.jStorage.set('profile', {
 		sparql : {
 				allClasses : 'select ?s ?p ?o from <http://aber-owl.net/DIAB> where {?s ?p ?o}'
 		},
-		endpoint : 'http://10.73.106.41:8890/sparql/',
+		endpoint : 'http://bio2vec.net/sparql/',
 		document : {
 			className : 'standard',
 			titleProperties : ['owl:Thing']
