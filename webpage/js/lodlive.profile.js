@@ -30,7 +30,7 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
-						 root: 'Golgi membrane',
+						 root: 'extrinsic component of Golgi membrane',
 						 label: '* example1(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
@@ -1335,16 +1335,16 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
-						 root: 'Golgi membrane',
-						 label: '* example1(t=false)'
+						 root: 'extrinsic component of Golgi membrane',
+						 label: '* example1(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
 						 root: 'omegasome membrane',
-						 label: '* example2(t=false)'
+						 label: '* example2(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
 						 root: 'dendritic spine membrane',
-						 label: '* example3(t=false)'
+						 label: '* example3(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_TRUE',
 						 root: 'owl:Thing',
@@ -2640,7 +2640,7 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
-						 root: 'Golgi membrane',
+						 root: 'extrinsic component of Golgi membrane',
 						 label: '* example1(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
@@ -3945,16 +3945,16 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
-						 root: 'Golgi membrane',
-						 label: '* example1(t=false)'
+						 root: 'extrinsic component of Golgi membrane',
+						 label: '* example1(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
 						 root: 'omegasome membrane',
-						 label: '* example2(t=false)'
+						 label: '* example2(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
 						 root: 'dendritic spine membrane',
-						 label: '* example3(t=false)'
+						 label: '* example3(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/paper_goplus_sr_true',
 						 root: 'owl:Thing',
