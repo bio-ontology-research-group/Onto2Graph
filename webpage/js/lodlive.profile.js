@@ -9,26 +9,38 @@ $.jStorage.set('profile', {
 			useForInverseSameAs : false,
 			sparql : {
 				documentUri : 'SELECT DISTINCT ?property ?relation ?object FROM <{URI}> WHERE {' +
-							  '?subject <http://www.w3.org/2000/01/rdf-schema#label> "{ROOT}"@en .' +
-							  '?concept ?property ?subject .' +
-							  '?property <http://www.w3.org/2000/01/rdf-schema#label> ?relationLabel .'+
-							  'FILTER ((langMatches(lang(?relationLabel),"en"))) .'+
-							  'BIND (str(?relationLabel) as ?relation) .'+
-							  '?concept <http://www.w3.org/2000/01/rdf-schema#label> ?label .' +
+							  '?subject <http://www.w3.org/2000/01/rdf-schema#label> "{ROOT}"@en . ' +
+							  '?concept ?property ?subject . ' +
+							  '?property <http://www.w3.org/2000/01/rdf-schema#label> ?relationLabel . '+
+							  'FILTER ((langMatches(lang(?relationLabel),"en"))) . '+
+							  'BIND (str(?relationLabel) as ?relation) . '+
+							  '?concept <http://www.w3.org/2000/01/rdf-schema#label> ?label . ' +
 							  'FILTER ((langMatches(lang(?label),"en"))) .' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property',
 					inverse : 'SELECT DISTINCT ?property ?relation ?object FROM <{URI}> WHERE {' +
-							  '?subject <http://www.w3.org/2000/01/rdf-schema#label> "{ROOT}"@en .' +
-							  '?subject ?property ?concept .' +
-							  '?property <http://www.w3.org/2000/01/rdf-schema#label> ?relationLabel .'+
-							  'FILTER ((langMatches(lang(?relationLabel),"en"))) .'+
-							  'BIND (str(?relationLabel) as ?relation) .'+
-							  '?concept <http://www.w3.org/2000/01/rdf-schema#label> ?label .' +
-							  'FILTER ((langMatches(lang(?label),"en"))) .' +
+							  '?subject <http://www.w3.org/2000/01/rdf-schema#label> "{ROOT}"@en . ' +
+							  '?subject ?property ?concept . ' +
+							  '?property <http://www.w3.org/2000/01/rdf-schema#label> ?relationLabel . '+
+							  'FILTER ((langMatches(lang(?relationLabel),"en"))) . '+
+							  'BIND (str(?relationLabel) as ?relation) . '+
+							  '?concept <http://www.w3.org/2000/01/rdf-schema#label> ?label . ' +
+							  'FILTER ((langMatches(lang(?label),"en"))) . ' +
 							  'BIND (str(?label) as ?object) } ORDER BY ?property LIMIT 100',
 			},
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
+						 root: 'Golgi membrane',
+						 label: '* example1(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
+						 root: 'omegasome membrane',
+						 label: '* example2(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
+						 root: 'dendritic spine membrane',
+						 label: '* example3(t=false)'
+						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_FALSE',
 						 root: 'owl:Thing',
 						 label: '* experiment GOPLUS_ELK (t=false)'
@@ -1322,6 +1334,18 @@ $.jStorage.set('profile', {
 			},
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
+						 root: 'Golgi membrane',
+						 label: '* example1(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
+						 root: 'omegasome membrane',
+						 label: '* example2(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
+						 root: 'dendritic spine membrane',
+						 label: '* example3(t=false)'
+						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_TRUE',
 						 root: 'owl:Thing',
 						 label: '* experiment GOPLUS_ELK (t=true)'
@@ -2615,6 +2639,18 @@ $.jStorage.set('profile', {
 			},
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
+						 root: 'Golgi membrane',
+						 label: '* example1(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
+						 root: 'omegasome membrane',
+						 label: '* example2(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
+						 root: 'dendritic spine membrane',
+						 label: '* example3(t=false)'
+						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_FALSE',
 						 root: 'owl:Thing',
 						 label: '* experiment GOPLUS_SR (t=false)'
@@ -3908,6 +3944,18 @@ $.jStorage.set('profile', {
 			},
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
+						 root: 'Golgi membrane',
+						 label: '* example1(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
+						 root: 'omegasome membrane',
+						 label: '* example2(t=false)'
+						},
+						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
+						 root: 'dendritic spine membrane',
+						 label: '* example3(t=false)'
+						},
 						{ uri: 'http://aber-owl.net/paper_goplus_sr_true',
 						 root: 'owl:Thing',
 						 label: '* experiment GOPLUS_SR (t=true)'
@@ -5193,10 +5241,10 @@ $.jStorage.set('profile', {
 		sparql : {
 				allClasses : 'select ?s ?p ?o from <http://aber-owl.net/DIAB> where {?s ?p ?o}'
 		},
-		endpoint : 'http://bio2vec.net/sparql/',
+		endpoint : 'http://10.73.106.41:8890/sparql/',
 		document : {
 			className : 'standard',
-			titleProperties : ['owl:Thing']
+			//titleProperties : ['owl:Thing']
 		}, // http://www.w3.org/2000/01/rdf-schema#label
 		images : {
 			properties : ['http://www.w3.org/2006/vcard/ns#photo', 'http://xmlns.com/foaf/0.1/depiction', 'http://dbpedia.org/ontology/thumbnail', 'http://dbpedia.org/property/logo', 'http://linkedgeodata.org/ontology/schemaIcon']

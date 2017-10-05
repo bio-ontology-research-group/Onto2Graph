@@ -110,10 +110,13 @@ $(function() {
 				descrBox.fadeOut('fast');
 			});
 			form.bind('submit', function() {
-				var value = $(this).find('input[name=startFrom]').val();
-				if (value != '') {
+				var firstUri = $(this).find('input[name=startFrom]').val();
+				var idQuery=$(this).find('.select').text();
+
+
+				if (firstUri != '') {
 					//document.location = '?' + $.trim(value);
-					window.open(document.location + '?' + $.trim(value), '_blank');
+					window.open(document.location + '?' + $.trim(firstUri) + '&&' + $.trim(idQuery), '_blank');
 				} else {
 					myAlert(lang('impostaUnaURI'));
 				}

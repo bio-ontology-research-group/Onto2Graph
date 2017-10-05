@@ -13,6 +13,9 @@
 
 var debugOn = false;
 var graphName
+var firstUri
+var idQuery
+var rootLabel
 (function($, lodLiveProfile) {
 	$.jsonp.setup({
 		cache : true,
@@ -25,8 +28,12 @@ var graphName
 	var globalInnerPageMap = {};
 	var context;
 	var methods = {
-		init : function(firstUri) {
-			graphName = firstUri; 
+		init : function(parameters) {
+			var index = parameters.indexOf("&&")
+			graphName = parameters.substr(0,index)
+			firstUri = parameters.substr(0,index)
+			idQuery = decodeURI(parameters.substr(index+2))
+			idQuery = idQuery.replace('example - ','')
 			context = this;
 			// inizializzo il contenitore delle variabili di ambiente
 			var storeIdsCleaner = $.jStorage.index();
@@ -100,8 +107,11 @@ var graphName
 
 			$.each(lodLiveProfile.connection, function(key, value) {
 				//for (var a = 0; a < keySplit.length; a++) {
-				var entry = $.grep(value.examples,function(e) {return e.uri == graphName})
+				//var entry = $.grep(value.examples,function(e) {return (e.name==idQuery)&&(e.uri == graphName)})				
+				var entry = $.grep(value.examples,function(e) {return (e.label==idQuery)&&(e.uri == graphName)})
+
 				if(entry.length>0){
+					rootLabel = entry[0].root;
 					res = getSparqlConf(module, value, lodLiveProfile);		
 					if(graphName==resource){
 						res = res.replace(/\{URI\}/ig, graphName.replace(/^.*~~/, ''));
@@ -1965,7 +1975,9 @@ var graphName
 			}
 			containerBox.addClass(aClass);
 			// ed ai path da mostrare nel titolo del box
-			var titles = methods.getProperty("document", "titleProperties", docType);
+			//var titles = methods.getProperty("document", "titleProperties", docType);
+			// We change the label of the root by the label of the concept.
+			var titles=rootLabel
 			// ed ai path degli oggetti di tipo immagine
 			var images = methods.getProperty("images", "properties", docType);
 			// ed ai path dei link esterni
