@@ -1,12 +1,13 @@
 # Onto2Graph
 
-Onto2Graph is a tool based in Java that can generate graphs in different formats from ontologies.
-The tool is based on OWLAPI library to load the ontologies and then,
-it enables to use different reasoners to infer a graph from the ontology (ELK, HERMIT, STRUCTURAL REASONER AND SYNTACTIC
-REASONER). Once the graph is built, different libraries have been integrated in the tool to transform it into different
-formats such: RDFXML, GRAPHVIZ, FLATFILE and GRAPHML). The tool implements two different algorithms to carry through with
-the conversion: A) without the transitive reduction in which relations inferred from transitive object properties will be
-taken into account. B) with transitive reduction where relations inferred from transitive object properties will not be considered.
+Onto2Graph is a tool based on Java that can generate graphs in different formats from ontologies.
+The tool is based on OWLAPI library to load the ontologies, and then, it enables to use different
+reasoners to infer a graph from the ontology (ELK, HERMIT, STRUCTURAL REASONER AND SYNTACTIC REASONER).
+Once the graph is built, different libraries have been integrated into the tool to transform it into various
+formats such: RDFXML, GRAPHVIZ, FLATFILE and GRAPHML). The tool implements two different algorithms to carry
+through with the conversion: A) without the transitive reduction in which relations inferred from transitive
+object properties will be taken into account. B) with transitive reduction where relations inferred from transitive
+object properties will not be considered.
 
 # Dependencies
 
