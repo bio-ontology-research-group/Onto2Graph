@@ -30,15 +30,15 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
-						 root: 'extrinsic component of Golgi membrane',
+						 root: 'extrinsic component of organelle membrane',
 						 label: '* example1(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
-						 root: 'omegasome membrane',
+						 root: 'omegasome',
 						 label: '* example2(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_FALSE',
-						 root: 'dendritic spine membrane',
+						 root: 'positive regulation of embryonic development',
 						 label: '* example3(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_FALSE',
@@ -1335,15 +1335,15 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
-						 root: 'extrinsic component of Golgi membrane',
+						 root: 'extrinsic component of organelle membrane',
 						 label: '* example1(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
-						 root: 'omegasome membrane',
+						 root: 'omegasome',
 						 label: '* example2(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_PROPERTIES_TRUE',
-						 root: 'dendritic spine membrane',
+						 root: 'positive regulation of embryonic development',
 						 label: '* example3(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_ELK_TRUE',
@@ -2640,15 +2640,15 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
-						 root: 'extrinsic component of Golgi membrane',
+						 root: 'extrinsic component of organelle membrane',
 						 label: '* example1(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
-						 root: 'omegasome membrane',
+						 root: 'omegasome',
 						 label: '* example2(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_FALSE',
-						 root: 'dendritic spine membrane',
+						 root: 'positive regulation of embryonic development',
 						 label: '* example3(t=false)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_FALSE',
@@ -3945,15 +3945,15 @@ $.jStorage.set('profile', {
 			endpoint : 'http://bio2vec.net/sparql/',
 			examples : [
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
-						 root: 'extrinsic component of Golgi membrane',
+						 root: 'extrinsic component of organelle membrane',
 						 label: '* example1(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
-						 root: 'omegasome membrane',
+						 root: 'omegasome',
 						 label: '* example2(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/PAPER_GOPLUS_SR_PROPERTIES_TRUE',
-						 root: 'dendritic spine membrane',
+						 root: 'positive regulation of embryonic development',
 						 label: '* example3(t=true)'
 						},
 						{ uri: 'http://aber-owl.net/paper_goplus_sr_true',
@@ -5244,7 +5244,7 @@ $.jStorage.set('profile', {
 		endpoint : 'http://10.73.106.41:8890/sparql/',
 		document : {
 			className : 'standard',
-			//titleProperties : ['owl:Thing']
+			titleProperties : ['owl:Thing']
 		}, // http://www.w3.org/2000/01/rdf-schema#label
 		images : {
 			properties : ['http://www.w3.org/2006/vcard/ns#photo', 'http://xmlns.com/foaf/0.1/depiction', 'http://dbpedia.org/ontology/thumbnail', 'http://dbpedia.org/property/logo', 'http://linkedgeodata.org/ontology/schemaIcon']

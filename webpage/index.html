@@ -51,6 +51,10 @@
 				var s = document.getElementsByTagName('script')[0];
 				s.parentNode.insertBefore(wf, s);
 			})();
+			function showDemo(url) {
+  				var win = window.open(url, '_blank');
+  				win.focus();
+			}
 		</script>
 		<script type="text/javascript" src="js/jquery-ui-1.9.2.min.js"></script>
 
@@ -85,8 +89,10 @@
 			<div id="nextPage" class="spriteHome paginator"></div>
 			<div id="prevPage" class="spriteHome paginator"></div>		
 			<div id="startPanel">
-				<div id="logo" class="logo"></div>
+				<div id="logo" class="logo">
+				</div>
 				<div id="boxes">
+					<div onclick="showDemo('demo.html');"><h2><span>Demo<h2><span></div>
 					<div id="firstLineBoxes"></div>
 					<div id="boxesCont"></div>
 				</div>

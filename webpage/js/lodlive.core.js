@@ -111,7 +111,7 @@ var rootLabel
 				var entry = $.grep(value.examples,function(e) {return (e.label==idQuery)&&(e.uri == graphName)})
 
 				if(entry.length>0){
-					rootLabel = entry[0].root;
+					rootLabel = entry[0].root
 					res = getSparqlConf(module, value, lodLiveProfile);		
 					if(graphName==resource){
 						res = res.replace(/\{URI\}/ig, graphName.replace(/^.*~~/, ''));
@@ -1975,10 +1975,12 @@ var rootLabel
 			}
 			containerBox.addClass(aClass);
 			// ed ai path da mostrare nel titolo del box
-			//var titles = methods.getProperty("document", "titleProperties", docType);
 			// We change the label of the root by the label of the concept.
-			var titles=rootLabel
 			// ed ai path degli oggetti di tipo immagine
+			
+			var titles = methods.getProperty("document", "titleProperties", docType);
+			titles[0]=rootLabel
+
 			var images = methods.getProperty("images", "properties", docType);
 			// ed ai path dei link esterni
 			var weblinks = methods.getProperty("weblinks", "properties", docType);
