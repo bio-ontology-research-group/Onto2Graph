@@ -65,9 +65,9 @@ Object properties:null
 Number of threads:4
 [==================================================]   100%     building the graph....
 [==================================================]   100%     serializing the graph...
-real	1m1.412s
-user	1m38.001s
-sys	0m6.223s
+real	0m35.172s
+user	1m46.823s
+sys	0m5.069s
 
 subclassof part of
 PARAMETERS:
