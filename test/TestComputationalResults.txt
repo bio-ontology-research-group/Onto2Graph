@@ -1,0 +1,217 @@
+Test Computational
+
+subclassof
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@2d83c5a5
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:null
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	0m41.932s
+user	2m57.401s
+sys	0m3.937s
+
+subclassof part of
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@1e7f2e0f
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	7m15.823s
+user	32m55.532s
+sys	6m59.500s
+
+subclassof part of regulates
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@df4b72
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of, regulates]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	13m44.486s
+user	55m53.023s
+sys	12m11.514s
+
+all properties
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@a53bb6f
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[*]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	43m46.969s
+user	210m21.630s
+sys	42m17.632s
+
+subclassof
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:null
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	1m1.412s
+user	1m38.001s
+sys	0m6.223s
+
+subclassof part of
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m34.460s
+user	1m51.072s
+sys	0m5.206s
+
+subclassof part of regulates
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of, regulates]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m34.607s
+user	1m47.580s
+sys	0m5.484s
+
+all properties
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:true
+Formatter:[RDFXML_FORMATTER]
+Object properties:[*]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m37.700s
+user	1m56.030s
+sys	0m5.969s
+
+subclassof
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@2d83c5a5
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:null
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	0m43.867s
+user	3m0.726s
+sys	0m4.414s
+
+subclassof part of
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@1e7f2e0f
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	7m28.880s
+user	34m24.278s
+sys	7m8.103s
+
+subclassof part of regulates
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@df4b72
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of, regulates]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	15m1.201s
+user	59m40.337s
+sys	12m52.004s
+
+all properties
+PARAMETERS:
+Reasoner:org.semanticweb.elk.owlapi.ElkReasoner@1e7f2e0f
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[*]
+Number of threads:4
+[==================================================]   100%     building the graph.....
+[==================================================]   100%     serializing the graph...
+real	41m1.333s
+user	202m7.778s
+sys	39m22.161s
+
+subclassof
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:null
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m35.533s
+user	1m53.360s
+sys	0m6.070s
+
+subclassof part of
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m37.149s
+user	1m53.004s
+sys	0m5.542s
+
+subclassof part of regulates
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[part of, regulates]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m37.196s
+user	1m52.762s
+sys	0m6.049s
+
+all properties
+PARAMETERS:
+EquivalentClasses flag:true
+Transitive flag:false
+Formatter:[RDFXML_FORMATTER]
+Object properties:[*]
+Number of threads:4
+[==================================================]   100%     building the graph....
+[==================================================]   100%     serializing the graph...
+real	0m38.556s
+user	2m4.269s
+sys	0m6.163s
