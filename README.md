@@ -80,7 +80,16 @@ Unlike the early example, as you can see, here we have object properties. So, in
 -op: This parameter contains [*] which means all the object properties of the ontology will be included to the parse
 process of the ontology.
 -t: In this example we are going to apply the transitive reduction over all properties.
--nt: The number of threads to use will be 4. 
+-nt: The number of threads to use will be 4.
+
+# Compile and Execute
+
+To use Onto2Graph, there are two ways:
+- You can use the jar available in folder target
+- You can compile and package the app by yourself using the following Maven commands:
+	- mvn clean
+	- mvn compile
+	- mvn package
  
 # License
 
