@@ -82,7 +82,7 @@ process of the ontology.
 -t: In this example we are going to apply the transitive reduction over all properties.
 -nt: The number of threads to use will be 4.
 
-# Compile and Execute
+# Compile and Execute 
 
 To use Onto2Graph, there are two ways:
 - You can use the jar available in folder target
